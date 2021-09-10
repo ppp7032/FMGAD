@@ -6,14 +6,14 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.graph.algorithms.Main;
 
 public class DesktopLauncher {
-	public static void main(String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.foregroundFPS = 60;
-		config.width = 1280;
-		config.height = 720;
+    public static void main(String[] arg) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.foregroundFPS = 60;
+        config.width = 1280;
+        config.height = 720;
 
-		config.addIcon("OCR_128x128.png", Files.FileType.Internal);
-		config.addIcon("OCR_32x32.png", Files.FileType.Internal);
-		new LwjglApplication(new Main(), config);
-	}
+        config.addIcon("OCR_128x128.png", Files.FileType.Internal);
+        config.addIcon("OCR_32x32.png", Files.FileType.Internal);
+        new LwjglApplication(new Main(), config);
+    }
 }

@@ -1,8 +1,9 @@
 package com.graph.algorithms;
 
+import com.badlogic.gdx.files.FileHandle;
+
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.badlogic.gdx.files.FileHandle;
 
 public class Graph {
     final ArrayList<ArrayList<Integer>> adjacencyMatrix;
@@ -23,18 +24,32 @@ public class Graph {
                 if (currentCharacter == ",".toCharArray()[0]) {
                     if (currentValue.toString().equals("&")) {
                         currentList.add(null);
-                    }
-                    else {
+                    } else {
                         currentList.add(Integer.valueOf(currentValue.toString()));
                     }
                     currentValue = new StringBuilder();
-                }
-                else {
+                } else {
                     currentValue.append(currentCharacter);
                 }
             }
             adjacencyMatrix.add(currentList);
         }
+    }
+
+    public static int findSmallestNonPermanentTemporaryLabel(ArrayList<ArrayList<Integer>> temporaryLabels,
+                                                             int[] orderLabels) {
+        int smallest = -1;
+        for (int a = 0; a < temporaryLabels.size(); a++) {
+            if (temporaryLabels.get(a).size() != 0 && orderLabels[a] == -1) {
+                if (smallest == -1) {
+                    smallest = a;
+                } else if (temporaryLabels.get(a).get(temporaryLabels.get(a).size() - 1) < temporaryLabels.get(smallest)
+                        .get(temporaryLabels.get(smallest).size() - 1)) {
+                    smallest = a;
+                }
+            }
+        }
+        return smallest;
     }
 
     public DijkstraResult dijkstra(int startNode, int endNode) {
@@ -71,23 +86,6 @@ public class Graph {
         return dijkstraNode(smallest, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
     }
 
-    public static int findSmallestNonPermanentTemporaryLabel(ArrayList<ArrayList<Integer>> temporaryLabels,
-                                                             int[] orderLabels) {
-        int smallest = -1;
-        for (int a = 0; a < temporaryLabels.size(); a++) {
-            if (temporaryLabels.get(a).size() != 0 && orderLabels[a] == -1) {
-                if (smallest == -1) {
-                    smallest = a;
-                }
-                else if (temporaryLabels.get(a).get(temporaryLabels.get(a).size() - 1) < temporaryLabels.get(smallest)
-                        .get(temporaryLabels.get(smallest).size() - 1)) {
-                    smallest = a;
-                }
-            }
-        }
-        return smallest;
-    }
-
     public JarnikResult jarnik() {
         JarnikResult jarnikResult = new JarnikResult();
         jarnikResult.includedNodes.add(0);
@@ -98,7 +96,7 @@ public class Graph {
     }
 
     public JarnikResult jarnikNode(JarnikResult jarnikResult) {
-        int[] smallestArc = new int[] { -1, -1 }; // {from,to}
+        int[] smallestArc = new int[]{-1, -1}; // {from,to}
         for (int a = 0; a < jarnikResult.includedNodes.size(); a++) {
             for (int b = 0; b < adjacencyMatrix.size(); b++) {
                 if (adjacencyMatrix.get(jarnikResult.includedNodes.get(a)).get(b) != null && !jarnikResult.includedNodes.contains(b) && (smallestArc[0] == -1 || adjacencyMatrix.get(jarnikResult.includedNodes.get(a)).get(b) < adjacencyMatrix.get(smallestArc[0]).get(smallestArc[1]))) {
