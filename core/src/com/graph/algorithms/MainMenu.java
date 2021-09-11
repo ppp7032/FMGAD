@@ -20,7 +20,7 @@ public class MainMenu implements Screen {
         stage = new Stage();
         stage.addActor(new Image(new Texture(Gdx.files.internal("background2Transparent.png"))));
         stage.addActor(
-                new Text("OCR A Further Maths Algorithms Showcase", Gdx.graphics.getWidth() / 2f, 550, "Segoe UI.fnt"));
+                new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 550, "Segoe UI.fnt"));
 
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton newGraph = new TextButton("New Graph", skin, "default");

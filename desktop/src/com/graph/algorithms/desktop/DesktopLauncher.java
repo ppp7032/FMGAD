@@ -8,6 +8,7 @@ import com.graph.algorithms.Main;
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.resizable = false;
         config.foregroundFPS = 60;
         config.width = 1280;
         config.height = 720;
