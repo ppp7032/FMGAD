@@ -18,7 +18,7 @@ public class MainMenu implements Screen {
 
     public MainMenu() {
         stage = new Stage();
-        stage.addActor(new Image(new Texture(Gdx.files.internal("background2Transparent.png"))));
+        stage.addActor(new Image(new Texture(Gdx.files.internal("backgrounds/background2Transparent.png"))));
         stage.addActor(
                 new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 550, "Segoe UI.fnt"));
 

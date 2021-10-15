@@ -13,8 +13,8 @@ public class DesktopLauncher {
         config.width = 1280;
         config.height = 720;
 
-        config.addIcon("OCR_128x128.png", Files.FileType.Internal);
-        config.addIcon("OCR_32x32.png", Files.FileType.Internal);
+        config.addIcon("icon/OCR_128x128.png", Files.FileType.Internal);
+        config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
         new LwjglApplication(new Main(), config);
     }
 }

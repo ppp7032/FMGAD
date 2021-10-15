@@ -8,10 +8,10 @@ public class Main extends Game {
     public void create() {
         Gdx.graphics.setTitle("FMGAD");
         setScreen(new MainMenu());
-        Graph threei = new Graph(Gdx.files.internal("digraph 3i.graph"));
+        Graph threei = new Graph(Gdx.files.internal("graphs/digraph 3i.graph"));
         DijkstraResult threeiResult = threei.dijkstra(2, 4);
 
-        Graph graph1 = new Graph(Gdx.files.internal("graph 1.graph"));
+        Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph"));
         JarnikResult jarnikResult = graph1.jarnik();
         System.out.println();
     }
