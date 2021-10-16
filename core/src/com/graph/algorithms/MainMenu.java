@@ -9,10 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 
 public class MainMenu implements Screen {
     final Stage stage = new Stage();
@@ -23,9 +21,21 @@ public class MainMenu implements Screen {
                 new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685, "Segoe UI.fnt"));
 
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        TextButton newGraph = new TextButton("          Create Graph          ", skin, "default");
-        TextButton loadGraph = new TextButton("           Load Graph           ", skin, "default");
-        TextButton exit = new TextButton("                Quit                 ", skin, "default");
+        TextButton newGraph = new TextButton("New Graph", skin, "default");
+        TextButton loadGraph = new TextButton("Load Graph", skin, "default");
+        TextButton exit = new TextButton("Quit", skin, "default");
+        newGraph.setWidth(382);
+        newGraph.setHeight(65);
+        newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f);
+        loadGraph.setWidth(382);
+        loadGraph.setHeight(65);
+        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), newGraph.getY() - 171);
+        exit.setWidth(382);
+        exit.setHeight(65);
+        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), loadGraph.getY() - 171);
+        stage.addActor(newGraph);
+        stage.addActor(loadGraph);
+        stage.addActor(exit);
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -44,18 +54,6 @@ public class MainMenu implements Screen {
                 Gdx.app.exit();
             }
         });
-
-        Table table = new Table();
-        table.setWidth(stage.getWidth());
-        table.align(Align.center | Align.top);
-        table.setPosition(0, Gdx.graphics.getHeight());
-        table.padTop(150);
-        table.add(newGraph).padBottom(110);
-        table.row();
-        table.add(loadGraph).padBottom(110);
-        table.row();
-        table.add(exit);
-        stage.addActor(table);
     }
 
     @Override

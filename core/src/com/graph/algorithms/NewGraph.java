@@ -8,10 +8,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 
 public class NewGraph implements Screen {
     final Stage stage = new Stage();
@@ -20,55 +18,53 @@ public class NewGraph implements Screen {
     public NewGraph() {
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
-        TextButton newEdge = new TextButton(" New Edge ", skin, "default");
-        newVertex.setTransform(true);
-        newVertex.setScale(0.75f);
-        newEdge.setTransform(true);
-        newEdge.setScale(0.75f);
-        TextButton save = new TextButton(" Save Graph", skin, "default");
-        save.setTransform(true);
-        save.setScale(0.75f);
-        TextButton saveAs = new TextButton("   Save As   ", skin, "default");
-        saveAs.setTransform(true);
-        saveAs.setScale(0.75f);
-        TextButton finish = new TextButton("    Finish    ", skin, "default");
-        finish.setTransform(true);
-        finish.setScale(0.75f);
-        TextButton mainMenu = new TextButton(" Main Menu ", skin, "default");
-        mainMenu.setTransform(true);
-        mainMenu.setScale(0.75f);
+        TextButton newEdge = new TextButton("New Edge", skin, "default");
+        TextButton save = new TextButton("Save", skin, "default");
+        TextButton saveAs = new TextButton("Save As", skin, "default");
+        TextButton finish = new TextButton("Finish", skin, "default");
+        TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
-        viewHotkeys.setTransform(true);
-        viewHotkeys.setScale(0.75f);
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-
-
-        Table table = new Table();
-        table.align(Align.left | Align.top);
-        table.setPosition(0, Gdx.graphics.getHeight());
-        table.padLeft(5);
-        table.padTop(20);
-        table.add(newVertex).padBottom(30);
-        table.row();
-
-        table.add(newEdge).padBottom(30);
-        table.row();
-        table.add(save).padBottom(30);
-        table.row();
-        table.add(saveAs).padBottom(30);
-
-        table.row();
-        table.add(finish).padBottom(230);
-        table.row();
-        table.add(mainMenu).padBottom(30);
-        table.row();
-        table.add(viewHotkeys);
-        stage.addActor(table);
+        newVertex.getLabel().setFontScale(0.58f);
+        newVertex.setWidth(127);
+        newVertex.setHeight(46);
+        newVertex.setPosition(80f - newVertex.getWidth() / 2f, 652f);
+        stage.addActor(newVertex);
+        newEdge.getLabel().setFontScale(0.58f);
+        newEdge.setWidth(127);
+        newEdge.setHeight(46);
+        newEdge.setPosition(80f - newEdge.getWidth() / 2f, newVertex.getY() - 71);
+        stage.addActor(newEdge);
+        save.getLabel().setFontScale(0.58f);
+        save.setWidth(127);
+        save.setHeight(46);
+        save.setPosition(80f - save.getWidth() / 2f, newEdge.getY() - 71);
+        stage.addActor(save);
+        saveAs.getLabel().setFontScale(0.58f);
+        saveAs.setWidth(127);
+        saveAs.setHeight(46);
+        saveAs.setPosition(80f - saveAs.getWidth() / 2f, save.getY() - 71);
+        stage.addActor(saveAs);
+        finish.getLabel().setFontScale(0.58f);
+        finish.setWidth(127);
+        finish.setHeight(46);
+        finish.setPosition(80f - finish.getWidth() / 2f, saveAs.getY() - 71);
+        stage.addActor(finish);
+        mainMenu.getLabel().setFontScale(0.58f);
+        mainMenu.setWidth(127);
+        mainMenu.setHeight(46);
+        mainMenu.setPosition(80f - mainMenu.getWidth() / 2f, 95);
+        stage.addActor(mainMenu);
+        viewHotkeys.getLabel().setFontScale(0.58f);
+        viewHotkeys.setWidth(127);
+        viewHotkeys.setHeight(46);
+        viewHotkeys.setPosition(80f - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71);
+        stage.addActor(viewHotkeys);
     }
 
     public void renderShapes() {
