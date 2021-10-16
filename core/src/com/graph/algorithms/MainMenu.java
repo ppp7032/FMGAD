@@ -1,5 +1,6 @@
 package com.graph.algorithms;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,22 +15,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 public class MainMenu implements Screen {
-    final Stage stage;
+    final Stage stage = new Stage();
 
     public MainMenu() {
-        stage = new Stage();
         stage.addActor(new Image(new Texture(Gdx.files.internal("backgrounds/background2Transparent.png"))));
         stage.addActor(
-                new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 550, "Segoe UI.fnt"));
+                new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685, "Segoe UI.fnt"));
 
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
-        TextButton newGraph = new TextButton("New Graph", skin, "default");
-        TextButton loadGraph = new TextButton("Load Graph", skin, "default");
-        TextButton exit = new TextButton("Exit", skin, "default");
+        TextButton newGraph = new TextButton("          Create Graph          ", skin, "default");
+        TextButton loadGraph = new TextButton("           Load Graph           ", skin, "default");
+        TextButton exit = new TextButton("                Quit                 ", skin, "default");
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Switch to screen where you can make a graph!!
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph());
             }
         });
         loadGraph.addListener(new ClickListener() {
@@ -49,10 +49,10 @@ public class MainMenu implements Screen {
         table.setWidth(stage.getWidth());
         table.align(Align.center | Align.top);
         table.setPosition(0, Gdx.graphics.getHeight());
-        table.padTop(250);
-        table.add(newGraph).padBottom(20);
+        table.padTop(150);
+        table.add(newGraph).padBottom(110);
         table.row();
-        table.add(loadGraph).padBottom(20);
+        table.add(loadGraph).padBottom(110);
         table.row();
         table.add(exit);
         stage.addActor(table);

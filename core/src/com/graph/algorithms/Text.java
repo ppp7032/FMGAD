@@ -9,21 +9,24 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class Text extends Actor {
     final String toPrint;
     final BitmapFont font;
-    final GlyphLayout glyphLayout;
+    final float width;
+    final float height;
     final float x;
     final float y;
 
     public Text(String input, float x, float y, String fontName) {
         font = new BitmapFont(Gdx.files.internal(fontName));
         toPrint = input;
-        glyphLayout = new GlyphLayout(font, toPrint);
+        GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
+        width = glyphLayout.width;
+        height = glyphLayout.height;
         this.x = x;
         this.y = y;
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        font.draw(batch, toPrint, x - glyphLayout.width / 2, y - glyphLayout.height / 2);
+        font.draw(batch, toPrint, x - width / 2, y - height / 2);
     }
 
     @Override
