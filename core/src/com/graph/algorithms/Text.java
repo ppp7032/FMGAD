@@ -14,8 +14,9 @@ public class Text extends Actor {
     final float x;
     final float y;
 
-    public Text(String input, float x, float y, String fontName) {
+    public Text(String input, float x, float y, String fontName,float fontSize) {
         font = new BitmapFont(Gdx.files.internal(fontName));
+        font.getData().setScale(fontSize/19f);
         toPrint = input;
         GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
         width = glyphLayout.width;

@@ -16,23 +16,25 @@ public class MainMenu implements Screen {
     final Stage stage = new Stage();
 
     public MainMenu() {
+        float scaleFactor = Gdx.graphics.getHeight() / 720f;
         stage.addActor(new Image(new Texture(Gdx.files.internal("backgrounds/background2Transparent.png"))));
-        stage.addActor(
-                new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685, "Segoe UI.fnt"));
-
+        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, "Segoe UI.fnt", 19f * scaleFactor));
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton newGraph = new TextButton("New Graph", skin, "default");
         TextButton loadGraph = new TextButton("Load Graph", skin, "default");
         TextButton exit = new TextButton("Quit", skin, "default");
-        newGraph.setWidth(382);
-        newGraph.setHeight(65);
-        newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f);
-        loadGraph.setWidth(382);
-        loadGraph.setHeight(65);
-        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), newGraph.getY() - 171);
-        exit.setWidth(382);
-        exit.setHeight(65);
-        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), loadGraph.getY() - 171);
+        newGraph.setWidth(382 * scaleFactor);
+        newGraph.setHeight(65 * scaleFactor);
+        newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f * scaleFactor);
+        newGraph.getLabel().setFontScale(scaleFactor);
+        loadGraph.setWidth(382 * scaleFactor);
+        loadGraph.setHeight(65 * scaleFactor);
+        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), newGraph.getY() - 171 * scaleFactor);
+        loadGraph.getLabel().setFontScale(scaleFactor);
+        exit.setWidth(382 * scaleFactor);
+        exit.setHeight(65 * scaleFactor);
+        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - exit.getWidth()), loadGraph.getY() - 171 * scaleFactor);
+        exit.getLabel().setFontScale(scaleFactor);
         stage.addActor(newGraph);
         stage.addActor(loadGraph);
         stage.addActor(exit);

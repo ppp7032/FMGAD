@@ -10,8 +10,9 @@ public class DesktopLauncher {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.resizable = false;
         config.foregroundFPS = 60;
-        config.width = 1280;
         config.height = 720;
+        config.width = config.height * 16 / 9;
+
 
         config.addIcon("icon/OCR_128x128.png", Files.FileType.Internal);
         config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);

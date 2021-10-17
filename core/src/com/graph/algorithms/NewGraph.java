@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class NewGraph implements Screen {
     final Stage stage = new Stage();
     final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    final float scaleFactor = Gdx.graphics.getHeight() / 720f;
 
     public NewGraph() {
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -30,52 +31,52 @@ public class NewGraph implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-        newVertex.getLabel().setFontScale(0.58f);
-        newVertex.setWidth(127);
-        newVertex.setHeight(46);
-        newVertex.setPosition(80f - newVertex.getWidth() / 2f, 652f);
+        newVertex.getLabel().setFontScale(0.58f * scaleFactor);
+        newVertex.setWidth(127 * scaleFactor);
+        newVertex.setHeight(46 * scaleFactor);
+        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, 652f * scaleFactor);
         stage.addActor(newVertex);
-        newEdge.getLabel().setFontScale(0.58f);
-        newEdge.setWidth(127);
-        newEdge.setHeight(46);
-        newEdge.setPosition(80f - newEdge.getWidth() / 2f, newVertex.getY() - 71);
+        newEdge.getLabel().setFontScale(0.58f * scaleFactor);
+        newEdge.setWidth(127 * scaleFactor);
+        newEdge.setHeight(46 * scaleFactor);
+        newEdge.setPosition(80f * scaleFactor - newEdge.getWidth() / 2f, newVertex.getY() - 71 * scaleFactor);
         stage.addActor(newEdge);
-        save.getLabel().setFontScale(0.58f);
-        save.setWidth(127);
-        save.setHeight(46);
-        save.setPosition(80f - save.getWidth() / 2f, newEdge.getY() - 71);
+        save.getLabel().setFontScale(0.58f * scaleFactor);
+        save.setWidth(127 * scaleFactor);
+        save.setHeight(46 * scaleFactor);
+        save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
         stage.addActor(save);
-        saveAs.getLabel().setFontScale(0.58f);
-        saveAs.setWidth(127);
-        saveAs.setHeight(46);
-        saveAs.setPosition(80f - saveAs.getWidth() / 2f, save.getY() - 71);
+        saveAs.getLabel().setFontScale(0.58f * scaleFactor);
+        saveAs.setWidth(127 * scaleFactor);
+        saveAs.setHeight(46 * scaleFactor);
+        saveAs.setPosition(80f * scaleFactor - saveAs.getWidth() / 2f, save.getY() - 71 * scaleFactor);
         stage.addActor(saveAs);
-        finish.getLabel().setFontScale(0.58f);
-        finish.setWidth(127);
-        finish.setHeight(46);
-        finish.setPosition(80f - finish.getWidth() / 2f, saveAs.getY() - 71);
+        finish.getLabel().setFontScale(0.58f * scaleFactor);
+        finish.setWidth(127 * scaleFactor);
+        finish.setHeight(46 * scaleFactor);
+        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, saveAs.getY() - 71 * scaleFactor);
         stage.addActor(finish);
-        mainMenu.getLabel().setFontScale(0.58f);
-        mainMenu.setWidth(127);
-        mainMenu.setHeight(46);
-        mainMenu.setPosition(80f - mainMenu.getWidth() / 2f, 95);
+        mainMenu.getLabel().setFontScale(0.58f * scaleFactor);
+        mainMenu.setWidth(127 * scaleFactor);
+        mainMenu.setHeight(46 * scaleFactor);
+        mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
         stage.addActor(mainMenu);
-        viewHotkeys.getLabel().setFontScale(0.58f);
-        viewHotkeys.setWidth(127);
-        viewHotkeys.setHeight(46);
-        viewHotkeys.setPosition(80f - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71);
+        viewHotkeys.getLabel().setFontScale(0.58f * scaleFactor);
+        viewHotkeys.setWidth(127 * scaleFactor);
+        viewHotkeys.setHeight(46 * scaleFactor);
+        viewHotkeys.setPosition(80f * scaleFactor - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
         stage.addActor(viewHotkeys);
     }
 
     public void renderShapes() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(207f / 255f, 226f / 255f, 243f / 255f, 1);
-        shapeRenderer.rect(0, 0, 160, 720f);
+        shapeRenderer.rect(0, 0, 160f * scaleFactor, 720f * scaleFactor);
         shapeRenderer.setColor(95f / 256f, 96f / 256f, 97f / 256f, 1);
-        shapeRenderer.rectLine(0, 0, 0, 720, 3);
-        shapeRenderer.rectLine(0, 720, 160, 720, 4);
-        shapeRenderer.rectLine(160, 720, 160, 0, 2);
-        shapeRenderer.rectLine(0, 0, 160, 0, 2);
+        shapeRenderer.rectLine(0, 0, 0, 720 * scaleFactor, 3 * scaleFactor);
+        shapeRenderer.rectLine(0, 720 * scaleFactor, 160 * scaleFactor, 720 * scaleFactor, 4 * scaleFactor);
+        shapeRenderer.rectLine(160 * scaleFactor, 720 * scaleFactor, 160 * scaleFactor, 0, 2 * scaleFactor);
+        shapeRenderer.rectLine(0, 0, 160 * scaleFactor, 0, 2 * scaleFactor);
         shapeRenderer.end();
     }
 
