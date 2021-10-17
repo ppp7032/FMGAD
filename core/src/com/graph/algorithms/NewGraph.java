@@ -16,7 +16,7 @@ public class NewGraph implements Screen {
     final ShapeRenderer shapeRenderer = new ShapeRenderer();
     final float scaleFactor = Gdx.graphics.getHeight() / 720f;
 
-    public NewGraph() {
+    public NewGraph(final float scaleFactor) {
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
         TextButton newEdge = new TextButton("New Edge", skin, "default");
@@ -28,7 +28,7 @@ public class NewGraph implements Screen {
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(scaleFactor));
             }
         });
         newVertex.getLabel().setFontScale(0.58f * scaleFactor);

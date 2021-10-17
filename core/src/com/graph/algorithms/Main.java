@@ -7,7 +7,7 @@ public class Main extends Game {
     @Override
     public void create() {
         Gdx.graphics.setTitle("FMGAD");
-        setScreen(new MainMenu());
+        setScreen(new MainMenu(Gdx.graphics.getHeight() / 720f));
         Graph threei = new Graph(Gdx.files.internal("graphs/digraph 3i.graph"));
         DijkstraResult threeiResult = threei.dijkstra(2, 4);
 

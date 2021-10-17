@@ -15,8 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class MainMenu implements Screen {
     final Stage stage = new Stage();
 
-    public MainMenu() {
-        float scaleFactor = Gdx.graphics.getHeight() / 720f;
+    public MainMenu(final float scaleFactor) {
         Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
         background.setHeight(Gdx.graphics.getHeight());
         background.setWidth(Gdx.graphics.getWidth());
@@ -44,7 +43,7 @@ public class MainMenu implements Screen {
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(scaleFactor));
             }
         });
         loadGraph.addListener(new ClickListener() {
