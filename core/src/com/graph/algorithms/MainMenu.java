@@ -17,7 +17,10 @@ public class MainMenu implements Screen {
 
     public MainMenu() {
         float scaleFactor = Gdx.graphics.getHeight() / 720f;
-        stage.addActor(new Image(new Texture(Gdx.files.internal("backgrounds/background2Transparent.png"))));
+        Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
+        background.setHeight(Gdx.graphics.getHeight());
+        background.setWidth(Gdx.graphics.getWidth());
+        stage.addActor(background);
         stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, "Segoe UI.fnt", 19f * scaleFactor));
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
         TextButton newGraph = new TextButton("New Graph", skin, "default");
