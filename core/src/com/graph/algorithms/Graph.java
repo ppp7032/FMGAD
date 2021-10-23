@@ -6,33 +6,39 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Graph {
-    final ArrayList<ArrayList<Integer>> adjacencyMatrix;
+    final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
 
     public Graph() {
-        adjacencyMatrix = new ArrayList<>();
     }
 
     public Graph(FileHandle graph) {
         Scanner scanner = new Scanner(graph.read());
-        adjacencyMatrix = new ArrayList<>();
         while (scanner.hasNext()) {
             ArrayList<Integer> currentList = new ArrayList<>();
             String currentLine = scanner.nextLine();
-            StringBuilder currentValue = new StringBuilder();
-            for (int a = 0; a < currentLine.length(); a++) {
-                char currentCharacter = currentLine.charAt(a);
-                if (currentCharacter == ",".toCharArray()[0]) {
-                    if (currentValue.toString().equals("&")) {
-                        currentList.add(null);
-                    } else {
-                        currentList.add(Integer.valueOf(currentValue.toString()));
-                    }
-                    currentValue = new StringBuilder();
-                } else {
-                    currentValue.append(currentCharacter);
-                }
+            ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket
+            int currentIndex = currentLine.indexOf('[');
+            occurrences.add(new ArrayList<Integer>());
+            while (currentIndex != -1) {
+                occurrences.get(0).add(currentIndex);
+                currentIndex = currentLine.indexOf('[', currentIndex + 1);
             }
-            adjacencyMatrix.add(currentList);
+            currentIndex = currentLine.indexOf(',');
+            occurrences.add(new ArrayList<Integer>());
+            while (currentIndex != -1) {
+                occurrences.get(1).add(currentIndex);
+                currentIndex = currentLine.indexOf(',', currentIndex + 1);
+            }
+            currentIndex = currentLine.indexOf(']');
+            occurrences.add(new ArrayList<Integer>());
+            while (currentIndex != -1) {
+                occurrences.get(2).add(currentIndex);
+                currentIndex = currentLine.indexOf(']', currentIndex + 1);
+            }
+            adjacencyList.add(new ArrayList<int[]>());
+            for (int a = 0; a < occurrences.get(0).size(); a++) {
+                adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a) + 1, occurrences.get(2).get(a)))});
+            }
         }
     }
 
@@ -53,61 +59,67 @@ public class Graph {
     }
 
     public DijkstraResult dijkstra(int startNode, int endNode) {
-        String[] pathsToEachNode = new String[adjacencyMatrix.size()];
+        String[] pathsToEachNode = new String[adjacencyList.size()];
         pathsToEachNode[startNode] = Integer.toString(startNode);
-        int[] orderLabels = new int[adjacencyMatrix.size()];
-        int[] permanentLabels = new int[adjacencyMatrix.size()];
+        int[] orderLabels = new int[adjacencyList.size()];
+        int[] permanentLabels = new int[adjacencyList.size()];
         ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
-        for (int a = 0; a < adjacencyMatrix.size(); a++) {
+        for (int a = 0; a < adjacencyList.size(); a++) {
             permanentLabels[a] = -1;
             orderLabels[a] = -1;
             temporaryLabels.add(new ArrayList<Integer>());
         }
         orderLabels[startNode] = 1;
         permanentLabels[startNode] = 0;
-        return dijkstraNode(startNode, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
+        return dijkstraRecursion(startNode, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
     }
 
-    public DijkstraResult dijkstraNode(int currentNode, int endNode, String[] pathsToEachNode, int[] orderLabels,
-                                       int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
-        for (int a = 0; a < adjacencyMatrix.size(); a++) {
-            if (adjacencyMatrix.get(currentNode).get(a) != null && (temporaryLabels.get(a).size() == 0 || permanentLabels[currentNode] + adjacencyMatrix.get(currentNode).get(a) < temporaryLabels.get(a).get(temporaryLabels.get(a).size() - 1))) {
-                temporaryLabels.get(a).add(permanentLabels[currentNode] + adjacencyMatrix.get(currentNode).get(a));
-                pathsToEachNode[a] = pathsToEachNode[currentNode] + a;
+    public DijkstraResult dijkstraRecursion(int currentNode, int endNode, String[] pathsToEachNode, int[] orderLabels,
+                                            int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
+        for (int a = 0; a < adjacencyList.get(currentNode).size(); a++) {
+            int edgeTo = adjacencyList.get(currentNode).get(a)[0];
+            int edgeWeight = adjacencyList.get(currentNode).get(a)[1];
+            if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentNode] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
+                temporaryLabels.get(edgeTo).add(permanentLabels[currentNode] + edgeWeight);
+                pathsToEachNode[edgeTo] = pathsToEachNode[currentNode] + edgeTo;
             }
         }
         int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
         permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
         orderLabels[smallest] = orderLabels[currentNode] + 1;
-
         if (permanentLabels[endNode] != -1) {
             return new DijkstraResult(pathsToEachNode[endNode], permanentLabels[endNode]);
         }
-        return dijkstraNode(smallest, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
+        return dijkstraRecursion(smallest, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
     }
 
     public JarnikResult jarnik() {
         JarnikResult jarnikResult = new JarnikResult();
-        jarnikResult.includedNodes.add(0);
-        while (jarnikResult.includedNodes.size() < adjacencyMatrix.size()) {
-            jarnikResult = jarnikNode(jarnikResult);
-        }
+        ArrayList<Integer> includedNodes=new ArrayList<>();
+        includedNodes.add(0);
+        jarnikResult = jarnikRecursion(jarnikResult,includedNodes);
         return jarnikResult;
     }
 
-    public JarnikResult jarnikNode(JarnikResult jarnikResult) {
-        int[] smallestArc = new int[]{-1, -1}; // {from,to}
-        for (int a = 0; a < jarnikResult.includedNodes.size(); a++) {
-            for (int b = 0; b < adjacencyMatrix.size(); b++) {
-                if (adjacencyMatrix.get(jarnikResult.includedNodes.get(a)).get(b) != null && !jarnikResult.includedNodes.contains(b) && (smallestArc[0] == -1 || adjacencyMatrix.get(jarnikResult.includedNodes.get(a)).get(b) < adjacencyMatrix.get(smallestArc[0]).get(smallestArc[1]))) {
-                    smallestArc[0] = jarnikResult.includedNodes.get(a);
-                    smallestArc[1] = b;
+    public JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedNodes) {
+        int[] smallestArc = new int[]{-1, -1, -1}; // {from,to,weight}
+        for (int a = 0; a < includedNodes.size(); a++) {
+            for (int b = 0; b < adjacencyList.get(a).size(); b++) {
+                int edgeTo = adjacencyList.get(includedNodes.get(a)).get(b)[0];
+                int edgeWeight = adjacencyList.get(includedNodes.get(a)).get(b)[1];
+                if (!includedNodes.contains(edgeTo) && (smallestArc[0] == -1 || edgeWeight < smallestArc[2])) {
+                    smallestArc[0] = includedNodes.get(a);
+                    smallestArc[1] = edgeTo;
+                    smallestArc[2] = edgeWeight;
                 }
             }
         }
         jarnikResult.minimumArcs.add(smallestArc);
-        jarnikResult.includedNodes.add(smallestArc[1]);
-        jarnikResult.totalTreeWeight += adjacencyMatrix.get(smallestArc[0]).get(smallestArc[1]);
+        includedNodes.add(smallestArc[1]);
+        jarnikResult.totalTreeWeight += smallestArc[2];
+        if(includedNodes.size()<adjacencyList.size()){
+            return jarnikRecursion(jarnikResult,includedNodes);
+        }
         return jarnikResult;
     }
 }
