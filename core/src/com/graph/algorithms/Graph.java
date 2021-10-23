@@ -14,7 +14,6 @@ public class Graph {
     public Graph(FileHandle graph) {
         Scanner scanner = new Scanner(graph.read());
         while (scanner.hasNext()) {
-            ArrayList<Integer> currentList = new ArrayList<>();
             String currentLine = scanner.nextLine();
             ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket
             int currentIndex = currentLine.indexOf('[');
