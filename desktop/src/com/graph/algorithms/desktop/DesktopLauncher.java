@@ -12,6 +12,7 @@ public class DesktopLauncher {
         config.foregroundFPS = 60;
         config.height = 720;
         config.width = config.height * 16 / 9;
+        //config.fullscreen=true;
         config.addIcon("icon/OCR_128x128.png", Files.FileType.Internal);
         config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
         new LwjglApplication(new Main(), config);

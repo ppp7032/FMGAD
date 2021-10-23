@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Graph {
     final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
+    final ArrayList<float[]> coordinates = new ArrayList<>();
 
     public Graph() {
     }
@@ -94,9 +95,9 @@ public class Graph {
 
     public JarnikResult jarnik() {
         JarnikResult jarnikResult = new JarnikResult();
-        ArrayList<Integer> includedNodes=new ArrayList<>();
+        ArrayList<Integer> includedNodes = new ArrayList<>();
         includedNodes.add(0);
-        jarnikResult = jarnikRecursion(jarnikResult,includedNodes);
+        jarnikResult = jarnikRecursion(jarnikResult, includedNodes);
         return jarnikResult;
     }
 
@@ -116,8 +117,8 @@ public class Graph {
         jarnikResult.minimumArcs.add(smallestArc);
         includedNodes.add(smallestArc[1]);
         jarnikResult.totalTreeWeight += smallestArc[2];
-        if(includedNodes.size()<adjacencyList.size()){
-            return jarnikRecursion(jarnikResult,includedNodes);
+        if (includedNodes.size() < adjacencyList.size()) {
+            return jarnikRecursion(jarnikResult, includedNodes);
         }
         return jarnikResult;
     }
