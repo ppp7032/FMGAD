@@ -34,7 +34,7 @@ public class NewGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (x / scaleFactor - 15 > 160f) {
+                if (mouseNotInMenu()) {
                     if (newVertexClicked) {
                         graph.adjacencyList.add(new ArrayList<int[]>());
                         graph.coordinates.add(new float[]{x / scaleFactor, y / scaleFactor});
@@ -59,6 +59,8 @@ public class NewGraph implements Screen {
                     }
                 } else if (y / scaleFactor < 350f) {
                     newVertexClicked = false;
+                    newEdgeClicked = false;
+                    firstVertex = -1;
                 }
             }
         });
@@ -121,6 +123,10 @@ public class NewGraph implements Screen {
         stage.addActor(viewHotkeys);
     }
 
+    public boolean mouseNotInMenu() {
+        return Gdx.input.getX() / scaleFactor - 15 > 160f;
+    }
+
     public void renderShapes() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(207f / 255f, 226f / 255f, 243f / 255f, 1);
@@ -137,9 +143,15 @@ public class NewGraph implements Screen {
                 shapeRenderer.rectLine(graph.coordinates.get(a)[0] * scaleFactor, graph.coordinates.get(a)[1] * scaleFactor, graph.coordinates.get(toVertex)[0] * scaleFactor, graph.coordinates.get(toVertex)[1] * scaleFactor, 5 * scaleFactor);
             }
         }
+        if (newEdgeClicked && firstVertex != -1) {
+            shapeRenderer.rectLine(graph.coordinates.get(firstVertex)[0] * scaleFactor, graph.coordinates.get(firstVertex)[1] * scaleFactor, Gdx.input.getX(), 720f * scaleFactor - Gdx.input.getY(), 5 * scaleFactor);
+        }
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = 0; a < graph.adjacencyList.size(); a++) {
             shapeRenderer.circle(graph.coordinates.get(a)[0] * scaleFactor, graph.coordinates.get(a)[1] * scaleFactor, 15 * scaleFactor);
+        }
+        if (newVertexClicked && mouseNotInMenu()) {
+            shapeRenderer.circle(Gdx.input.getX(), 720f * scaleFactor - Gdx.input.getY(), 15 * scaleFactor);
         }
         shapeRenderer.end();
     }
