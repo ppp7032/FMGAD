@@ -2,6 +2,7 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -21,6 +22,7 @@ public class NewGraph implements Screen {
     boolean newVertexClicked = false;
     boolean newEdgeClicked = false;
     int firstVertex = -1;
+    int vertexBeingMoved = -1;
 
     public NewGraph(final float scaleFactor) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
         Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -34,23 +36,20 @@ public class NewGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (mouseNotInMenu()) {
+                if (mouseInBounds()) {
                     if (newVertexClicked) {
                         graph.adjacencyList.add(new ArrayList<int[]>());
                         graph.coordinates.add(new float[]{x / scaleFactor, y / scaleFactor});
                         newVertexClicked = false;
                     } else if (newEdgeClicked) {
-                        for (int a = 0; a < graph.adjacencyList.size(); a++) {
-                            float mouseX = x / scaleFactor;
-                            float mouseY = y / scaleFactor;
-                            if (Math.pow(mouseX - graph.coordinates.get(a)[0], 2) + Math.pow(mouseY - graph.coordinates.get(a)[1], 2) <= 15 * 15) {
-                                if (firstVertex == -1) {
-                                    firstVertex = a;
-                                } else {//Todo- make sure edge being added doesn't connect a vertex to itself, or vertices that are already connected, and add a dialogue with a textfield to allow inputting edge weight.
-                                    graph.adjacencyList.get(firstVertex).add(new int[]{a, 0});
-                                    graph.adjacencyList.get(a).add(new int[]{firstVertex, 0});
-                                    firstVertex = -1;
-                                }
+                        int clickedVertex = findVertexBeingClicked();
+                        if (clickedVertex != -1) {
+                            if (firstVertex == -1) {
+                                firstVertex = clickedVertex;
+                            } else {//Todo- make sure edge being added doesn't connect a vertex to itself, or vertices that are already connected, and add a dialogue with a textfield to allow inputting edge weight.
+                                graph.adjacencyList.get(firstVertex).add(new int[]{clickedVertex, 0});
+                                graph.adjacencyList.get(clickedVertex).add(new int[]{firstVertex, 0});
+                                firstVertex = -1;
                             }
                         }
                         if (firstVertex == -1) {
@@ -123,18 +122,29 @@ public class NewGraph implements Screen {
         stage.addActor(viewHotkeys);
     }
 
-    public boolean mouseNotInMenu() {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f;
+    public int findVertexBeingClicked() {
+        for (int a = 0; a < graph.adjacencyList.size(); a++) {
+            float mouseX = Gdx.input.getX() / scaleFactor;
+            float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor;
+            if (Math.pow(mouseX - graph.coordinates.get(a)[0], 2) + Math.pow(mouseY - graph.coordinates.get(a)[1], 2) <= 15 * 15) {
+                return a;
+            }
+        }
+        return -1;
+    }
+
+    public boolean mouseInBounds() {
+        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     public void renderShapes() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(207f / 255f, 226f / 255f, 243f / 255f, 1);
-        shapeRenderer.rect(0, 0, 160f * scaleFactor, 720f * scaleFactor);
+        shapeRenderer.rect(0, 0, 160f * scaleFactor, Gdx.graphics.getHeight());
         shapeRenderer.setColor(95f / 256f, 96f / 256f, 97f / 256f, 1);
-        shapeRenderer.rectLine(0, 0, 0, 720 * scaleFactor, 3 * scaleFactor);
-        shapeRenderer.rectLine(0, 720 * scaleFactor, 160 * scaleFactor, 720 * scaleFactor, 4 * scaleFactor);
-        shapeRenderer.rectLine(160 * scaleFactor, 720 * scaleFactor, 160 * scaleFactor, 0, 2 * scaleFactor);
+        shapeRenderer.rectLine(0, 0, 0, Gdx.graphics.getHeight(), 3 * scaleFactor);
+        shapeRenderer.rectLine(0, Gdx.graphics.getHeight(), 160 * scaleFactor, Gdx.graphics.getHeight(), 4 * scaleFactor);
+        shapeRenderer.rectLine(160 * scaleFactor, Gdx.graphics.getHeight(), 160 * scaleFactor, 0, 2 * scaleFactor);
         shapeRenderer.rectLine(0, 0, 160 * scaleFactor, 0, 2 * scaleFactor);
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.adjacencyList.size(); a++) {
@@ -144,14 +154,14 @@ public class NewGraph implements Screen {
             }
         }
         if (newEdgeClicked && firstVertex != -1) {
-            shapeRenderer.rectLine(graph.coordinates.get(firstVertex)[0] * scaleFactor, graph.coordinates.get(firstVertex)[1] * scaleFactor, Gdx.input.getX(), 720f * scaleFactor - Gdx.input.getY(), 5 * scaleFactor);
+            shapeRenderer.rectLine(graph.coordinates.get(firstVertex)[0] * scaleFactor, graph.coordinates.get(firstVertex)[1] * scaleFactor, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 5 * scaleFactor);
         }
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = 0; a < graph.adjacencyList.size(); a++) {
             shapeRenderer.circle(graph.coordinates.get(a)[0] * scaleFactor, graph.coordinates.get(a)[1] * scaleFactor, 15 * scaleFactor);
         }
-        if (newVertexClicked && mouseNotInMenu()) {
-            shapeRenderer.circle(Gdx.input.getX(), 720f * scaleFactor - Gdx.input.getY(), 15 * scaleFactor);
+        if (newVertexClicked && mouseInBounds()) {
+            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
         }
         shapeRenderer.end();
     }
@@ -165,6 +175,16 @@ public class NewGraph implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
+            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds()) {
+                vertexBeingMoved = findVertexBeingClicked();
+            }
+        } else {
+            vertexBeingMoved = -1;
+        }
+        if (vertexBeingMoved != -1 && mouseInBounds()) {
+            graph.coordinates.set(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
+        }
         renderShapes();
         stage.act();
         stage.draw();
