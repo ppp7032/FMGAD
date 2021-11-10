@@ -3,11 +3,14 @@ package com.graph.algorithms;
 import java.util.ArrayList;
 
 public class JarnikResult {
-    final ArrayList<int[]> minimumArcs;
-    int totalTreeWeight;
+    private final ArrayList<int[]> minimumArcs=new ArrayList<>();
+    private int totalTreeWeight=0;
 
-    public JarnikResult() {
-        this.minimumArcs = new ArrayList<>();
-        totalTreeWeight = 0;
+    public void addEdge(int[] arc){
+        minimumArcs.add(arc);
+    }
+
+    public void addToTreeWeight(int a){
+        totalTreeWeight+=a;
     }
 }

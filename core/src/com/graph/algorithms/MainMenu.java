@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenu implements Screen {
-    final Stage stage = new Stage();
+    private final Stage stage = new Stage();
 
     public MainMenu(final float scaleFactor) {
         Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));

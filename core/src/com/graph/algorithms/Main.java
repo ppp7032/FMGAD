@@ -14,7 +14,6 @@ public class Main extends Game {
         Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph2"));
         JarnikResult jarnikResult = graph1.jarnik();
 
-
         System.out.println();
     }
 }

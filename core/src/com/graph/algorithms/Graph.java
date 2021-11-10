@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Graph {
-    final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
-    final ArrayList<float[]> coordinates = new ArrayList<>();
+    private final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
+    private final ArrayList<float[]> coordinates = new ArrayList<>();
 
     public Graph() {
     }
@@ -40,6 +40,44 @@ public class Graph {
                 adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a) + 1, occurrences.get(2).get(a)))});
             }
         }
+    }
+
+    public void addVertex(float x, float y){
+        adjacencyList.add(new ArrayList<int[]>());
+        coordinates.add(new float[]{x, y});
+    }
+
+    public void addDirectedEdge(int from, int to, int length){
+        adjacencyList.get(from).add(new int[]{to, length});
+    }
+
+    public void addUndirectedEdge(int vertex1, int vertex2, int length){
+        addDirectedEdge(vertex1,vertex2,length);
+        addDirectedEdge(vertex2,vertex1,length);
+    }
+
+    public int getAdjacencyListSize(){
+        return adjacencyList.size();
+    }
+
+    public float getXCoordinate(int a){
+        return coordinates.get(a)[0];
+    }
+
+    public float getYCoordinate(int a){
+        return coordinates.get(a)[1];
+    }
+
+    public int getNumberOfEdges(int a){
+        return adjacencyList.get(a).size();
+    }
+
+    public int getVertex(int a, int b){
+        return adjacencyList.get(a).get(b)[0];
+    }
+
+    public void setCoordinates(int index, float[] element){
+        coordinates.set(index, element);
     }
 
     public static int findSmallestNonPermanentTemporaryLabel(ArrayList<ArrayList<Integer>> temporaryLabels,
@@ -114,9 +152,9 @@ public class Graph {
                 }
             }
         }
-        jarnikResult.minimumArcs.add(smallestArc);
+        jarnikResult.addEdge(smallestArc);
         includedNodes.add(smallestArc[1]);
-        jarnikResult.totalTreeWeight += smallestArc[2];
+        jarnikResult.addToTreeWeight(smallestArc[2]);
         if (includedNodes.size() < adjacencyList.size()) {
             return jarnikRecursion(jarnikResult, includedNodes);
         }

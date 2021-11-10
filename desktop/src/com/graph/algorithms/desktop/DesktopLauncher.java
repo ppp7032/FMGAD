@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.graph.algorithms.Main;
 
 public class DesktopLauncher {
-    public static void main(String[] arg) {
+    public static void main(String[] args) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.resizable = false;
         config.foregroundFPS = 60;

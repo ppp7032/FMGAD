@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Text extends Actor {
-    final String toPrint;
-    final BitmapFont font;
-    final float width;
-    final float height;
-    final float x;
-    final float y;
+    private final String toPrint;
+    private final BitmapFont font;
+    private final float width;
+    private final float height;
+    private final float x;
+    private final float y;
 
     public Text(String input, float x, float y, String fontName, float fontSize) {
         font = new BitmapFont(Gdx.files.internal(fontName));
