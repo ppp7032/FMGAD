@@ -27,11 +27,11 @@ public class Text extends Actor {
         this.x = x;
         this.y = y;
     }
-    public static BitmapFont generateFont(String fontName,float size){
+    public static BitmapFont generateFont(String fontName,float size, int borderWidth){
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = (int)size;
-        parameter.borderWidth = 1;
+        parameter.borderWidth = borderWidth;
         parameter.color = Color.WHITE;
         /*parameter.shadowOffsetX = 3;
         parameter.shadowOffsetY = 3;
