@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -23,7 +25,7 @@ public class NewGraph implements Screen {
     private int vertexBeingMoved = -1;
 
     public NewGraph(final float scaleFactor) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
-        Skin skin = new Skin(Gdx.files.internal("skins/cloud-form/skin/cloud-form-ui.json"));
+        Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMonoRegular.ttf",80f));
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
         TextButton newEdge = new TextButton("New Edge", skin, "default");
         TextButton save = new TextButton("Save", skin, "default");
@@ -83,37 +85,37 @@ public class NewGraph implements Screen {
                 }
             }
         });
-        newVertex.getLabel().setFontScale(0.6f * scaleFactor);
+        newVertex.getLabel().setFontScale(0.2f * scaleFactor);
         newVertex.setWidth(127 * scaleFactor);
         newVertex.setHeight(46 * scaleFactor);
         newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, 652f * scaleFactor);
         stage.addActor(newVertex);
-        newEdge.getLabel().setFontScale(0.6f * scaleFactor);
+        newEdge.getLabel().setFontScale(0.2f * scaleFactor);
         newEdge.setWidth(127 * scaleFactor);
         newEdge.setHeight(46 * scaleFactor);
         newEdge.setPosition(80f * scaleFactor - newEdge.getWidth() / 2f, newVertex.getY() - 71 * scaleFactor);
         stage.addActor(newEdge);
-        save.getLabel().setFontScale(0.6f * scaleFactor);
+        save.getLabel().setFontScale(0.2f * scaleFactor);
         save.setWidth(127 * scaleFactor);
         save.setHeight(46 * scaleFactor);
         save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
         stage.addActor(save);
-        saveAs.getLabel().setFontScale(0.6f * scaleFactor);
+        saveAs.getLabel().setFontScale(0.2f * scaleFactor);
         saveAs.setWidth(127 * scaleFactor);
         saveAs.setHeight(46 * scaleFactor);
         saveAs.setPosition(80f * scaleFactor - saveAs.getWidth() / 2f, save.getY() - 71 * scaleFactor);
         stage.addActor(saveAs);
-        finish.getLabel().setFontScale(0.6f * scaleFactor);
+        finish.getLabel().setFontScale(0.2f * scaleFactor);
         finish.setWidth(127 * scaleFactor);
         finish.setHeight(46 * scaleFactor);
         finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, saveAs.getY() - 71 * scaleFactor);
         stage.addActor(finish);
-        mainMenu.getLabel().setFontScale(0.6f * scaleFactor);
+        mainMenu.getLabel().setFontScale(0.2f * scaleFactor);
         mainMenu.setWidth(127 * scaleFactor);
         mainMenu.setHeight(46 * scaleFactor);
         mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
         stage.addActor(mainMenu);
-        viewHotkeys.getLabel().setFontScale(0.6f * scaleFactor);
+        viewHotkeys.getLabel().setFontScale(0.2f * scaleFactor);
         viewHotkeys.setWidth(127 * scaleFactor);
         viewHotkeys.setHeight(46 * scaleFactor);
         viewHotkeys.setPosition(80f * scaleFactor - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);

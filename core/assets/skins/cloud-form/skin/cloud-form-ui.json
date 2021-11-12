@@ -1,11 +1,7 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	font: {
-		file: Segoe UI.fnt
-	}
-	title: {
-		file: Segoe UI.fnt
-	}
+	font: "font",
+	title: "font"
 }
 com.badlogic.gdx.graphics.Color: {
 	black: {
