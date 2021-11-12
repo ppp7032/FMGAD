@@ -42,6 +42,17 @@ public class Graph {
         }
     }
 
+    public boolean areVerticesConnected(int vertex1,int vertex2) {
+        boolean connected = false;
+        for(int a=0;a<adjacencyList.get(vertex1).size(); a++){
+            if(adjacencyList.get(vertex1).get(a)[0]==vertex2){
+                connected=true;
+                break;
+            }
+        }
+        return connected;
+    }
+
     public void addVertex(float x, float y){
         adjacencyList.add(new ArrayList<int[]>());
         coordinates.add(new float[]{x, y});

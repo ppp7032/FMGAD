@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class NewGraph implements Screen {
-    private final Stage stage = new Stage();
+    public final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final float scaleFactor = Gdx.graphics.getHeight() / 720f;
     private final Graph graph = new Graph();
@@ -23,9 +23,9 @@ public class NewGraph implements Screen {
     private int vertexBeingMoved = -1;
 
     public NewGraph(final float scaleFactor) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
-        Skin skin = new Skin(Gdx.files.internal("skins/flat-earth/skin/flat-earth-ui.json"));
-        TextButton newVertex = new TextButton("New Node", skin, "default");
-        TextButton newEdge = new TextButton("New Arc", skin, "default");
+        Skin skin = new Skin(Gdx.files.internal("skins/cloud-form/skin/cloud-form-ui.json"));
+        TextButton newVertex = new TextButton("New Vertex", skin, "default");
+        TextButton newEdge = new TextButton("New Edge", skin, "default");
         TextButton save = new TextButton("Save", skin, "default");
         TextButton saveAs = new TextButton("Save As", skin, "default");
         TextButton finish = new TextButton("Finish", skin, "default");
@@ -43,9 +43,11 @@ public class NewGraph implements Screen {
                         if (clickedVertex != -1) {
                             if (firstVertex == -1) {
                                 firstVertex = clickedVertex;
-                            } else {//Todo- make sure edge being added doesn't connect a vertex to itself, or vertices that are already connected, and add a dialogue with a textfield to allow inputting edge weight.
-                                graph.addUndirectedEdge(firstVertex,clickedVertex,0);
-                                firstVertex = -1;
+                            } else {//Todo- add a dialogue with a textfield to allow inputting edge weight.
+                                if(firstVertex!=clickedVertex && !graph.areVerticesConnected(firstVertex,clickedVertex)) {
+                                    graph.addUndirectedEdge(firstVertex, clickedVertex, 0);
+                                    firstVertex = -1;
+                                }
                             }
                         }
                         if (firstVertex == -1) {
@@ -81,37 +83,37 @@ public class NewGraph implements Screen {
                 }
             }
         });
-        newVertex.getLabel().setFontScale(0.75f * scaleFactor);
+        newVertex.getLabel().setFontScale(0.6f * scaleFactor);
         newVertex.setWidth(127 * scaleFactor);
         newVertex.setHeight(46 * scaleFactor);
         newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, 652f * scaleFactor);
         stage.addActor(newVertex);
-        newEdge.getLabel().setFontScale(0.75f * scaleFactor);
+        newEdge.getLabel().setFontScale(0.6f * scaleFactor);
         newEdge.setWidth(127 * scaleFactor);
         newEdge.setHeight(46 * scaleFactor);
         newEdge.setPosition(80f * scaleFactor - newEdge.getWidth() / 2f, newVertex.getY() - 71 * scaleFactor);
         stage.addActor(newEdge);
-        save.getLabel().setFontScale(0.75f * scaleFactor);
+        save.getLabel().setFontScale(0.6f * scaleFactor);
         save.setWidth(127 * scaleFactor);
         save.setHeight(46 * scaleFactor);
         save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
         stage.addActor(save);
-        saveAs.getLabel().setFontScale(0.75f * scaleFactor);
+        saveAs.getLabel().setFontScale(0.6f * scaleFactor);
         saveAs.setWidth(127 * scaleFactor);
         saveAs.setHeight(46 * scaleFactor);
         saveAs.setPosition(80f * scaleFactor - saveAs.getWidth() / 2f, save.getY() - 71 * scaleFactor);
         stage.addActor(saveAs);
-        finish.getLabel().setFontScale(0.75f * scaleFactor);
+        finish.getLabel().setFontScale(0.6f * scaleFactor);
         finish.setWidth(127 * scaleFactor);
         finish.setHeight(46 * scaleFactor);
         finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, saveAs.getY() - 71 * scaleFactor);
         stage.addActor(finish);
-        mainMenu.getLabel().setFontScale(0.75f * scaleFactor);
+        mainMenu.getLabel().setFontScale(0.6f * scaleFactor);
         mainMenu.setWidth(127 * scaleFactor);
         mainMenu.setHeight(46 * scaleFactor);
         mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
         stage.addActor(mainMenu);
-        viewHotkeys.getLabel().setFontScale(0.75f * scaleFactor);
+        viewHotkeys.getLabel().setFontScale(0.6f * scaleFactor);
         viewHotkeys.setWidth(127 * scaleFactor);
         viewHotkeys.setHeight(46 * scaleFactor);
         viewHotkeys.setPosition(80f * scaleFactor - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
