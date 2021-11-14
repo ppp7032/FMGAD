@@ -3,6 +3,7 @@ package com.graph.algorithms;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,38 +16,50 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class MainMenu implements Screen {
     private final Stage stage = new Stage();
 
-    public MainMenu(final float scaleFactor) {
+    public MainMenu() {
         Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
         background.setHeight(Gdx.graphics.getHeight());
         background.setWidth(Gdx.graphics.getWidth());
         stage.addActor(background);
-        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/OpenDyslexic/OpenDyslexic-Bold.ttf",40f*scaleFactor,2)));
-        Skin skin=Text.generateSkin(Text.generateFont("fonts/OpenDyslexic/OpenDyslexic-Bold.ttf",26f*scaleFactor,0));
+        float scaleFactor = Gdx.graphics.getHeight() / 720f;
+        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, 2), Color.WHITE));
+        Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0));
         TextButton newGraph = new TextButton("New Graph", skin, "default");
         TextButton loadGraph = new TextButton("Load Graph", skin, "default");
+        TextButton settings = new TextButton("Settings", skin, "default");
         TextButton exit = new TextButton("Quit", skin, "default");
         newGraph.setWidth(382 * scaleFactor);
         newGraph.setHeight(65 * scaleFactor);
         newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f * scaleFactor);
         loadGraph.setWidth(382 * scaleFactor);
         loadGraph.setHeight(65 * scaleFactor);
-        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), newGraph.getY() - 171 * scaleFactor);
+        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), newGraph.getY() - 126 * scaleFactor);
+        settings.setWidth(382 * scaleFactor);
+        settings.setHeight(65 * scaleFactor);
+        settings.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), loadGraph.getY() - 126 * scaleFactor);
         exit.setWidth(382 * scaleFactor);
         exit.setHeight(65 * scaleFactor);
-        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - exit.getWidth()), loadGraph.getY() - 171 * scaleFactor);
+        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - exit.getWidth()), settings.getY() - 126 * scaleFactor);
         stage.addActor(newGraph);
         stage.addActor(loadGraph);
+        stage.addActor(settings);
         stage.addActor(exit);
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(scaleFactor));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph());
             }
         });
         loadGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Switch to screen where you can load a graph!!
+            }
+        });
+        settings.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
             }
         });
         exit.addListener(new ClickListener() {

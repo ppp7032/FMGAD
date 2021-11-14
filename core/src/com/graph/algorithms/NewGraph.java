@@ -22,8 +22,8 @@ public class NewGraph implements Screen {
     private int firstVertex = -1;
     private int vertexBeingMoved = -1;
 
-    public NewGraph(final float scaleFactor) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
-        Skin skin = Text.generateSkin(Text.generateFont("fonts/OpenDyslexic/OpenDyslexic-Bold.ttf",15f*scaleFactor,0));
+    public NewGraph() { //Todo- Before you can start making a graph, select whether or not it should be a digraph
+        Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
         TextButton newEdge = new TextButton("New Edge", skin, "default");
         TextButton save = new TextButton("Save", skin, "default");
@@ -36,7 +36,7 @@ public class NewGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (mouseInBounds()) {
                     if (newVertexClicked) {
-                        graph.addVertex(x/scaleFactor,y/scaleFactor);
+                        graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
@@ -44,7 +44,7 @@ public class NewGraph implements Screen {
                             if (firstVertex == -1) {
                                 firstVertex = clickedVertex;
                             } else {//Todo- add a dialogue with a textfield to allow inputting edge weight.
-                                if(firstVertex!=clickedVertex && !graph.areVerticesConnected(firstVertex,clickedVertex)) {
+                                if (firstVertex != clickedVertex && !graph.areVerticesConnected(firstVertex, clickedVertex)) {
                                     graph.addUndirectedEdge(firstVertex, clickedVertex, 0);
                                     firstVertex = -1;
                                 }
@@ -64,7 +64,7 @@ public class NewGraph implements Screen {
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(scaleFactor));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
         newVertex.addListener(new ClickListener() {
@@ -132,7 +132,7 @@ public class NewGraph implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(207f / 255f, 226f / 255f, 243f / 255f, 1);
         shapeRenderer.rect(0, 0, 160f * scaleFactor, Gdx.graphics.getHeight());
-        shapeRenderer.setColor(95f / 256f, 96f / 256f, 97f / 256f, 1);
+        shapeRenderer.setColor(0, 0, 0, 1);
         shapeRenderer.rectLine(0, 0, 0, Gdx.graphics.getHeight(), 3 * scaleFactor);
         shapeRenderer.rectLine(0, Gdx.graphics.getHeight(), 160 * scaleFactor, Gdx.graphics.getHeight(), 4 * scaleFactor);
         shapeRenderer.rectLine(160 * scaleFactor, Gdx.graphics.getHeight(), 160 * scaleFactor, 0, 2 * scaleFactor);
@@ -140,7 +140,7 @@ public class NewGraph implements Screen {
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
-                int toVertex = graph.getVertex(a,b);
+                int toVertex = graph.getVertex(a, b);
                 shapeRenderer.rectLine(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, graph.getXCoordinate(toVertex) * scaleFactor, graph.getYCoordinate(toVertex) * scaleFactor, 5 * scaleFactor);
             }
         }

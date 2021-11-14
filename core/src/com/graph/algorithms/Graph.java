@@ -42,55 +42,6 @@ public class Graph {
         }
     }
 
-    public boolean areVerticesConnected(int vertex1,int vertex2) {
-        boolean connected = false;
-        for(int a=0;a<adjacencyList.get(vertex1).size(); a++){
-            if(adjacencyList.get(vertex1).get(a)[0]==vertex2){
-                connected=true;
-                break;
-            }
-        }
-        return connected;
-    }
-
-    public void addVertex(float x, float y){
-        adjacencyList.add(new ArrayList<int[]>());
-        coordinates.add(new float[]{x, y});
-    }
-
-    public void addDirectedEdge(int from, int to, int length){
-        adjacencyList.get(from).add(new int[]{to, length});
-    }
-
-    public void addUndirectedEdge(int vertex1, int vertex2, int length){
-        addDirectedEdge(vertex1,vertex2,length);
-        addDirectedEdge(vertex2,vertex1,length);
-    }
-
-    public int getAdjacencyListSize(){
-        return adjacencyList.size();
-    }
-
-    public float getXCoordinate(int a){
-        return coordinates.get(a)[0];
-    }
-
-    public float getYCoordinate(int a){
-        return coordinates.get(a)[1];
-    }
-
-    public int getNumberOfEdges(int a){
-        return adjacencyList.get(a).size();
-    }
-
-    public int getVertex(int a, int b){
-        return adjacencyList.get(a).get(b)[0];
-    }
-
-    public void setCoordinates(int index, float[] element){
-        coordinates.set(index, element);
-    }
-
     public static int findSmallestNonPermanentTemporaryLabel(ArrayList<ArrayList<Integer>> temporaryLabels,
                                                              int[] orderLabels) {
         int smallest = -1;
@@ -105,6 +56,55 @@ public class Graph {
             }
         }
         return smallest;
+    }
+
+    public boolean areVerticesConnected(int vertex1, int vertex2) {
+        boolean connected = false;
+        for (int a = 0; a < adjacencyList.get(vertex1).size(); a++) {
+            if (adjacencyList.get(vertex1).get(a)[0] == vertex2) {
+                connected = true;
+                break;
+            }
+        }
+        return connected;
+    }
+
+    public void addVertex(float x, float y) {
+        adjacencyList.add(new ArrayList<int[]>());
+        coordinates.add(new float[]{x, y});
+    }
+
+    public void addDirectedEdge(int from, int to, int length) {
+        adjacencyList.get(from).add(new int[]{to, length});
+    }
+
+    public void addUndirectedEdge(int vertex1, int vertex2, int length) {
+        addDirectedEdge(vertex1, vertex2, length);
+        addDirectedEdge(vertex2, vertex1, length);
+    }
+
+    public int getAdjacencyListSize() {
+        return adjacencyList.size();
+    }
+
+    public float getXCoordinate(int a) {
+        return coordinates.get(a)[0];
+    }
+
+    public float getYCoordinate(int a) {
+        return coordinates.get(a)[1];
+    }
+
+    public int getNumberOfEdges(int a) {
+        return adjacencyList.get(a).size();
+    }
+
+    public int getVertex(int a, int b) {
+        return adjacencyList.get(a).get(b)[0];
+    }
+
+    public void setCoordinates(int index, float[] element) {
+        coordinates.set(index, element);
     }
 
     public DijkstraResult dijkstra(int startNode, int endNode) {
