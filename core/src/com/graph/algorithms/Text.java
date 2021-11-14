@@ -1,7 +1,6 @@
 package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -17,9 +16,9 @@ public class Text extends Actor {
     private final float height;
     private final float x;
     private final float y;
-    private final Color color;
+    private final float[] colour;
 
-    public Text(String input, float x, float y, BitmapFont font, Color color) {
+    public Text(String input, float x, float y, BitmapFont font, float[] colour) {
         this.font = font;
         toPrint = input;
         GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
@@ -27,7 +26,7 @@ public class Text extends Actor {
         height = glyphLayout.height;
         this.x = x;
         this.y = y;
-        this.color = color;
+        this.colour = colour;
     }
 
     public static BitmapFont generateFont(String fontName, float size, int borderWidth) {
@@ -35,11 +34,11 @@ public class Text extends Actor {
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = (int) size;
         parameter.borderWidth = borderWidth;
-        parameter.color = Color.WHITE;
-        /*parameter.shadowOffsetX = 3;
+        /*parameter.color = Color.WHITE;
+        parameter.shadowOffsetX = 3;
         parameter.shadowOffsetY = 3;
         parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);*/
-        BitmapFont font = generator.generateFont(parameter); // font size 24 pixels
+        BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
         return font;
     }
@@ -54,7 +53,7 @@ public class Text extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        font.setColor(color);
+        font.setColor(colour[0], colour[1], colour[2], colour[3]);
         font.draw(batch, toPrint, x - width / 2, y - height / 2);
     }
 

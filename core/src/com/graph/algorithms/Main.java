@@ -33,9 +33,9 @@ public class Main extends Game {
                 break;
         }
         setScreen(new MainMenu());
-        Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph2"));
+        /*Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph2"));
         DijkstraResult digraphResult = digraph.dijkstra(2, 4);
         Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph2"));
-        JarnikResult jarnikResult = graph1.jarnik();
+        JarnikResult jarnikResult = graph1.jarnik();*/
     }
 }

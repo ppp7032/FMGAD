@@ -4,9 +4,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,9 +26,9 @@ public class Settings implements Screen {
     private final SpriteBatch spriteBatch = new SpriteBatch();
 
     public Settings() {
-        Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
-        final SelectBox<String> resolutionBox = new SelectBox<>(skin);
-        final SelectBox<String> fullscreenBox = new SelectBox<>(skin);
+        Skin labelSkin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
+        final SelectBox<String> resolutionBox = new SelectBox<>(labelSkin);
+        final SelectBox<String> fullscreenBox = new SelectBox<>(labelSkin);
         Skin buttonSkin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
         TextButton back = new TextButton("Back", buttonSkin, "default");
         TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -79,8 +79,10 @@ public class Settings implements Screen {
         apply.setX(back.getX() + 325 * scaleFactor);
         stage.addActor(apply);
         stage.addActor(back);
-        stage.addActor(new Text("Resolution", 490 * scaleFactor, 505 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0), Color.BLACK));
-        stage.addActor(new Text("Display Mode", 502 * scaleFactor, 444 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0), Color.BLACK));
+        BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        stage.addActor(new Text("Resolution", 490 * scaleFactor, 505 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Display Mode", 502 * scaleFactor, 444 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Settings", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
         resolutionBox.setX(790 * scaleFactor);
         resolutionBox.setY(479 * scaleFactor);
         resolutionBox.setWidth(55 * scaleFactor);
@@ -91,7 +93,6 @@ public class Settings implements Screen {
         fullscreenBox.setHeight(24 * scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
         fullscreenBox.setItems("Fullscreen", "Windowed");
-        //fullscreenBox.setSelectedIndex(1);
         int[] config = Settings.readFromConfigFile();
         fullscreenBox.setSelectedIndex(config[1]);
         resolutionBox.setSelectedIndex(config[0]);
@@ -179,11 +180,11 @@ public class Settings implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    public void drawRectangleWithBorder(float x, float y, float width, float height, float borderWidth, Color color) {
+    public void drawRectangleWithBorder(float x, float y, float width, float height, float borderWidth, float[] colour) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(color);
+        shapeRenderer.setColor(colour[0], colour[1], colour[2], colour[3]);
         shapeRenderer.rect(x, y, width, height);
-        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.setColor(0, 0, 0, 1);
         shapeRenderer.rectLine(x, y, x + width, y, borderWidth);
         shapeRenderer.rectLine(x, y, x, y + height, borderWidth);
         shapeRenderer.rectLine(x, y + height, x + width, y + height, borderWidth);
@@ -204,14 +205,14 @@ public class Settings implements Screen {
         float height = 424 * scaleFactor;
         float x = (Gdx.graphics.getWidth() - width) / 2;
         float y = (Gdx.graphics.getHeight() - height) / 2;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new Color(207f / 255f, 226f / 255f, 243f / 255f, 1));
+        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         x = 414 * scaleFactor;
         y = 468 * scaleFactor;
         width = 452 * scaleFactor;
         height = 46 * scaleFactor;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new Color(1f, 229f / 255f, 153f / 255f, 1));
+        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
         y -= 61 * scaleFactor;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new Color(1f, 229f / 255f, 153f / 255f, 1));
+        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
         stage.act();
         stage.draw();
         //stage.getActors().get(0).setX(stage.getActors().get(0).getX()+1);
@@ -240,5 +241,8 @@ public class Settings implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        shapeRenderer.dispose();
+        background.dispose();
+        spriteBatch.dispose();
     }
 }
