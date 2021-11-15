@@ -107,9 +107,9 @@ public class Graph {
         coordinates.set(index, element);
     }
 
-    public DijkstraResult dijkstra(int startNode, int endNode) {
-        String[] pathsToEachNode = new String[adjacencyList.size()];
-        pathsToEachNode[startNode] = Integer.toString(startNode);
+    public DijkstraResult dijkstra(int startVertex, int endVertex) {
+        String[] pathsToEachVertex = new String[adjacencyList.size()];
+        pathsToEachVertex[startVertex] = Integer.toString(startVertex);
         int[] orderLabels = new int[adjacencyList.size()];
         int[] permanentLabels = new int[adjacencyList.size()];
         ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
@@ -118,56 +118,56 @@ public class Graph {
             orderLabels[a] = -1;
             temporaryLabels.add(new ArrayList<Integer>());
         }
-        orderLabels[startNode] = 1;
-        permanentLabels[startNode] = 0;
-        return dijkstraRecursion(startNode, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
+        orderLabels[startVertex] = 1;
+        permanentLabels[startVertex] = 0;
+        return dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
-    public DijkstraResult dijkstraRecursion(int currentNode, int endNode, String[] pathsToEachNode, int[] orderLabels,
+    public DijkstraResult dijkstraRecursion(int currentVertex, int endVertex, String[] pathsToEachVertex, int[] orderLabels,
                                             int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
-        for (int a = 0; a < adjacencyList.get(currentNode).size(); a++) {
-            int edgeTo = adjacencyList.get(currentNode).get(a)[0];
-            int edgeWeight = adjacencyList.get(currentNode).get(a)[1];
-            if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentNode] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
-                temporaryLabels.get(edgeTo).add(permanentLabels[currentNode] + edgeWeight);
-                pathsToEachNode[edgeTo] = pathsToEachNode[currentNode] + edgeTo;
+        for (int a = 0; a < adjacencyList.get(currentVertex).size(); a++) {
+            int edgeTo = adjacencyList.get(currentVertex).get(a)[0];
+            int edgeWeight = adjacencyList.get(currentVertex).get(a)[1];
+            if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentVertex] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
+                temporaryLabels.get(edgeTo).add(permanentLabels[currentVertex] + edgeWeight);
+                pathsToEachVertex[edgeTo] = pathsToEachVertex[currentVertex] + edgeTo;
             }
         }
         int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
         permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
-        orderLabels[smallest] = orderLabels[currentNode] + 1;
-        if (permanentLabels[endNode] != -1) {
-            return new DijkstraResult(pathsToEachNode[endNode], permanentLabels[endNode]);
+        orderLabels[smallest] = orderLabels[currentVertex] + 1;
+        if (permanentLabels[endVertex] != -1) {
+            return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
         }
-        return dijkstraRecursion(smallest, endNode, pathsToEachNode, orderLabels, permanentLabels, temporaryLabels);
+        return dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
     public JarnikResult jarnik() {
         JarnikResult jarnikResult = new JarnikResult();
-        ArrayList<Integer> includedNodes = new ArrayList<>();
-        includedNodes.add(0);
-        jarnikResult = jarnikRecursion(jarnikResult, includedNodes);
+        ArrayList<Integer> includedVertices = new ArrayList<>();
+        includedVertices.add(0);
+        jarnikResult = jarnikRecursion(jarnikResult, includedVertices);
         return jarnikResult;
     }
 
-    public JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedNodes) {
-        int[] smallestArc = new int[]{-1, -1, -1}; // {from,to,weight}
-        for (int a = 0; a < includedNodes.size(); a++) {
+    public JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedVertices) {
+        int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
+        for (int a = 0; a < includedVertices.size(); a++) {
             for (int b = 0; b < adjacencyList.get(a).size(); b++) {
-                int edgeTo = adjacencyList.get(includedNodes.get(a)).get(b)[0];
-                int edgeWeight = adjacencyList.get(includedNodes.get(a)).get(b)[1];
-                if (!includedNodes.contains(edgeTo) && (smallestArc[0] == -1 || edgeWeight < smallestArc[2])) {
-                    smallestArc[0] = includedNodes.get(a);
-                    smallestArc[1] = edgeTo;
-                    smallestArc[2] = edgeWeight;
+                int edgeTo = adjacencyList.get(includedVertices.get(a)).get(b)[0];
+                int edgeWeight = adjacencyList.get(includedVertices.get(a)).get(b)[1];
+                if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {
+                    smallestEdge[0] = includedVertices.get(a);
+                    smallestEdge[1] = edgeTo;
+                    smallestEdge[2] = edgeWeight;
                 }
             }
         }
-        jarnikResult.addEdge(smallestArc);
-        includedNodes.add(smallestArc[1]);
-        jarnikResult.addToTreeWeight(smallestArc[2]);
-        if (includedNodes.size() < adjacencyList.size()) {
-            return jarnikRecursion(jarnikResult, includedNodes);
+        jarnikResult.addEdge(smallestEdge);
+        includedVertices.add(smallestEdge[1]);
+        jarnikResult.addToTreeWeight(smallestEdge[2]);
+        if (includedVertices.size() < adjacencyList.size()) {
+            return jarnikRecursion(jarnikResult, includedVertices);
         }
         return jarnikResult;
     }

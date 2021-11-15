@@ -21,7 +21,7 @@ public class MainMenu implements Screen {
         background.setWidth(Gdx.graphics.getWidth());
         stage.addActor(background);
         float scaleFactor = Gdx.graphics.getHeight() / 720f;
-        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, 2), new float[]{1, 1, 1, 1}));
+        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int)scaleFactor), new float[]{1, 1, 1, 1}));
         Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0));
         TextButton newGraph = new TextButton("New Graph", skin, "default");
         TextButton loadGraph = new TextButton("Load Graph", skin, "default");
