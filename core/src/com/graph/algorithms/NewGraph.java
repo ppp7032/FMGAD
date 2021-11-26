@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -25,7 +26,13 @@ public class NewGraph implements Screen {
 
     public NewGraph() { //Todo- Before you can start making a graph, select whether or not it should be a digraph
         Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
-        final TextField name=new TextField("",skin);
+        FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
+        int counter = 1;
+        while (file.exists()) {
+            file = Gdx.files.local("graphs/New Graph (" + counter + ").graph2");
+            counter++;
+        }
+        final TextField name = new TextField(file.name().substring(0, file.name().lastIndexOf(".")), skin);
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
         TextButton newEdge = new TextButton("New Edge", skin, "default");
         TextButton save = new TextButton("Save", skin, "default");
@@ -91,13 +98,13 @@ public class NewGraph implements Screen {
                 graph.saveGraph(name.getText());
             }
         });
-        name.setWidth(124*scaleFactor);
-        name.setHeight(46*scaleFactor);
-        name.setPosition(80f * scaleFactor - name.getWidth() / 2f,652f * scaleFactor);
+        name.setWidth(124 * scaleFactor);
+        name.setHeight(46 * scaleFactor);
+        name.setPosition(80f * scaleFactor - name.getWidth() / 2f, 652f * scaleFactor);
         stage.addActor(name);
         newVertex.setWidth(127 * scaleFactor);
         newVertex.setHeight(46 * scaleFactor);
-        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, name.getY()-71*scaleFactor);
+        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, name.getY() - 71 * scaleFactor);
         stage.addActor(newVertex);
         newEdge.setWidth(127 * scaleFactor);
         newEdge.setHeight(46 * scaleFactor);
