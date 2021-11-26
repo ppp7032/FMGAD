@@ -1,5 +1,6 @@
 package com.graph.algorithms;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 import java.util.ArrayList;
@@ -8,16 +9,21 @@ import java.util.Scanner;
 public class Graph {
     private final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
     private final ArrayList<float[]> coordinates = new ArrayList<>();
+    private final boolean digraph;
 
-    public Graph() {
+    public Graph(Boolean digraph){
+        this.digraph=digraph;
     }
 
     public Graph(FileHandle graph) {
         Scanner scanner = new Scanner(graph.read());
+        String firstLine = scanner.nextLine();
+        int currentIndex=firstLine.indexOf('=');
+        digraph=Boolean.parseBoolean(firstLine.substring(currentIndex+1));
         while (scanner.hasNext()) {
             String currentLine = scanner.nextLine();
-            ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket
-            int currentIndex = currentLine.indexOf('[');
+            ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket, [3] is open bracket, [4] is close bracket
+            currentIndex = currentLine.indexOf('[');
             occurrences.add(new ArrayList<Integer>());
             while (currentIndex != -1) {
                 occurrences.get(0).add(currentIndex);
@@ -35,10 +41,42 @@ public class Graph {
                 occurrences.get(2).add(currentIndex);
                 currentIndex = currentLine.indexOf(']', currentIndex + 1);
             }
-            adjacencyList.add(new ArrayList<int[]>());
-            for (int a = 0; a < occurrences.get(0).size(); a++) {
-                adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a) + 1, occurrences.get(2).get(a)))});
+            currentIndex = currentLine.indexOf('(');
+            occurrences.add(new ArrayList<Integer>());
+            while (currentIndex != -1) {
+                occurrences.get(3).add(currentIndex);
+                currentIndex = currentLine.indexOf('(', currentIndex + 1);
             }
+            currentIndex = currentLine.indexOf(')');
+            occurrences.add(new ArrayList<Integer>());
+            while (currentIndex != -1) {
+                occurrences.get(4).add(currentIndex);
+                currentIndex = currentLine.indexOf(')', currentIndex + 1);
+            }
+            adjacencyList.add(new ArrayList<int[]>());
+            coordinates.add(new float[]{Float.parseFloat(currentLine.substring(occurrences.get(3).get(0) + 1, occurrences.get(1).get(0))), Float.parseFloat(currentLine.substring(occurrences.get(1).get(0) + 1, occurrences.get(4).get(0)))});
+            for (int a = 0; a < occurrences.get(0).size(); a++) {
+                adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a+1))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a+1) + 1, occurrences.get(2).get(a)))});
+            }
+        }
+    }
+
+    public boolean isDigraph(){
+        return digraph;
+    }
+
+    public void saveGraph(String fileName){
+        FileHandle file = Gdx.files.local("graphs/"+fileName+".graph2");
+        if(file.exists()){
+            file.delete();
+        }
+        for(int a=0;a<adjacencyList.size();a++){
+            StringBuilder line= new StringBuilder("(" + coordinates.get(a)[0] + "," + coordinates.get(a)[1] + ")");
+            for(int b=0;b<adjacencyList.get(a).size();b++){
+                line.append(" [").append(adjacencyList.get(a).get(b)[0]).append(",").append(adjacencyList.get(a).get(b)[1]).append("]");
+            }
+
+            file.writeString(line+"\n",true);
         }
     }
 

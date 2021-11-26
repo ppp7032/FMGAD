@@ -10,13 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class NewGraph implements Screen {
     public final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final float scaleFactor = Gdx.graphics.getHeight() / 720f;
-    private final Graph graph = new Graph();
+    private final Graph graph = new Graph(false);
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
@@ -24,10 +25,11 @@ public class NewGraph implements Screen {
 
     public NewGraph() { //Todo- Before you can start making a graph, select whether or not it should be a digraph
         Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final TextField name=new TextField("",skin);
         TextButton newVertex = new TextButton("New Vertex", skin, "default");
         TextButton newEdge = new TextButton("New Edge", skin, "default");
         TextButton save = new TextButton("Save", skin, "default");
-        TextButton saveAs = new TextButton("Save As", skin, "default");
+        //TextButton saveAs = new TextButton("Save As", skin, "default");
         TextButton finish = new TextButton("Finish", skin, "default");
         TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
@@ -83,9 +85,19 @@ public class NewGraph implements Screen {
                 }
             }
         });
+        save.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                graph.saveGraph(name.getText());
+            }
+        });
+        name.setWidth(124*scaleFactor);
+        name.setHeight(46*scaleFactor);
+        name.setPosition(80f * scaleFactor - name.getWidth() / 2f,652f * scaleFactor);
+        stage.addActor(name);
         newVertex.setWidth(127 * scaleFactor);
         newVertex.setHeight(46 * scaleFactor);
-        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, 652f * scaleFactor);
+        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, name.getY()-71*scaleFactor);
         stage.addActor(newVertex);
         newEdge.setWidth(127 * scaleFactor);
         newEdge.setHeight(46 * scaleFactor);
@@ -95,13 +107,13 @@ public class NewGraph implements Screen {
         save.setHeight(46 * scaleFactor);
         save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
         stage.addActor(save);
-        saveAs.setWidth(127 * scaleFactor);
+        /*saveAs.setWidth(127 * scaleFactor);
         saveAs.setHeight(46 * scaleFactor);
         saveAs.setPosition(80f * scaleFactor - saveAs.getWidth() / 2f, save.getY() - 71 * scaleFactor);
-        stage.addActor(saveAs);
+        stage.addActor(saveAs);*/
         finish.setWidth(127 * scaleFactor);
         finish.setHeight(46 * scaleFactor);
-        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, saveAs.getY() - 71 * scaleFactor);
+        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, save.getY() - 71 * scaleFactor);
         stage.addActor(finish);
         mainMenu.setWidth(127 * scaleFactor);
         mainMenu.setHeight(46 * scaleFactor);
