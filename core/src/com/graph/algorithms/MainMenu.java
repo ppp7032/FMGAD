@@ -46,7 +46,7 @@ public class MainMenu implements Screen {
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(true));
             }
         });
         loadGraph.addListener(new ClickListener() {

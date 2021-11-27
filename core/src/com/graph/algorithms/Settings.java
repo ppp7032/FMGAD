@@ -175,21 +175,21 @@ public class Settings implements Screen {
         file.writeString("resolution: " + resolution + "\nfullscreen: " + fullscreen, false);
     }
 
+    public static void drawRectangleWithBorder(ShapeRenderer renderer, float x, float y, float width, float height, float borderWidth, float[] colour) {
+        renderer.begin(ShapeRenderer.ShapeType.Filled);
+        renderer.setColor(colour[0], colour[1], colour[2], colour[3]);
+        renderer.rect(x, y, width, height);
+        renderer.setColor(0, 0, 0, 1);
+        renderer.rectLine(x, y, x + width, y, borderWidth);
+        renderer.rectLine(x, y, x, y + height, borderWidth);
+        renderer.rectLine(x, y + height, x + width, y + height, borderWidth);
+        renderer.rectLine(x + width, y, x + width, y + height, borderWidth);
+        renderer.end();
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-    }
-
-    public void drawRectangleWithBorder(float x, float y, float width, float height, float borderWidth, float[] colour) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(colour[0], colour[1], colour[2], colour[3]);
-        shapeRenderer.rect(x, y, width, height);
-        shapeRenderer.setColor(0, 0, 0, 1);
-        shapeRenderer.rectLine(x, y, x + width, y, borderWidth);
-        shapeRenderer.rectLine(x, y, x, y + height, borderWidth);
-        shapeRenderer.rectLine(x, y + height, x + width, y + height, borderWidth);
-        shapeRenderer.rectLine(x + width, y, x + width, y + height, borderWidth);
-        shapeRenderer.end();
     }
 
     @Override
@@ -205,14 +205,14 @@ public class Settings implements Screen {
         float height = 424 * scaleFactor;
         float x = (Gdx.graphics.getWidth() - width) / 2;
         float y = (Gdx.graphics.getHeight() - height) / 2;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         x = 414 * scaleFactor;
         y = 468 * scaleFactor;
         width = 452 * scaleFactor;
         height = 46 * scaleFactor;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
+        drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
         y -= 61 * scaleFactor;
-        drawRectangleWithBorder(x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
+        drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
         stage.act();
         stage.draw();
         //stage.getActors().get(0).setX(stage.getActors().get(0).getX()+1);

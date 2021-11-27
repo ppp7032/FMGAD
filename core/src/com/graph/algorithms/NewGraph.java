@@ -18,13 +18,14 @@ public class NewGraph implements Screen {
     public final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final float scaleFactor = Gdx.graphics.getHeight() / 720f;
-    private final Graph graph = new Graph(false);
+    private final Graph graph;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
     private int vertexBeingMoved = -1;
 
-    public NewGraph() { //Todo- Before you can start making a graph, select whether or not it should be a digraph
+    public NewGraph(final Boolean digraphStatus) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
+        graph = new Graph(digraphStatus);
         Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
         int counter = 1;
@@ -54,7 +55,11 @@ public class NewGraph implements Screen {
                                 firstVertex = clickedVertex;
                             } else {//Todo- add a dialogue with a textfield to allow inputting edge weight.
                                 if (firstVertex != clickedVertex && !graph.areVerticesConnected(firstVertex, clickedVertex)) {
-                                    graph.addUndirectedEdge(firstVertex, clickedVertex, 0);
+                                    if (digraphStatus) {
+                                        graph.addDirectedEdge(firstVertex, clickedVertex, 0);
+                                    } else {
+                                        graph.addUndirectedEdge(firstVertex, clickedVertex, 0);
+                                    }
                                     firstVertex = -1;
                                 }
                             }
@@ -132,6 +137,26 @@ public class NewGraph implements Screen {
         stage.addActor(viewHotkeys);
     }
 
+    public static float[] rotatePointAboutPoint(float[] point, float[] centre, float angle) {
+        return new float[]{(float) (Math.cos(angle) * (point[0] - centre[0]) - Math.sin(angle) * (point[1] - centre[1]) + centre[0]), (float) (Math.sin(angle) * (point[0] - centre[0]) + Math.cos(angle) * (point[1] - centre[1]) + centre[1])};
+    }
+
+    public static float[][] triangleMaker(float[] point1, float[] point2, float scaleFactor) {
+        float i1 = (point1[0] + point2[0]) * scaleFactor / 2;
+        float i2 = (point1[1] + point2[1]) * scaleFactor / 2;
+        float L = 23.551f * scaleFactor;
+        float angle = (float) (Math.acos((point2[1] - point1[1]) / Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2))));
+        float y2 = (float) (i2 - L * Math.sin(Math.toRadians(60)) / 3f);
+        float[][] points = new float[][]{{i1, (float) (i2 + 2f * L * Math.sin(Math.toRadians(60)) / 3f)}, {i1 - L / 2, y2}, {i1 + L / 2, y2}};
+        if (point2[0] - point1[0] > 0) {
+            angle *= -1;
+        }
+        for (int c = 0; c < points.length; c++) {
+            points[c] = rotatePointAboutPoint(points[c], new float[]{i1, i2}, angle);
+        }
+        return points;
+    }
+
     public int findVertexBeingClicked() {
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             float mouseX = Gdx.input.getX() / scaleFactor;
@@ -148,23 +173,25 @@ public class NewGraph implements Screen {
     }
 
     public void renderShapes() {
+        Settings.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(207f / 255f, 226f / 255f, 243f / 255f, 1);
-        shapeRenderer.rect(0, 0, 160f * scaleFactor, Gdx.graphics.getHeight());
-        shapeRenderer.setColor(0, 0, 0, 1);
-        shapeRenderer.rectLine(0, 0, 0, Gdx.graphics.getHeight(), 3 * scaleFactor);
-        shapeRenderer.rectLine(0, Gdx.graphics.getHeight(), 160 * scaleFactor, Gdx.graphics.getHeight(), 4 * scaleFactor);
-        shapeRenderer.rectLine(160 * scaleFactor, Gdx.graphics.getHeight(), 160 * scaleFactor, 0, 2 * scaleFactor);
-        shapeRenderer.rectLine(0, 0, 160 * scaleFactor, 0, 2 * scaleFactor);
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
                 int toVertex = graph.getVertex(a, b);
                 shapeRenderer.rectLine(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, graph.getXCoordinate(toVertex) * scaleFactor, graph.getYCoordinate(toVertex) * scaleFactor, 5 * scaleFactor);
+                if (graph.isDigraph()) {
+                    float[][] points = NewGraph.triangleMaker(new float[]{graph.getXCoordinate(a), graph.getYCoordinate(a)}, new float[]{graph.getXCoordinate(toVertex), graph.getYCoordinate(toVertex)}, scaleFactor);
+                    shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
+                }
             }
         }
         if (newEdgeClicked && firstVertex != -1) {
             shapeRenderer.rectLine(graph.getXCoordinate(firstVertex) * scaleFactor, graph.getYCoordinate(firstVertex) * scaleFactor, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 5 * scaleFactor);
+            if (graph.isDigraph()) {
+                float[][] points = NewGraph.triangleMaker(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor}, scaleFactor);
+                shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
+            }
         }
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
