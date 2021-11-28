@@ -44,7 +44,7 @@ public class NewGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (mouseInBounds()) {
+                if (mouseInBounds(scaleFactor)) {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
@@ -141,18 +141,17 @@ public class NewGraph implements Screen {
         return new float[]{(float) (Math.cos(angle) * (point[0] - centre[0]) - Math.sin(angle) * (point[1] - centre[1]) + centre[0]), (float) (Math.sin(angle) * (point[0] - centre[0]) + Math.cos(angle) * (point[1] - centre[1]) + centre[1])};
     }
 
-    public static float[][] triangleMaker(float[] point1, float[] point2, float scaleFactor) {
-        float i1 = (point1[0] + point2[0]) * scaleFactor / 2;
-        float i2 = (point1[1] + point2[1]) * scaleFactor / 2;
-        float L = 23.551f * scaleFactor;
+    public static float[][] arrowHeadGenerator(float[] point1, float[] point2, float scaleFactor) {
+        float[] centreOfMass = new float[]{(point1[0] + point2[0]) * scaleFactor / 2, (point1[1] + point2[1]) * scaleFactor / 2};
+        float sideLength = 23.551f * scaleFactor;
         float angle = (float) (Math.acos((point2[1] - point1[1]) / Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2))));
-        float y2 = (float) (i2 - L * Math.sin(Math.toRadians(60)) / 3f);
-        float[][] points = new float[][]{{i1, (float) (i2 + 2f * L * Math.sin(Math.toRadians(60)) / 3f)}, {i1 - L / 2, y2}, {i1 + L / 2, y2}};
+        float y2 = (float) (centreOfMass[1] - sideLength * Math.sin(Math.toRadians(60)) / 3f);
+        float[][] points = new float[][]{{centreOfMass[0], (float) (centreOfMass[1] + 2f * sideLength * Math.sin(Math.toRadians(60)) / 3f)}, {centreOfMass[0] - sideLength / 2, y2}, {centreOfMass[0] + sideLength / 2, y2}};
         if (point2[0] - point1[0] > 0) {
             angle *= -1;
         }
         for (int c = 0; c < points.length; c++) {
-            points[c] = rotatePointAboutPoint(points[c], new float[]{i1, i2}, angle);
+            points[c] = rotatePointAboutPoint(points[c], centreOfMass, angle);
         }
         return points;
     }
@@ -168,7 +167,7 @@ public class NewGraph implements Screen {
         return -1;
     }
 
-    public boolean mouseInBounds() {
+    public static boolean mouseInBounds(float scaleFactor) {
         return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
@@ -181,7 +180,7 @@ public class NewGraph implements Screen {
                 int toVertex = graph.getVertex(a, b);
                 shapeRenderer.rectLine(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, graph.getXCoordinate(toVertex) * scaleFactor, graph.getYCoordinate(toVertex) * scaleFactor, 5 * scaleFactor);
                 if (graph.isDigraph()) {
-                    float[][] points = NewGraph.triangleMaker(new float[]{graph.getXCoordinate(a), graph.getYCoordinate(a)}, new float[]{graph.getXCoordinate(toVertex), graph.getYCoordinate(toVertex)}, scaleFactor);
+                    float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(a), graph.getYCoordinate(a)}, new float[]{graph.getXCoordinate(toVertex), graph.getYCoordinate(toVertex)}, scaleFactor);
                     shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
                 }
             }
@@ -189,7 +188,7 @@ public class NewGraph implements Screen {
         if (newEdgeClicked && firstVertex != -1) {
             shapeRenderer.rectLine(graph.getXCoordinate(firstVertex) * scaleFactor, graph.getYCoordinate(firstVertex) * scaleFactor, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 5 * scaleFactor);
             if (graph.isDigraph()) {
-                float[][] points = NewGraph.triangleMaker(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor}, scaleFactor);
+                float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor}, scaleFactor);
                 shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
             }
         }
@@ -197,7 +196,7 @@ public class NewGraph implements Screen {
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
         }
-        if (newVertexClicked && mouseInBounds()) {
+        if (newVertexClicked && mouseInBounds(scaleFactor)) {
             shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
         }
         shapeRenderer.end();
@@ -213,13 +212,13 @@ public class NewGraph implements Screen {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
-            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds()) {
+            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds(scaleFactor)) {
                 vertexBeingMoved = findVertexBeingClicked();
             }
         } else {
             vertexBeingMoved = -1;
         }
-        if (vertexBeingMoved != -1 && mouseInBounds()) {
+        if (vertexBeingMoved != -1 && mouseInBounds(scaleFactor)) {
             graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
         }
         renderShapes();

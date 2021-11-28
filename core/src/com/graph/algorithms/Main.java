@@ -34,6 +34,7 @@ public class Main extends Game {
         }
         setScreen(new MainMenu());
         Graph test = new Graph(Gdx.files.internal("graphs/test.graph2"));
+        System.out.println();
         /*Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph2"));
         DijkstraResult digraphResult = digraph.dijkstra(2, 4);
         Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph2"));
