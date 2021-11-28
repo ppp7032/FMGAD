@@ -156,6 +156,10 @@ public class NewGraph implements Screen {
         return points;
     }
 
+    public static boolean mouseInBounds(float scaleFactor) {
+        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+    }
+
     public int findVertexBeingClicked() {
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             float mouseX = Gdx.input.getX() / scaleFactor;
@@ -165,10 +169,6 @@ public class NewGraph implements Screen {
             }
         }
         return -1;
-    }
-
-    public static boolean mouseInBounds(float scaleFactor) {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     public void renderShapes() {
