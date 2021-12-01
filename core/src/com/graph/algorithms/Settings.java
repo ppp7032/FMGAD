@@ -80,7 +80,7 @@ public class Settings implements Screen {
         stage.addActor(apply);
         stage.addActor(back);
         BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        stage.addActor(new Text("Resolution", 490 * scaleFactor, 505 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Windowed Resolution", 543 * scaleFactor, 505 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
         stage.addActor(new Text("Display Mode", 502 * scaleFactor, 444 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
         stage.addActor(new Text("Settings", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
         resolutionBox.setX(790 * scaleFactor);

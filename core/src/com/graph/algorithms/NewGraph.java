@@ -6,9 +6,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
@@ -22,9 +24,10 @@ public class NewGraph implements Screen {
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
+    private int secondVertex=-1;
     private int vertexBeingMoved = -1;
 
-    public NewGraph(final Boolean digraphStatus) { //Todo- Before you can start making a graph, select whether or not it should be a digraph
+    public NewGraph(final Boolean digraphStatus) {
         graph = new Graph(digraphStatus);
         Skin skin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
@@ -34,13 +37,92 @@ public class NewGraph implements Screen {
             counter++;
         }
         final TextField name = new TextField(file.name().substring(0, file.name().lastIndexOf(".")), skin);
-        TextButton newVertex = new TextButton("New Vertex", skin, "default");
-        TextButton newEdge = new TextButton("New Edge", skin, "default");
-        TextButton save = new TextButton("Save", skin, "default");
+        name.setAlignment(1);
+        final TextField edgeWeight=new TextField("0",skin);
+        BitmapFont twenty=Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        edgeWeight.setAlignment(1);
+        edgeWeight.setVisible(false);
+        edgeWeight.setX(757 * scaleFactor);
+        edgeWeight.setY(479 * scaleFactor);
+        edgeWeight.setWidth(88 * scaleFactor);
+        edgeWeight.setHeight(24 * scaleFactor);
+        stage.addActor(edgeWeight);
+        final Text edgeWeightTitle=new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1});
+        edgeWeightTitle.setVisible(false);
+        final Text edgeWeightLabel=new Text("Edge Weight", 490 * scaleFactor, 505 * scaleFactor,twenty , new float[]{0, 0, 0, 1});
+        edgeWeightLabel.setVisible(false);
+        stage.addActor(edgeWeightLabel);
+        stage.addActor(edgeWeightTitle);
+        Skin buttonSkin=Text.generateSkin(twenty);
+        final TextButton back= new TextButton("Back", buttonSkin, "default");
+        final TextButton apply=new TextButton("Apply", buttonSkin, "default");
+
+        back.setVisible(false);
+        apply.setVisible(false);
+        back.setWidth(127 * scaleFactor);
+        back.setHeight(46 * scaleFactor);
+        back.setY(162 * scaleFactor);
+        back.setX(414f * scaleFactor);
+        apply.setWidth(back.getWidth());
+        apply.setHeight(back.getHeight());
+        apply.setY(back.getY());
+        apply.setX(back.getX() + 325 * scaleFactor);
+        stage.addActor(apply);
+        stage.addActor(back);
+
+
+        final TextButton newVertex = new TextButton("New Vertex", skin, "default");
+        final TextButton newEdge = new TextButton("New Edge", skin, "default");
+        final TextButton save = new TextButton("Save", skin, "default");
         //TextButton saveAs = new TextButton("Save As", skin, "default");
-        TextButton finish = new TextButton("Finish", skin, "default");
-        TextButton mainMenu = new TextButton("Main Menu", skin, "default");
-        TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
+        final TextButton finish = new TextButton("Finish", skin, "default");
+        final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
+        final TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                edgeWeight.setVisible(false);
+                edgeWeightTitle.setVisible(false);
+                edgeWeightLabel.setVisible(false);
+                back.setVisible(false);
+                apply.setVisible(false);
+                newVertex.setTouchable(Touchable.enabled);
+                newEdge.setTouchable(Touchable.enabled);
+                save.setTouchable(Touchable.enabled);
+                finish.setTouchable(Touchable.enabled);
+                mainMenu.setTouchable(Touchable.enabled);
+                viewHotkeys.setTouchable(Touchable.enabled);
+                newEdgeClicked = false;
+                firstVertex = -1;
+                secondVertex=-1;
+            }
+        });
+        apply.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if(digraphStatus){
+                    graph.addDirectedEdge(firstVertex,secondVertex,Integer.parseInt(edgeWeight.getText()));
+                }
+                else{
+                    graph.addUndirectedEdge(firstVertex,secondVertex,Integer.parseInt(edgeWeight.getText()));
+                }
+                edgeWeight.setVisible(false);
+                edgeWeightTitle.setVisible(false);
+                edgeWeightLabel.setVisible(false);
+                back.setVisible(false);
+                apply.setVisible(false);
+                newVertex.setTouchable(Touchable.enabled);
+                newEdge.setTouchable(Touchable.enabled);
+                save.setTouchable(Touchable.enabled);
+                finish.setTouchable(Touchable.enabled);
+                mainMenu.setTouchable(Touchable.enabled);
+                viewHotkeys.setTouchable(Touchable.enabled);
+                newEdgeClicked = false;
+                firstVertex = -1;
+                secondVertex=-1;
+                edgeWeight.setText("0");
+            }
+        });
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -53,14 +135,20 @@ public class NewGraph implements Screen {
                         if (clickedVertex != -1) {
                             if (firstVertex == -1) {
                                 firstVertex = clickedVertex;
-                            } else {//Todo- add a dialogue with a textfield to allow inputting edge weight.
+                            } else {
                                 if (firstVertex != clickedVertex && !graph.areVerticesConnected(firstVertex, clickedVertex)) {
-                                    if (digraphStatus) {
-                                        graph.addDirectedEdge(firstVertex, clickedVertex, 0);
-                                    } else {
-                                        graph.addUndirectedEdge(firstVertex, clickedVertex, 0);
-                                    }
-                                    firstVertex = -1;
+                                    secondVertex = clickedVertex;
+                                    edgeWeight.setVisible(true);
+                                    edgeWeightTitle.setVisible(true);
+                                    edgeWeightLabel.setVisible(true);
+                                    back.setVisible(true);
+                                    apply.setVisible(true);
+                                    newVertex.setTouchable(Touchable.disabled);
+                                    newEdge.setTouchable(Touchable.disabled);
+                                    save.setTouchable(Touchable.disabled);
+                                    finish.setTouchable(Touchable.disabled);
+                                    mainMenu.setTouchable(Touchable.disabled);
+                                    viewHotkeys.setTouchable(Touchable.disabled);
                                 }
                             }
                         }
@@ -68,7 +156,7 @@ public class NewGraph implements Screen {
                             newEdgeClicked = false;
                         }
                     }
-                } else if (y / scaleFactor < 350f) {
+                } else if (y / scaleFactor < 350f&&secondVertex==-1) {
                     newVertexClicked = false;
                     newEdgeClicked = false;
                     firstVertex = -1;
@@ -172,7 +260,20 @@ public class NewGraph implements Screen {
     }
 
     public void renderShapes() {
+        shapeRenderer.end();
         Settings.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        if(secondVertex!=-1){
+            float width = 514 * scaleFactor;
+            float height = 424 * scaleFactor;
+            float x = (Gdx.graphics.getWidth() - width) / 2;
+            float y = (Gdx.graphics.getHeight() - height) / 2;
+            Settings.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+            x = 414 * scaleFactor;
+            y = 468 * scaleFactor;
+            width = 452 * scaleFactor;
+            height = 46 * scaleFactor;
+            Settings.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
+        }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
@@ -185,10 +286,17 @@ public class NewGraph implements Screen {
                 }
             }
         }
-        if (newEdgeClicked && firstVertex != -1) {
+        if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
             shapeRenderer.rectLine(graph.getXCoordinate(firstVertex) * scaleFactor, graph.getYCoordinate(firstVertex) * scaleFactor, Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 5 * scaleFactor);
             if (graph.isDigraph()) {
                 float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor}, scaleFactor);
+                shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
+            }
+        }
+        else if(secondVertex!=-1){
+            shapeRenderer.rectLine(graph.getXCoordinate(firstVertex) * scaleFactor, graph.getYCoordinate(firstVertex) * scaleFactor, graph.getXCoordinate(secondVertex), graph.getYCoordinate(secondVertex), 5 * scaleFactor);
+            if (graph.isDigraph()) {
+                float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{graph.getXCoordinate(secondVertex) / scaleFactor, graph.getYCoordinate(secondVertex) / scaleFactor}, scaleFactor);
                 shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
             }
         }
@@ -199,7 +307,6 @@ public class NewGraph implements Screen {
         if (newVertexClicked && mouseInBounds(scaleFactor)) {
             shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
         }
-        shapeRenderer.end();
     }
 
     @Override
