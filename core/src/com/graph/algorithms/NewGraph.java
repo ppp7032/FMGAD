@@ -280,12 +280,7 @@ public class NewGraph implements Screen {
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
-                int toVertex = graph.getVertex(a, b);
-                shapeRenderer.rectLine(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, graph.getXCoordinate(toVertex) * scaleFactor, graph.getYCoordinate(toVertex) * scaleFactor, 5 * scaleFactor);
-                if (graph.isDigraph()) {
-                    float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(a), graph.getYCoordinate(a)}, new float[]{graph.getXCoordinate(toVertex), graph.getYCoordinate(toVertex)}, scaleFactor);
-                    shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
-                }
+                renderEdge(a, graph.getVertex(a, b));
             }
         }
         if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
@@ -295,11 +290,7 @@ public class NewGraph implements Screen {
                 shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
             }
         } else if (secondVertex != -1) {
-            shapeRenderer.rectLine(graph.getXCoordinate(firstVertex) * scaleFactor, graph.getYCoordinate(firstVertex) * scaleFactor, graph.getXCoordinate(secondVertex), graph.getYCoordinate(secondVertex), 5 * scaleFactor);
-            if (graph.isDigraph()) {
-                float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex)}, new float[]{graph.getXCoordinate(secondVertex) / scaleFactor, graph.getYCoordinate(secondVertex) / scaleFactor}, scaleFactor);
-                shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
-            }
+            renderEdge(firstVertex, secondVertex);
         }
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
@@ -307,6 +298,14 @@ public class NewGraph implements Screen {
         }
         if (newVertexClicked && mouseInBounds(scaleFactor)) {
             shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
+        }
+    }
+
+    public void renderEdge(int graph1, int graph2) {
+        shapeRenderer.rectLine(graph.getXCoordinate(graph1) * scaleFactor, graph.getYCoordinate(graph1) * scaleFactor, graph.getXCoordinate(graph2) * scaleFactor, graph.getYCoordinate(graph2) * scaleFactor, 5 * scaleFactor);
+        if (graph.isDigraph()) {
+            float[][] points = NewGraph.arrowHeadGenerator(new float[]{graph.getXCoordinate(graph1), graph.getYCoordinate(graph1)}, new float[]{graph.getXCoordinate(graph2), graph.getYCoordinate(graph2)}, scaleFactor);
+            shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
         }
     }
 
