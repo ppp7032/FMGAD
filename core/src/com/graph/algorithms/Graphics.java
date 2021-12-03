@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class Graphics {
     public static void drawRectangleWithBorder(final ShapeRenderer renderer, final float x, final float y, final float width, final float height, final float borderWidth, final float[] colour) {
-        Color previousColor = new Color(renderer.getColor());
+        final Color previousColor = new Color(renderer.getColor());
         renderer.setColor(colour[0], colour[1], colour[2], colour[3]);
         renderer.rect(x, y, width, height);
         renderer.setColor(0, 0, 0, 1);
