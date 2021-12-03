@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,39 +19,40 @@ public class GraphTypeSelection implements Screen {
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final Stage stage = new Stage();
-    private final float scaleFactor = Gdx.graphics.getHeight() / 720f;
+    private final float scaleFactor = Graphics.findScaleFactor();
 
     public GraphTypeSelection() {
         stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
-        Skin buttonSkin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)));
         TextButton back = new TextButton("Back", buttonSkin, "default");
         TextButton apply = new TextButton("Apply", buttonSkin, "default");
+
+
+        graphType.setX(757 * scaleFactor);
+        graphType.setY(479 * scaleFactor);
+        graphType.setWidth(88 * scaleFactor);
+        graphType.setHeight(24 * scaleFactor);
+        graphType.setItems("Undirected", "Directed");
+
+        back.setWidth(127 * scaleFactor);
+        back.setHeight(46 * scaleFactor);
+        back.setY(162 * scaleFactor);
+        back.setX(414f * scaleFactor);
+
+        apply.setWidth(back.getWidth());
+        apply.setHeight(back.getHeight());
+        apply.setY(back.getY());
+        apply.setX(back.getX() + 325 * scaleFactor);
+
+
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
-        stage.addActor(apply);
-        stage.addActor(back);
-        BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
-        Skin labelSkin = Text.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
-        final SelectBox<String> graphType = new SelectBox<>(labelSkin);
-        graphType.setX(757 * scaleFactor);
-        graphType.setY(479 * scaleFactor);
-        graphType.setWidth(88 * scaleFactor);
-        graphType.setHeight(24 * scaleFactor);
-        graphType.setItems("Undirected", "Directed");
-        stage.addActor(graphType);
+
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -66,6 +66,12 @@ public class GraphTypeSelection implements Screen {
                 }
             }
         });
+
+
+        stage.addActor(graphType);
+        stage.addActor(back);
+        stage.addActor(apply);
+        stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
     }
 
     @Override
@@ -81,19 +87,12 @@ public class GraphTypeSelection implements Screen {
         spriteBatch.begin();
         spriteBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         spriteBatch.end();
-        float width = 514 * scaleFactor;
-        float height = 424 * scaleFactor;
-        float x = (Gdx.graphics.getWidth() - width) / 2;
-        float y = (Gdx.graphics.getHeight() - height) / 2;
-        Settings.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
-        x = 414 * scaleFactor;
-        y = 468 * scaleFactor;
-        width = 452 * scaleFactor;
-        height = 46 * scaleFactor;
-        Settings.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
-
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        Graphics.drawMenu(1, scaleFactor, shapeRenderer);
+        shapeRenderer.end();
         stage.act();
         stage.draw();
+
     }
 
     @Override

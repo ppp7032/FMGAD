@@ -162,8 +162,8 @@ public class Graph {
         return dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
-    public DijkstraResult dijkstraRecursion(int currentVertex, int endVertex, String[] pathsToEachVertex, int[] orderLabels,
-                                            int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
+    private DijkstraResult dijkstraRecursion(int currentVertex, int endVertex, String[] pathsToEachVertex, int[] orderLabels,
+                                             int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
         for (int a = 0; a < adjacencyList.get(currentVertex).size(); a++) {
             int edgeTo = adjacencyList.get(currentVertex).get(a)[0];
             int edgeWeight = adjacencyList.get(currentVertex).get(a)[1];
@@ -189,7 +189,7 @@ public class Graph {
         return jarnikResult;
     }
 
-    public JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedVertices) {
+    private JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedVertices) {
         int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
         for (int a = 0; a < includedVertices.size(); a++) {
             for (int b = 0; b < adjacencyList.get(a).size(); b++) {

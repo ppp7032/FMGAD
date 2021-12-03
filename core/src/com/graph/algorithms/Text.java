@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Text extends Actor {
     private final String toPrint;
@@ -41,14 +39,6 @@ public class Text extends Actor {
         BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
         return font;
-    }
-
-    public static Skin generateSkin(BitmapFont font) {
-        Skin skin = new Skin();
-        skin.add("font", font, BitmapFont.class);
-        skin.addRegions(new TextureAtlas("skins/cloud-form/skin/cloud-form-ui.atlas"));
-        skin.load(Gdx.files.internal("skins/cloud-form/skin/cloud-form-ui.json"));
-        return skin;
     }
 
     @Override
