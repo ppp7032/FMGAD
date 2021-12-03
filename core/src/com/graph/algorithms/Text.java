@@ -42,13 +42,13 @@ public class Text extends Actor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
+    public void draw(final Batch batch, final float parentAlpha) {
         font.setColor(colour[0], colour[1], colour[2], colour[3]);
         font.draw(batch, toPrint, x - width / 2, y - height / 2);
     }
 
     @Override
-    public Actor hit(float x, float y, boolean touchable) {
+    public Actor hit(final float x, final float y, final boolean touchable) {
         return null;
     }
 

@@ -26,14 +26,14 @@ public class Settings implements Screen {
     private final SpriteBatch spriteBatch = new SpriteBatch();
 
     public Settings() {
-        Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
+        final Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
         final SelectBox<String> resolutionBox = new SelectBox<>(labelSkin);
         final SelectBox<String> fullscreenBox = new SelectBox<>(labelSkin);
-        Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
-        TextButton back = new TextButton("Back", buttonSkin, "default");
-        TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        int[] config = Settings.readFromConfigFile();
+        final Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        final TextButton back = new TextButton("Back", buttonSkin, "default");
+        final TextButton apply = new TextButton("Apply", buttonSkin, "default");
+        final BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final int[] config = Settings.readFromConfigFile();
 
 
         resolutionBox.setX(790 * scaleFactor);
@@ -167,7 +167,7 @@ public class Settings implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -185,7 +185,7 @@ public class Settings implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
 
     }
 

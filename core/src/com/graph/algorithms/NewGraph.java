@@ -237,14 +237,14 @@ public class NewGraph implements Screen {
         stage.addActor(viewHotkeys);
     }
 
-    private static boolean mouseInBounds(float scaleFactor) {
+    private static boolean mouseInBounds(final float scaleFactor) {
         return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     private int findVertexBeingClicked() {
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            float mouseX = Gdx.input.getX() / scaleFactor;
-            float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor;
+            final float mouseX = Gdx.input.getX() / scaleFactor;
+            final float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor;
             if (Math.pow(mouseX - graph.getXCoordinate(a), 2) + Math.pow(mouseY - graph.getYCoordinate(a), 2) <= 15 * 15) {
                 return a;
             }
@@ -287,7 +287,7 @@ public class NewGraph implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(final float delta) {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
@@ -308,7 +308,7 @@ public class NewGraph implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(final int width, final int height) {
 
     }
 
