@@ -22,11 +22,10 @@ public class GraphTypeSelection implements Screen {
     private final float scaleFactor = Graphics.findScaleFactor();
 
     public GraphTypeSelection() {
-        stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
-        Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        final Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
         final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)));
-        TextButton back = new TextButton("Back", buttonSkin, "default");
-        TextButton apply = new TextButton("Apply", buttonSkin, "default");
+        final TextButton back = new TextButton("Back", buttonSkin, "default");
+        final TextButton apply = new TextButton("Apply", buttonSkin, "default");
 
 
         graphType.setX(757 * scaleFactor);
@@ -71,6 +70,7 @@ public class GraphTypeSelection implements Screen {
         stage.addActor(graphType);
         stage.addActor(back);
         stage.addActor(apply);
+        stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
         stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
     }
 
@@ -120,5 +120,6 @@ public class GraphTypeSelection implements Screen {
         stage.dispose();
         background.dispose();
         shapeRenderer.dispose();
+        spriteBatch.dispose();
     }
 }

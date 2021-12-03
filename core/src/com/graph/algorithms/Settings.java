@@ -33,6 +33,7 @@ public class Settings implements Screen {
         TextButton back = new TextButton("Back", buttonSkin, "default");
         TextButton apply = new TextButton("Apply", buttonSkin, "default");
         BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        int[] config = Settings.readFromConfigFile();
 
 
         resolutionBox.setX(790 * scaleFactor);
@@ -40,15 +41,14 @@ public class Settings implements Screen {
         resolutionBox.setWidth(55 * scaleFactor);
         resolutionBox.setHeight(24 * scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
+        resolutionBox.setSelectedIndex(config[0]);
 
         fullscreenBox.setX(757 * scaleFactor);
         fullscreenBox.setY(418 * scaleFactor);
         fullscreenBox.setWidth(88 * scaleFactor);
         fullscreenBox.setHeight(24 * scaleFactor);
         fullscreenBox.setItems("Fullscreen", "Windowed");
-        int[] config = Settings.readFromConfigFile();
         fullscreenBox.setSelectedIndex(config[1]);
-        resolutionBox.setSelectedIndex(config[0]);
 
         back.setWidth(127 * scaleFactor);
         back.setHeight(46 * scaleFactor);
@@ -70,30 +70,7 @@ public class Settings implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                switch (fullscreenBox.getSelectedIndex()) {
-                    case 1:
-                        switch (resolutionBox.getSelectedIndex()) {
-                            case 0:
-                                Gdx.graphics.setWindowedMode(3840, 2160);
-                                break;
-                            case 1:
-                                Gdx.graphics.setWindowedMode(2560, 1440);
-                                break;
-                            case 2:
-                                Gdx.graphics.setWindowedMode(1920, 1080);
-                                break;
-                            case 3:
-                                Gdx.graphics.setWindowedMode(1600, 900);
-                                break;
-                            case 4:
-                                Gdx.graphics.setWindowedMode(1280, 720);
-                                break;
-                        }
-                        break;
-                    case 0:
-                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                        break;
-                }
+                Graphics.setDisplayMode(fullscreenBox.getSelectedIndex(),resolutionBox.getSelectedIndex());
                 Settings.writeToConfigFile(new int[]{resolutionBox.getSelectedIndex(), fullscreenBox.getSelectedIndex()});
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
             }
@@ -110,16 +87,16 @@ public class Settings implements Screen {
     }
 
     public static int[] readFromConfigFile() { //return value representing resolution, then value representing display mode
-        Scanner scanner = new Scanner(Gdx.files.internal("config.txt").read());
-        int[] config = new int[2];
+        final Scanner scanner = new Scanner(Gdx.files.internal("config.txt").read());
+        final int[] config = new int[2];
         while (scanner.hasNext()) {
-            String currentLine = scanner.nextLine();
-            int colon = currentLine.indexOf(':');
-            String variable = currentLine.substring(0, colon);
-            String value = currentLine.substring(colon + 2);
-            switch (variable) {
+            final String currentLine = scanner.nextLine();
+            final int colon = currentLine.indexOf(':');
+            final String attribute = currentLine.substring(0, colon);
+            final String field = currentLine.substring(colon + 2);
+            switch (attribute) {
                 case ("resolution"):
-                    switch (value) {
+                    switch (field) {
                         case ("2160p"):
                             config[0] = 0;
                             break;
@@ -138,7 +115,7 @@ public class Settings implements Screen {
                     }
                     break;
                 case ("fullscreen"):
-                    switch (value) {
+                    switch (field) {
                         case ("true"):
                             config[1] = 0;
                             break;
@@ -152,7 +129,7 @@ public class Settings implements Screen {
         return config;
     }
 
-    public static void writeToConfigFile(int[] config) {
+    public static void writeToConfigFile(final int[] config) {
         String resolution = "";
         String fullscreen = "";
         switch (config[0]) {
@@ -180,7 +157,7 @@ public class Settings implements Screen {
                 fullscreen = "false";
                 break;
         }
-        FileHandle file = Gdx.files.local("config.txt");
+        final FileHandle file = Gdx.files.local("config.txt");
         file.writeString("resolution: " + resolution + "\nfullscreen: " + fullscreen, false);
     }
 

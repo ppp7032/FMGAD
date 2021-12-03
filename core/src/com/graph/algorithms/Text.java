@@ -16,10 +16,10 @@ public class Text extends Actor {
     private final float y;
     private final float[] colour;
 
-    public Text(String input, float x, float y, BitmapFont font, float[] colour) {
+    public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour) {
         this.font = font;
         toPrint = input;
-        GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
+        final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
         width = glyphLayout.width;
         height = glyphLayout.height;
         this.x = x;
@@ -27,16 +27,16 @@ public class Text extends Actor {
         this.colour = colour;
     }
 
-    public static BitmapFont generateFont(String fontName, float size, int borderWidth) {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    public static BitmapFont generateFont(final String fontName, final float size, final int borderWidth) {
+        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
+        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = (int) size;
         parameter.borderWidth = borderWidth;
         /*parameter.color = Color.WHITE;
         parameter.shadowOffsetX = 3;
         parameter.shadowOffsetY = 3;
         parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);*/
-        BitmapFont font = generator.generateFont(parameter);
+        final BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
         return font;
     }

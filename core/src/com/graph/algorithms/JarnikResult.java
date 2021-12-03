@@ -6,11 +6,11 @@ public class JarnikResult {
     private final ArrayList<int[]> minimumEdges = new ArrayList<>();
     private int totalTreeWeight = 0;
 
-    public void addEdge(int[] edge) {
+    public void addEdge(final int[] edge) {
         minimumEdges.add(edge);
     }
 
-    public void addToTreeWeight(int a) {
+    public void addToTreeWeight(final int a) {
         totalTreeWeight += a;
     }
 }

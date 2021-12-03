@@ -11,18 +11,18 @@ public class Graph {
     private final ArrayList<float[]> coordinates = new ArrayList<>();
     private final boolean digraph;
 
-    public Graph(Boolean digraph) {
+    public Graph(final Boolean digraph) {
         this.digraph = digraph;
     }
 
-    public Graph(FileHandle graph) {
-        Scanner scanner = new Scanner(graph.read());
-        String firstLine = scanner.nextLine();
+    public Graph(final FileHandle graph) {
+        final Scanner scanner = new Scanner(graph.read());
+        final String firstLine = scanner.nextLine();
         int currentIndex = firstLine.indexOf('=');
         digraph = Boolean.parseBoolean(firstLine.substring(currentIndex + 1));
         while (scanner.hasNext()) {
-            String currentLine = scanner.nextLine();
-            ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket, [3] is open bracket, [4] is close bracket
+            final String currentLine = scanner.nextLine();
+            final ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket, [3] is open bracket, [4] is close bracket
             currentIndex = currentLine.indexOf('[');
             occurrences.add(new ArrayList<Integer>());
             while (currentIndex != -1) {
@@ -61,8 +61,112 @@ public class Graph {
         }
     }
 
-    public static int findSmallestNonPermanentTemporaryLabel(ArrayList<ArrayList<Integer>> temporaryLabels,
-                                                             int[] orderLabels) {
+    public boolean isDigraph() {
+        return digraph;
+    }
+
+    public void saveGraph(final String fileName) {
+        final FileHandle file = Gdx.files.local("graphs/" + fileName + ".graph2");
+        if (file.exists()) {
+            file.delete();
+        }
+        file.writeString("digraph=" + digraph, true);
+        for (int a = 0; a < adjacencyList.size(); a++) {
+            final StringBuilder line = new StringBuilder("(" + coordinates.get(a)[0] + "," + coordinates.get(a)[1] + ")");
+            for (int b = 0; b < adjacencyList.get(a).size(); b++) {
+                line.append(" [").append(adjacencyList.get(a).get(b)[0]).append(",").append(adjacencyList.get(a).get(b)[1]).append("]");
+            }
+
+            file.writeString("\n" + line, true);
+        }
+    }
+
+    public boolean areVerticesConnected(final int vertex1, final int vertex2) {
+        boolean connected = false;
+        for (int a = 0; a < adjacencyList.get(vertex1).size(); a++) {
+            if (adjacencyList.get(vertex1).get(a)[0] == vertex2) {
+                connected = true;
+                break;
+            }
+        }
+        return connected;
+    }
+
+    public void addVertex(final float x, final float y) {
+        adjacencyList.add(new ArrayList<int[]>());
+        coordinates.add(new float[]{x, y});
+    }
+
+    public void addDirectedEdge(final int from, final int to, final int length) {
+        adjacencyList.get(from).add(new int[]{to, length});
+    }
+
+    public void addUndirectedEdge(final int vertex1, final int vertex2, final int length) {
+        addDirectedEdge(vertex1, vertex2, length);
+        addDirectedEdge(vertex2, vertex1, length);
+    }
+
+    public int getAdjacencyListSize() {
+        return adjacencyList.size();
+    }
+
+    public float getXCoordinate(final int a) {
+        return coordinates.get(a)[0];
+    }
+
+    public float getYCoordinate(final int a) {
+        return coordinates.get(a)[1];
+    }
+
+    public int getNumberOfEdges(final int a) {
+        return adjacencyList.get(a).size();
+    }
+
+    public int getVertex(final int a, final int b) {
+        return adjacencyList.get(a).get(b)[0];
+    }
+
+    public void setCoordinates(final int index, final float[] element) {
+        coordinates.set(index, element);
+    }
+
+    public DijkstraResult dijkstra(final int startVertex, final int endVertex) {
+        final String[] pathsToEachVertex = new String[adjacencyList.size()];
+        pathsToEachVertex[startVertex] = Integer.toString(startVertex);
+        final int[] orderLabels = new int[adjacencyList.size()];
+        final int[] permanentLabels = new int[adjacencyList.size()];
+        final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
+        for (int a = 0; a < adjacencyList.size(); a++) {
+            permanentLabels[a] = -1;
+            orderLabels[a] = -1;
+            temporaryLabels.add(new ArrayList<Integer>());
+        }
+        orderLabels[startVertex] = 1;
+        permanentLabels[startVertex] = 0;
+        return dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
+    }
+
+    private DijkstraResult dijkstraRecursion(final int currentVertex, final int endVertex, final String[] pathsToEachVertex, final int[] orderLabels,
+                                             final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels) {
+        for (int a = 0; a < adjacencyList.get(currentVertex).size(); a++) {
+            final int edgeTo = adjacencyList.get(currentVertex).get(a)[0];
+            final int edgeWeight = adjacencyList.get(currentVertex).get(a)[1];
+            if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentVertex] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
+                temporaryLabels.get(edgeTo).add(permanentLabels[currentVertex] + edgeWeight);
+                pathsToEachVertex[edgeTo] = pathsToEachVertex[currentVertex] + edgeTo;
+            }
+        }
+        final int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
+        permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
+        orderLabels[smallest] = orderLabels[currentVertex] + 1;
+        if (permanentLabels[endVertex] != -1) {
+            return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
+        }
+        return dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
+    }
+
+    private static int findSmallestNonPermanentTemporaryLabel(final ArrayList<ArrayList<Integer>> temporaryLabels,
+                                                              final int[] orderLabels) {
         int smallest = -1;
         for (int a = 0; a < temporaryLabels.size(); a++) {
             if (temporaryLabels.get(a).size() != 0 && orderLabels[a] == -1) {
@@ -77,124 +181,20 @@ public class Graph {
         return smallest;
     }
 
-    public boolean isDigraph() {
-        return digraph;
-    }
-
-    public void saveGraph(String fileName) {
-        FileHandle file = Gdx.files.local("graphs/" + fileName + ".graph2");
-        if (file.exists()) {
-            file.delete();
-        }
-        file.writeString("digraph=" + digraph, true);
-        for (int a = 0; a < adjacencyList.size(); a++) {
-            StringBuilder line = new StringBuilder("(" + coordinates.get(a)[0] + "," + coordinates.get(a)[1] + ")");
-            for (int b = 0; b < adjacencyList.get(a).size(); b++) {
-                line.append(" [").append(adjacencyList.get(a).get(b)[0]).append(",").append(adjacencyList.get(a).get(b)[1]).append("]");
-            }
-
-            file.writeString("\n" + line, true);
-        }
-    }
-
-    public boolean areVerticesConnected(int vertex1, int vertex2) {
-        boolean connected = false;
-        for (int a = 0; a < adjacencyList.get(vertex1).size(); a++) {
-            if (adjacencyList.get(vertex1).get(a)[0] == vertex2) {
-                connected = true;
-                break;
-            }
-        }
-        return connected;
-    }
-
-    public void addVertex(float x, float y) {
-        adjacencyList.add(new ArrayList<int[]>());
-        coordinates.add(new float[]{x, y});
-    }
-
-    public void addDirectedEdge(int from, int to, int length) {
-        adjacencyList.get(from).add(new int[]{to, length});
-    }
-
-    public void addUndirectedEdge(int vertex1, int vertex2, int length) {
-        addDirectedEdge(vertex1, vertex2, length);
-        addDirectedEdge(vertex2, vertex1, length);
-    }
-
-    public int getAdjacencyListSize() {
-        return adjacencyList.size();
-    }
-
-    public float getXCoordinate(int a) {
-        return coordinates.get(a)[0];
-    }
-
-    public float getYCoordinate(int a) {
-        return coordinates.get(a)[1];
-    }
-
-    public int getNumberOfEdges(int a) {
-        return adjacencyList.get(a).size();
-    }
-
-    public int getVertex(int a, int b) {
-        return adjacencyList.get(a).get(b)[0];
-    }
-
-    public void setCoordinates(int index, float[] element) {
-        coordinates.set(index, element);
-    }
-
-    public DijkstraResult dijkstra(int startVertex, int endVertex) {
-        String[] pathsToEachVertex = new String[adjacencyList.size()];
-        pathsToEachVertex[startVertex] = Integer.toString(startVertex);
-        int[] orderLabels = new int[adjacencyList.size()];
-        int[] permanentLabels = new int[adjacencyList.size()];
-        ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
-        for (int a = 0; a < adjacencyList.size(); a++) {
-            permanentLabels[a] = -1;
-            orderLabels[a] = -1;
-            temporaryLabels.add(new ArrayList<Integer>());
-        }
-        orderLabels[startVertex] = 1;
-        permanentLabels[startVertex] = 0;
-        return dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
-    }
-
-    private DijkstraResult dijkstraRecursion(int currentVertex, int endVertex, String[] pathsToEachVertex, int[] orderLabels,
-                                             int[] permanentLabels, ArrayList<ArrayList<Integer>> temporaryLabels) {
-        for (int a = 0; a < adjacencyList.get(currentVertex).size(); a++) {
-            int edgeTo = adjacencyList.get(currentVertex).get(a)[0];
-            int edgeWeight = adjacencyList.get(currentVertex).get(a)[1];
-            if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentVertex] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
-                temporaryLabels.get(edgeTo).add(permanentLabels[currentVertex] + edgeWeight);
-                pathsToEachVertex[edgeTo] = pathsToEachVertex[currentVertex] + edgeTo;
-            }
-        }
-        int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
-        permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
-        orderLabels[smallest] = orderLabels[currentVertex] + 1;
-        if (permanentLabels[endVertex] != -1) {
-            return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
-        }
-        return dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
-    }
-
     public JarnikResult jarnik() {
         JarnikResult jarnikResult = new JarnikResult();
-        ArrayList<Integer> includedVertices = new ArrayList<>();
+        final ArrayList<Integer> includedVertices = new ArrayList<>();
         includedVertices.add(0);
         jarnikResult = jarnikRecursion(jarnikResult, includedVertices);
         return jarnikResult;
     }
 
-    private JarnikResult jarnikRecursion(JarnikResult jarnikResult, ArrayList<Integer> includedVertices) {
-        int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
+    private JarnikResult jarnikRecursion(final JarnikResult jarnikResult, final ArrayList<Integer> includedVertices) {
+        final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
         for (int a = 0; a < includedVertices.size(); a++) {
             for (int b = 0; b < adjacencyList.get(a).size(); b++) {
-                int edgeTo = adjacencyList.get(includedVertices.get(a)).get(b)[0];
-                int edgeWeight = adjacencyList.get(includedVertices.get(a)).get(b)[1];
+                final int edgeTo = adjacencyList.get(includedVertices.get(a)).get(b)[0];
+                final int edgeWeight = adjacencyList.get(includedVertices.get(a)).get(b)[1];
                 if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {
                     smallestEdge[0] = includedVertices.get(a);
                     smallestEdge[1] = edgeTo;

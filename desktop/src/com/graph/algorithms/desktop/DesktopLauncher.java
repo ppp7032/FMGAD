@@ -7,7 +7,7 @@ import com.graph.algorithms.Main;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
-        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.resizable = false;
         config.foregroundFPS = 60;
         config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);

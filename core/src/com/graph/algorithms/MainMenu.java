@@ -17,12 +17,12 @@ public class MainMenu implements Screen {
 
     public MainMenu() {
         float scaleFactor = Graphics.findScaleFactor();
-        Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0));
-        Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
-        TextButton newGraph = new TextButton("New Graph", skin, "default");
-        TextButton loadGraph = new TextButton("Load Graph", skin, "default");
-        TextButton settings = new TextButton("Settings", skin, "default");
-        TextButton exit = new TextButton("Quit", skin, "default");
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0));
+        final Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
+        final TextButton newGraph = new TextButton("New Graph", skin, "default");
+        final TextButton loadGraph = new TextButton("Load Graph", skin, "default");
+        final TextButton settings = new TextButton("Settings", skin, "default");
+        final TextButton exit = new TextButton("Quit", skin, "default");
 
 
         background.setHeight(Gdx.graphics.getHeight());
@@ -72,11 +72,11 @@ public class MainMenu implements Screen {
 
 
         stage.addActor(background);
-        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) scaleFactor), new float[]{1, 1, 1, 1}));
         stage.addActor(newGraph);
         stage.addActor(loadGraph);
         stage.addActor(settings);
         stage.addActor(exit);
+        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 685 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) scaleFactor), new float[]{1, 1, 1, 1}));
     }
 
     @Override
