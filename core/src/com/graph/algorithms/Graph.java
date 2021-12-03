@@ -61,6 +61,22 @@ public class Graph {
         }
     }
 
+    private static int findSmallestNonPermanentTemporaryLabel(final ArrayList<ArrayList<Integer>> temporaryLabels,
+                                                              final int[] orderLabels) {
+        int smallest = -1;
+        for (int a = 0; a < temporaryLabels.size(); a++) {
+            if (temporaryLabels.get(a).size() != 0 && orderLabels[a] == -1) {
+                if (smallest == -1) {
+                    smallest = a;
+                } else if (temporaryLabels.get(a).get(temporaryLabels.get(a).size() - 1) < temporaryLabels.get(smallest)
+                        .get(temporaryLabels.get(smallest).size() - 1)) {
+                    smallest = a;
+                }
+            }
+        }
+        return smallest;
+    }
+
     public boolean isDigraph() {
         return digraph;
     }
@@ -163,22 +179,6 @@ public class Graph {
             return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
         }
         return dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
-    }
-
-    private static int findSmallestNonPermanentTemporaryLabel(final ArrayList<ArrayList<Integer>> temporaryLabels,
-                                                              final int[] orderLabels) {
-        int smallest = -1;
-        for (int a = 0; a < temporaryLabels.size(); a++) {
-            if (temporaryLabels.get(a).size() != 0 && orderLabels[a] == -1) {
-                if (smallest == -1) {
-                    smallest = a;
-                } else if (temporaryLabels.get(a).get(temporaryLabels.get(a).size() - 1) < temporaryLabels.get(smallest)
-                        .get(temporaryLabels.get(smallest).size() - 1)) {
-                    smallest = a;
-                }
-            }
-        }
-        return smallest;
     }
 
     public JarnikResult jarnik() {

@@ -8,7 +8,7 @@ public class Main extends Game {
     public void create() {
         Gdx.graphics.setTitle("FMGAD");
         final int[] config = Settings.readFromConfigFile();
-        Graphics.setDisplayMode(config[1],config[0]);
+        Graphics.setDisplayMode(config[1], config[0]);
         setScreen(new MainMenu());
         final Graph test = new Graph(Gdx.files.internal("graphs/test.graph2"));
         System.out.println();

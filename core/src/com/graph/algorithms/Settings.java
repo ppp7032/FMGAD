@@ -70,7 +70,7 @@ public class Settings implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Graphics.setDisplayMode(fullscreenBox.getSelectedIndex(),resolutionBox.getSelectedIndex());
+                Graphics.setDisplayMode(fullscreenBox.getSelectedIndex(), resolutionBox.getSelectedIndex());
                 Settings.writeToConfigFile(new int[]{resolutionBox.getSelectedIndex(), fullscreenBox.getSelectedIndex()});
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
             }

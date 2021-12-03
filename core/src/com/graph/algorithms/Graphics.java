@@ -1,6 +1,7 @@
 package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public abstract class Graphics {
     public static void drawRectangleWithBorder(final ShapeRenderer renderer, final float x, final float y, final float width, final float height, final float borderWidth, final float[] colour) {
+        Color previousColor = new Color(renderer.getColor());
         renderer.setColor(colour[0], colour[1], colour[2], colour[3]);
         renderer.rect(x, y, width, height);
         renderer.setColor(0, 0, 0, 1);
@@ -15,6 +17,7 @@ public abstract class Graphics {
         renderer.rectLine(x, y, x, y + height, borderWidth);
         renderer.rectLine(x, y + height, x + width, y + height, borderWidth);
         renderer.rectLine(x + width, y, x + width, y + height, borderWidth);
+        renderer.setColor(previousColor);
     }
 
     public static void drawMenu(final int numberOfAttributes, final float scaleFactor, final ShapeRenderer shapeRenderer) {
@@ -67,15 +70,15 @@ public abstract class Graphics {
         return Gdx.graphics.getHeight() / 720f;
     }
 
-    public static void renderEdge(final int graph1, final int graph2, final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
-        shapeRenderer.rectLine(graph.getXCoordinate(graph1) * scaleFactor, graph.getYCoordinate(graph1) * scaleFactor, graph.getXCoordinate(graph2) * scaleFactor, graph.getYCoordinate(graph2) * scaleFactor, 5 * scaleFactor);
-        if (graph.isDigraph()) {
-            final float[][] points = Graphics.arrowHeadGenerator(new float[]{graph.getXCoordinate(graph1), graph.getYCoordinate(graph1)}, new float[]{graph.getXCoordinate(graph2), graph.getYCoordinate(graph2)}, scaleFactor);
+    public static void renderEdge(final float x1, final float y1, final float x2, final float y2, final ShapeRenderer shapeRenderer, final Boolean digraphStatus, final float scaleFactor) {
+        shapeRenderer.rectLine(x1 * scaleFactor, y1 * scaleFactor, x2 * scaleFactor, y2 * scaleFactor, 5 * scaleFactor);
+        if (digraphStatus) {
+            final float[][] points = Graphics.arrowHeadGenerator(new float[]{x1, y1}, new float[]{x2, y2}, scaleFactor);
             shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
         }
     }
 
-    public static void setDisplayMode(final int fullscreenMode, final int resolution){
+    public static void setDisplayMode(final int fullscreenMode, final int resolution) {
         switch (fullscreenMode) {
             case 1:
                 switch (resolution) {
