@@ -26,13 +26,13 @@ public class Settings implements Screen {
     private final SpriteBatch spriteBatch = new SpriteBatch();
 
     public Settings() {
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         final Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
         final SelectBox<String> resolutionBox = new SelectBox<>(labelSkin);
         final SelectBox<String> fullscreenBox = new SelectBox<>(labelSkin);
-        final Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        final BitmapFont labelFont = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         final int[] config = Settings.readFromConfigFile();
 
 
@@ -81,8 +81,8 @@ public class Settings implements Screen {
         stage.addActor(fullscreenBox);
         stage.addActor(back);
         stage.addActor(apply);
-        stage.addActor(new Text("Windowed Resolution", 543 * scaleFactor, 505 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
-        stage.addActor(new Text("Display Mode", 502 * scaleFactor, 444 * scaleFactor, labelFont, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Windowed Resolution", 543 * scaleFactor, 505 * scaleFactor, twenty, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Display Mode", 502 * scaleFactor, 444 * scaleFactor, twenty, new float[]{0, 0, 0, 1}));
         stage.addActor(new Text("Settings", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
     }
 

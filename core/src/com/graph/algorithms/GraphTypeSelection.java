@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,7 +23,8 @@ public class GraphTypeSelection implements Screen {
     private final float scaleFactor = Graphics.findScaleFactor();
 
     public GraphTypeSelection() {
-        final Skin buttonSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0));
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final Skin buttonSkin = Graphics.generateSkin(twenty);
         final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)));
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -71,7 +73,7 @@ public class GraphTypeSelection implements Screen {
         stage.addActor(back);
         stage.addActor(apply);
         stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
-        stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, twenty, new float[]{0, 0, 0, 1}));
     }
 
     @Override
