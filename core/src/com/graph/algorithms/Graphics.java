@@ -53,7 +53,7 @@ public abstract class Graphics {
         return new float[]{(float) (Math.cos(angle) * (point[0] - centre[0]) - Math.sin(angle) * (point[1] - centre[1]) + centre[0]), (float) (Math.sin(angle) * (point[0] - centre[0]) + Math.cos(angle) * (point[1] - centre[1]) + centre[1])};
     }
 
-    public static float[][] arrowHeadGenerator(final float[] point1, final float[] point2, final float scaleFactor) {
+    private static float[][] arrowHeadGenerator(final float[] point1, final float[] point2, final float scaleFactor) {
         final float[] centreOfMass = new float[]{(point1[0] + point2[0]) * scaleFactor / 2, (point1[1] + point2[1]) * scaleFactor / 2};
         final float sideLength = 23.551f * scaleFactor;
         float angle = (float) (Math.acos((point2[1] - point1[1]) / Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2))));
