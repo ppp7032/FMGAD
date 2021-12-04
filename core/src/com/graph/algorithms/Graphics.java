@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import java.awt.*;
+
 public abstract class Graphics {
     public static void drawRectangleWithBorder(final ShapeRenderer renderer, final float x, final float y, final float width, final float height, final float borderWidth, final float[] colour) {
         final Color previousColor = new Color(renderer.getColor());
@@ -79,29 +81,43 @@ public abstract class Graphics {
     }
 
     public static void setDisplayMode(final int fullscreenMode, final int resolution) {
-        switch (fullscreenMode) {
-            case 1:
-                switch (resolution) {
-                    case (0):
-                        Gdx.graphics.setWindowedMode(3840, 2160);
-                        break;
-                    case (1):
-                        Gdx.graphics.setWindowedMode(2560, 1440);
-                        break;
-                    case (2):
-                        Gdx.graphics.setWindowedMode(1920, 1080);
-                        break;
-                    case (3):
-                        Gdx.graphics.setWindowedMode(1600, 900);
-                        break;
-                    case (4):
-                        Gdx.graphics.setWindowedMode(1280, 720);
-                        break;
-                }
+        int width = 0;
+        int height = 0;
+        boolean fullscreen = false;
+        switch (resolution) {
+            case (0):
+                width = 3840;
+                height = 2160;
                 break;
-            case 0:
+            case (1):
+                width = 2560;
+                height = 1440;
+                break;
+            case (2):
+                width = 1920;
+                height = 1080;
+                break;
+            case (3):
+                width = 1600;
+                height = 900;
+                break;
+            case (4):
+                width = 1280;
+                height = 720;
+                break;
+        }
+        if (fullscreenMode == 0) {
+            fullscreen = true;
+        }
+        final Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        if (dimension.width * 9 == dimension.height * 16) {
+            if (fullscreen) {
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                break;
+            } else {
+                Gdx.graphics.setWindowedMode(width, height);
+            }
+        } else {
+            Gdx.graphics.setWindowedMode(width, height); //Todo- make the app tell the user fullscreen is not supported for aspect ratios other than 16:9.
         }
     }
 }
