@@ -114,7 +114,7 @@ public class GraphTypeSelection implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override

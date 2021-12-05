@@ -126,6 +126,7 @@ public class Settings implements Screen {
                     break;
             }
         }
+        scanner.close();
         return config;
     }
 
@@ -201,7 +202,7 @@ public class Settings implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
