@@ -12,8 +12,8 @@ public class Text extends Actor {
     private final String toPrint;
     private final BitmapFont font;
     private final float[] colour;
-    private final float width;
-    private final float height;
+    private final Matrix4 translationToOrigin;
+    private final Matrix4 translationFromOrigin;
     private float x;
     private float y;
     private float rotationDegree;
@@ -22,8 +22,8 @@ public class Text extends Actor {
         this.font = font;
         toPrint = input;
         final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
-        width = glyphLayout.width;
-        height = glyphLayout.height;
+        float width = glyphLayout.width;
+        float height = glyphLayout.height;
         this.colour = colour;
         switch (alignX) {
             case -1:
@@ -48,6 +48,8 @@ public class Text extends Actor {
                 break;
         }
         this.rotationDegree = rotationDegree;
+        translationToOrigin = (new Matrix4()).setToTranslation(-this.x - width / 2f, -this.y + height / 2f, 0);
+        translationFromOrigin = (new Matrix4()).setToTranslation(this.x + width / 2f, this.y - height / 2f, 0);
     }
 
     public static BitmapFont generateFont(final String fontName, final float size, final int borderWidth) {
@@ -66,11 +68,11 @@ public class Text extends Actor {
 
     @Override
     public void draw(final Batch batch, final float parentAlpha) {
-        Matrix4 matrix1 = (new Matrix4()).setToTranslation(-x - width / 2f, -y + height / 2f, 0);
-        Matrix4 matrix2 = (new Matrix4()).setToRotation(0, 0, 1, rotationDegree);
-        Matrix4 matrix3 = (new Matrix4()).setToTranslation(x + width / 2f, y - height / 2f, 0);
-        Matrix4 oldMatrix = batch.getTransformMatrix().cpy();
-        batch.setTransformMatrix(matrix3.mul(matrix2).mul(matrix1));
+        final Matrix4 oldMatrix = batch.getTransformMatrix().cpy();
+        final Matrix4 rotationMatrix = (new Matrix4()).setToRotation(0, 0, 1, rotationDegree);
+        rotationMatrix.mulLeft(translationFromOrigin);
+        rotationMatrix.mul(translationToOrigin);
+        batch.setTransformMatrix(rotationMatrix);
         font.setColor(colour[0], colour[1], colour[2], colour[3]);
         font.draw(batch, toPrint, x, y);
         batch.setTransformMatrix(oldMatrix);
