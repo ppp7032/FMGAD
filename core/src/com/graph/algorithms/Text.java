@@ -1,6 +1,7 @@
 package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -76,7 +77,10 @@ public class Text extends Actor {
         font.setColor(colour[0], colour[1], colour[2], colour[3]);
         font.draw(batch, toPrint, x, y);
         batch.setTransformMatrix(oldMatrix);
-        //rotationDegree += 1;
+        /*if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rotationDegree += 1;
+            else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotationDegree -= 1;
+        }*/
     }
 
     @Override
