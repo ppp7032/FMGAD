@@ -81,9 +81,7 @@ public class Settings implements Screen {
         stage.addActor(fullscreenBox);
         stage.addActor(back);
         stage.addActor(apply);
-        stage.addActor(new Text("Windowed Resolution", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0));
-        stage.addActor(new Text("Display Mode", 430f * scaleFactor, 430.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0));
-        stage.addActor(new Text("Settings", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0));
+        Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
     }
 
     public static int[] readFromConfigFile() { //return value representing resolution, then value representing display mode
