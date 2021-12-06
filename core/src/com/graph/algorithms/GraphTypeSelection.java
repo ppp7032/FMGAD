@@ -72,8 +72,8 @@ public class GraphTypeSelection implements Screen {
         stage.addActor(graphType);
         stage.addActor(back);
         stage.addActor(apply);
-        stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 560 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}));
-        stage.addActor(new Text("Graph Type", 490 * scaleFactor, 505 * scaleFactor, twenty, new float[]{0, 0, 0, 1}));
+        stage.addActor(new Text("New Graph Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0));
+        stage.addActor(new Text("Graph Type", 430 * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0));
     }
 
     @Override
