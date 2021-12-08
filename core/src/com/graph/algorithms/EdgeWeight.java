@@ -24,10 +24,8 @@ public class EdgeWeight extends Text {
         if (x1 == x2) {
             super.setTextPosition((x1 + offset) * scaleFactor, (y1 + y2) / 2f * scaleFactor, 0, 0);
         } else {
-            final float m = (y2 - y1) / (x2 - x1);
-            final float midpointX = (x1 + x2) / 2f;
-            final float midpointY = (y1 + y2) / 2f;
-            super.setTextPosition((midpointX - offset * (float) Math.sin(Math.atan(m))) * scaleFactor, (midpointY + offset * (float) Math.cos(Math.atan(m))) * scaleFactor, 0, 0);
+            final double angle = Math.atan((y1 - y2) / (x1 - x2));
+            super.setTextPosition(((x1 + x2) / 2f - offset * (float) Math.sin(angle)) * scaleFactor, ((y1 + y2) / 2f + offset * (float) Math.cos(angle)) * scaleFactor, 0, 0);
         }
     }
 }
