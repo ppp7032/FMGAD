@@ -17,9 +17,9 @@ public class Text extends Actor {
     private final Matrix4 translationFromOrigin;
     private final float width;
     private final float height;
-    protected float x;
-    protected float y;
-    protected float rotationDegree;
+    private float x;
+    private float y;
+    private float rotationDegree;
 
     public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final float rotationDegree) { //align -1 means left, 0 means centre, 1 means right
         this.font = font;
