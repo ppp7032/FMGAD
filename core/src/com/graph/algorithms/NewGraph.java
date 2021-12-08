@@ -178,7 +178,6 @@ public class NewGraph implements Screen {
                     graph.addUndirectedEdge(firstVertex, secondVertex, Integer.parseInt(edgeWeight.getText()));
                 }
                 edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, edgeWeight.getText(), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
-                stage.addActor(edgeWeights.get(edgeWeights.size() - 1));
                 edgeWeight.setVisible(false);
                 edgeWeightTitle.setVisible(false);
                 edgeWeightLabel.setVisible(false);
@@ -277,6 +276,12 @@ public class NewGraph implements Screen {
         if (newVertexClicked && mouseInBounds(scaleFactor)) {
             shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
         }
+        stage.getBatch().begin();
+        for (EdgeWeight edgeWeight : edgeWeights) {
+            edgeWeight.update(scaleFactor);
+            edgeWeight.draw(stage.getBatch(), 0);
+        }
+        stage.getBatch().end();
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
@@ -292,9 +297,6 @@ public class NewGraph implements Screen {
     public void render(final float delta) {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        for (EdgeWeight edgeWeight : edgeWeights) {
-            edgeWeight.update(scaleFactor);
-        }
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
             if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds(scaleFactor)) {
                 vertexBeingMoved = findVertexBeingClicked();
