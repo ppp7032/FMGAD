@@ -23,12 +23,12 @@ public class NewGraph implements Screen {
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
+    private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
-    private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
 
     public NewGraph(final Boolean digraphStatus) {
         graph = new Graph(digraphStatus);
@@ -177,7 +177,7 @@ public class NewGraph implements Screen {
                 } else {
                     graph.addUndirectedEdge(firstVertex, secondVertex, Integer.parseInt(edgeWeight.getText()));
                 }
-                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, edgeWeight.getText(), (graph.getXCoordinate(firstVertex) + graph.getXCoordinate(secondVertex)) / 2f * scaleFactor, (graph.getYCoordinate(firstVertex) + graph.getYCoordinate(secondVertex)) / 2f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, 0));
+                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, edgeWeight.getText(), twenty, new float[]{0, 0, 0, 1}, 0, 0, 0, scaleFactor));
                 stage.addActor(edgeWeights.get(edgeWeights.size() - 1));
                 edgeWeight.setVisible(false);
                 edgeWeightTitle.setVisible(false);

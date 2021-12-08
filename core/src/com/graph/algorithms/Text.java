@@ -83,10 +83,10 @@ public class Text extends Actor {
         font.setColor(colour[0], colour[1], colour[2], colour[3]);
         font.draw(batch, toPrint, x, y);
         batch.setTransformMatrix(oldMatrix);
-        /*if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rotationDegree += 2;
             else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotationDegree -= 2;
-        }*/
+        }
     }
 
     @Override
