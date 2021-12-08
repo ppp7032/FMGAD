@@ -16,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.ArrayList;
+
 public class NewGraph implements Screen {
     public final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -26,6 +28,7 @@ public class NewGraph implements Screen {
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
+    private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
 
     public NewGraph(final Boolean digraphStatus) {
         graph = new Graph(digraphStatus);
@@ -174,6 +177,8 @@ public class NewGraph implements Screen {
                 } else {
                     graph.addUndirectedEdge(firstVertex, secondVertex, Integer.parseInt(edgeWeight.getText()));
                 }
+                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, edgeWeight.getText(), (graph.getXCoordinate(firstVertex) + graph.getXCoordinate(secondVertex)) / 2f * scaleFactor, (graph.getYCoordinate(firstVertex) + graph.getYCoordinate(secondVertex)) / 2f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, 0));
+                stage.addActor(edgeWeights.get(edgeWeights.size() - 1));
                 edgeWeight.setVisible(false);
                 edgeWeightTitle.setVisible(false);
                 edgeWeightLabel.setVisible(false);
@@ -287,6 +292,9 @@ public class NewGraph implements Screen {
     public void render(final float delta) {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        for (EdgeWeight edgeWeight : edgeWeights) {
+            edgeWeight.update(scaleFactor);
+        }
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
             if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds(scaleFactor)) {
                 vertexBeingMoved = findVertexBeingClicked();

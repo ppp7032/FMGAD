@@ -15,17 +15,40 @@ public class Text extends Actor {
     private final float[] colour;
     private final Matrix4 translationToOrigin;
     private final Matrix4 translationFromOrigin;
-    private float x;
-    private float y;
-    private float rotationDegree;
+    private final float width;
+    private final float height;
+    protected float x;
+    protected float y;
+    protected float rotationDegree;
 
     public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final float rotationDegree) { //align -1 means left, 0 means centre, 1 means right
         this.font = font;
         toPrint = input;
         final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
-        float width = glyphLayout.width;
-        float height = glyphLayout.height;
+        width = glyphLayout.width;
+        height = glyphLayout.height;
         this.colour = colour;
+        setTextPosition(x, y, alignX, alignY);
+        this.rotationDegree = rotationDegree;
+        translationToOrigin = (new Matrix4()).setToTranslation(-this.x - width / 2f, -this.y + height / 2f, 0);
+        translationFromOrigin = (new Matrix4()).setToTranslation(this.x + width / 2f, this.y - height / 2f, 0);
+    }
+
+    public static BitmapFont generateFont(final String fontName, final float size, final int borderWidth) {
+        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
+        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = (int) size;
+        parameter.borderWidth = borderWidth;
+        /*parameter.color = Color.WHITE;
+        parameter.shadowOffsetX = 3;
+        parameter.shadowOffsetY = 3;
+        parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);*/
+        final BitmapFont font = generator.generateFont(parameter);
+        generator.dispose();
+        return font;
+    }
+
+    protected void setTextPosition(final float x, final float y, final int alignX, final int alignY) {
         switch (alignX) {
             case -1:
                 this.x = x;
@@ -48,23 +71,6 @@ public class Text extends Actor {
                 this.y = y;
                 break;
         }
-        this.rotationDegree = rotationDegree;
-        translationToOrigin = (new Matrix4()).setToTranslation(-this.x - width / 2f, -this.y + height / 2f, 0);
-        translationFromOrigin = (new Matrix4()).setToTranslation(this.x + width / 2f, this.y - height / 2f, 0);
-    }
-
-    public static BitmapFont generateFont(final String fontName, final float size, final int borderWidth) {
-        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
-        final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = (int) size;
-        parameter.borderWidth = borderWidth;
-        /*parameter.color = Color.WHITE;
-        parameter.shadowOffsetX = 3;
-        parameter.shadowOffsetY = 3;
-        parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);*/
-        final BitmapFont font = generator.generateFont(parameter);
-        generator.dispose();
-        return font;
     }
 
     @Override
@@ -78,8 +84,8 @@ public class Text extends Actor {
         font.draw(batch, toPrint, x, y);
         batch.setTransformMatrix(oldMatrix);
         /*if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)) {
-            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rotationDegree += 1;
-            else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotationDegree -= 1;
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) rotationDegree += 2;
+            else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) rotationDegree -= 2;
         }*/
     }
 
