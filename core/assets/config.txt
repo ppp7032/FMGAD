@@ -1,2 +1,2 @@
 resolution: 720p
-fullscreen: false
+display mode: Windowed

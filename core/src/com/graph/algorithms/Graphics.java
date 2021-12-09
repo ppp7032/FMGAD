@@ -81,38 +81,12 @@ public abstract class Graphics {
         }
     }
 
-    public static void setDisplayMode(final int fullscreenMode, final int resolution) {
-        int width = 0;
-        int height = 0;
-        boolean fullscreen = false;
-        switch (resolution) {
-            case (0):
-                width = 3840;
-                height = 2160;
-                break;
-            case (1):
-                width = 2560;
-                height = 1440;
-                break;
-            case (2):
-                width = 1920;
-                height = 1080;
-                break;
-            case (3):
-                width = 1600;
-                height = 900;
-                break;
-            case (4):
-                width = 1280;
-                height = 720;
-                break;
-        }
-        if (fullscreenMode == 0) {
-            fullscreen = true;
-        }
+    public static void setDisplayMode(final String fullscreenMode, final String resolution) {
+        final int height = Integer.parseInt(resolution.substring(0, resolution.length() - 1));
+        final int width = height / 9 * 16;
         final Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         if (dimension.width * 9 == dimension.height * 16) {
-            if (fullscreen) {
+            if (fullscreenMode.equals("Fullscreen")) {
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             } else {
                 Gdx.graphics.setWindowedMode(width, height);

@@ -33,7 +33,7 @@ public class Settings implements Screen {
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        final int[] config = Settings.readFromConfigFile();
+        final String[] config = Settings.readFromConfigFile();
 
 
         resolutionBox.setX(790 * scaleFactor);
@@ -41,14 +41,14 @@ public class Settings implements Screen {
         resolutionBox.setWidth(55 * scaleFactor);
         resolutionBox.setHeight(24 * scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
-        resolutionBox.setSelectedIndex(config[0]);
+        resolutionBox.setSelected(config[0]);
 
         fullscreenBox.setX(757 * scaleFactor);
         fullscreenBox.setY(418 * scaleFactor);
         fullscreenBox.setWidth(88 * scaleFactor);
         fullscreenBox.setHeight(24 * scaleFactor);
         fullscreenBox.setItems("Fullscreen", "Windowed");
-        fullscreenBox.setSelectedIndex(config[1]);
+        fullscreenBox.setSelected(config[1]);
 
         back.setWidth(127 * scaleFactor);
         back.setHeight(46 * scaleFactor);
@@ -70,8 +70,8 @@ public class Settings implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Graphics.setDisplayMode(fullscreenBox.getSelectedIndex(), resolutionBox.getSelectedIndex());
-                Settings.writeToConfigFile(new int[]{resolutionBox.getSelectedIndex(), fullscreenBox.getSelectedIndex()});
+                Graphics.setDisplayMode(fullscreenBox.getSelected(), resolutionBox.getSelected());
+                Settings.writeToConfigFile(new String[]{resolutionBox.getSelected(), fullscreenBox.getSelected()});
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
             }
         });
@@ -84,80 +84,27 @@ public class Settings implements Screen {
         Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
     }
 
-    public static int[] readFromConfigFile() { //return value representing resolution, then value representing display mode
+    public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode
         final Scanner scanner = new Scanner(Gdx.files.internal("config.txt").read());
-        final int[] config = new int[2];
+        final String[] config = new String[2];
         while (scanner.hasNext()) {
             final String currentLine = scanner.nextLine();
             final int colon = currentLine.indexOf(':');
             final String attribute = currentLine.substring(0, colon);
             final String field = currentLine.substring(colon + 2);
-            switch (attribute) {
-                case ("resolution"):
-                    switch (field) {
-                        case ("2160p"):
-                            config[0] = 0;
-                            break;
-                        case ("1440p"):
-                            config[0] = 1;
-                            break;
-                        case ("1080p"):
-                            config[0] = 2;
-                            break;
-                        case ("900p"):
-                            config[0] = 3;
-                            break;
-                        case ("720p"):
-                            config[0] = 4;
-                            break;
-                    }
-                    break;
-                case ("fullscreen"):
-                    switch (field) {
-                        case ("true"):
-                            config[1] = 0;
-                            break;
-                        case ("false"):
-                            config[1] = 1;
-                            break;
-                    }
-                    break;
+            if (attribute.equals("resolution")) {
+                config[0] = field;
+            } else {
+                config[1] = field;
             }
         }
         scanner.close();
         return config;
     }
 
-    public static void writeToConfigFile(final int[] config) {
-        String resolution = "";
-        String fullscreen = "";
-        switch (config[0]) {
-            case (0):
-                resolution = "2160p";
-                break;
-            case (1):
-                resolution = "1440p";
-                break;
-            case (2):
-                resolution = "1080p";
-                break;
-            case (3):
-                resolution = "900p";
-                break;
-            case (4):
-                resolution = "720p";
-                break;
-        }
-        switch (config[1]) {
-            case (0):
-                fullscreen = "true";
-                break;
-            case (1):
-                fullscreen = "false";
-                break;
-        }
+    private static void writeToConfigFile(final String[] config) {
         final FileHandle file = Gdx.files.local("config.txt");
-        file.writeString("resolution: " + resolution + "\nfullscreen: " + fullscreen, false);
+        file.writeString("resolution: " + config[0] + "\ndisplay mode: " + config[1], false);
     }
 
     @Override
