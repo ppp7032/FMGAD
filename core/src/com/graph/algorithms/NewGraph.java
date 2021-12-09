@@ -172,12 +172,13 @@ public class NewGraph implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                final int weight = Integer.parseInt(edgeWeight.getText());
                 if (digraphStatus) {
-                    graph.addDirectedEdge(firstVertex, secondVertex, Integer.parseInt(edgeWeight.getText()));
+                    graph.addDirectedEdge(firstVertex, secondVertex, weight);
                 } else {
-                    graph.addUndirectedEdge(firstVertex, secondVertex, Integer.parseInt(edgeWeight.getText()));
+                    graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                 }
-                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, edgeWeight.getText(), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
+                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
                 edgeWeight.setVisible(false);
                 edgeWeightTitle.setVisible(false);
                 edgeWeightLabel.setVisible(false);
