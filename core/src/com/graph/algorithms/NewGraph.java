@@ -277,12 +277,14 @@ public class NewGraph implements Screen {
         if (newVertexClicked && mouseInBounds(scaleFactor)) {
             shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
         }
+        shapeRenderer.end();
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
