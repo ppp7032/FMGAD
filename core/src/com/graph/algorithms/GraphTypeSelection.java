@@ -118,9 +118,9 @@ public class GraphTypeSelection implements Screen {
 
     @Override
     public void dispose() {
-        stage.dispose();
-        background.dispose();
         shapeRenderer.dispose();
+        background.dispose();
         spriteBatch.dispose();
+        stage.dispose();
     }
 }

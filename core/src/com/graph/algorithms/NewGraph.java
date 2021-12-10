@@ -339,7 +339,7 @@ public class NewGraph implements Screen {
 
     @Override
     public void dispose() {
-        shapeRenderer.dispose();
         stage.dispose();
+        shapeRenderer.dispose();
     }
 }

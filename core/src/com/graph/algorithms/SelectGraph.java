@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -27,6 +28,7 @@ public class SelectGraph implements Screen {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         final Skin skin = Graphics.generateSkin(twenty);
         final List<String> graphSelector = new List<>(skin);
+        final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
         final TextButton back = new TextButton("Back", skin, "default");
         final TextButton apply = new TextButton("Apply", skin, "default");
         final FileHandle graphsDirectory = Gdx.files.internal("graphs");
@@ -36,13 +38,14 @@ public class SelectGraph implements Screen {
         final String[] graphNames = new String[graphs.length];
         for (int a = 0; a < graphs.length; a++) {
             graphNames[a] = graphs[a].file().getName();
+            graphNames[a] = graphNames[a].substring(0, graphNames[a].lastIndexOf("."));
         }
         graphSelector.setItems(graphNames);
-        graphSelector.setX(414f * scaleFactor);
-        graphSelector.setY(224f * scaleFactor);
-        graphSelector.setHeight(290f * scaleFactor);
-        graphSelector.setWidth(452f * scaleFactor);
-        //graphSelector.setCullingArea(new Rectangle(graphSelector.getX(),graphSelector.getY(),graphSelector.getWidth(),graphSelector.getHeight()));
+
+        scrollBar.setX(414f * scaleFactor);
+        scrollBar.setY(224f * scaleFactor);
+        scrollBar.setHeight(290f * scaleFactor);
+        scrollBar.setWidth(452f * scaleFactor);
 
         back.setWidth(127 * scaleFactor);
         back.setHeight(46 * scaleFactor);
@@ -69,7 +72,7 @@ public class SelectGraph implements Screen {
         });
 
 
-        stage.addActor(graphSelector);
+        stage.addActor(scrollBar);
         stage.addActor(back);
         stage.addActor(apply);
         Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
@@ -117,5 +120,8 @@ public class SelectGraph implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        shapeRenderer.dispose();
+        background.dispose();
+        spriteBatch.dispose();
     }
 }
