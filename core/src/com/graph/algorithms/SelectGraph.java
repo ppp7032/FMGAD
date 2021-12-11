@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.ArrayList;
+
 public class SelectGraph implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
@@ -31,6 +33,7 @@ public class SelectGraph implements Screen {
         final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
         final TextButton back = new TextButton("Back", skin, "default");
         final TextButton apply = new TextButton("Apply", skin, "default");
+        final TextButton delete = new TextButton("Delete", skin, "default");
         final FileHandle graphsDirectory = Gdx.files.internal("graphs");
 
 
@@ -57,6 +60,11 @@ public class SelectGraph implements Screen {
         apply.setY(back.getY());
         apply.setX(back.getX() + 325 * scaleFactor);
 
+        delete.setX((back.getX() + apply.getX()) / 2f);
+        delete.setY(back.getY());
+        delete.setWidth(back.getWidth());
+        delete.setHeight(back.getHeight());
+
 
         back.addListener(new ClickListener() {
             @Override
@@ -70,11 +78,28 @@ public class SelectGraph implements Screen {
                 //load the graf init
             }
         });
+        delete.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.files.local("graphs/" + graphSelector.getSelected() + ".graph2").delete();
+                Object[] currentItems = graphSelector.getItems().items;
+                ArrayList<String> newItems = new ArrayList<>();
+                for (Object o : currentItems) {
+                    if (o != null) {
+                        newItems.add((String) o);
+                    }
+                }
+                newItems.remove(graphSelector.getSelected());
+                graphSelector.clearItems();
+                graphSelector.setItems(newItems.toArray(new String[0]));
+            }
+        });
 
 
         stage.addActor(scrollBar);
         stage.addActor(back);
         stage.addActor(apply);
+        stage.addActor(delete);
         Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
     }
 
