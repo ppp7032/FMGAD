@@ -32,7 +32,7 @@ public class SelectGraph implements Screen {
         final List<String> graphSelector = new List<>(skin);
         final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
         final TextButton back = new TextButton("Back", skin, "default");
-        final TextButton apply = new TextButton("Apply", skin, "default");
+        final TextButton load = new TextButton("Load", skin, "default");
         final TextButton delete = new TextButton("Delete", skin, "default");
         final FileHandle graphsDirectory = Gdx.files.internal("graphs");
 
@@ -55,12 +55,12 @@ public class SelectGraph implements Screen {
         back.setY(162 * scaleFactor);
         back.setX(414f * scaleFactor);
 
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
+        load.setWidth(back.getWidth());
+        load.setHeight(back.getHeight());
+        load.setY(back.getY());
+        load.setX(back.getX() + 325 * scaleFactor);
 
-        delete.setX((back.getX() + apply.getX()) / 2f);
+        delete.setX((back.getX() + load.getX()) / 2f);
         delete.setY(back.getY());
         delete.setWidth(back.getWidth());
         delete.setHeight(back.getHeight());
@@ -72,7 +72,7 @@ public class SelectGraph implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-        apply.addListener(new ClickListener() {
+        load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //load the graf init
@@ -98,7 +98,7 @@ public class SelectGraph implements Screen {
 
         stage.addActor(scrollBar);
         stage.addActor(back);
-        stage.addActor(apply);
+        stage.addActor(load);
         stage.addActor(delete);
         Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
     }
