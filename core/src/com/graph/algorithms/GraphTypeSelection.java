@@ -59,10 +59,10 @@ public class GraphTypeSelection implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 switch (graphType.getSelectedIndex()) {
                     case 0:
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(false));
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(new Graph(false)));
                         break;
                     case 1:
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(true));
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(new Graph(true)));
                         break;
                 }
             }

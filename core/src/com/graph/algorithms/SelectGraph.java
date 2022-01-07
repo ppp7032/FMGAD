@@ -75,7 +75,7 @@ public class SelectGraph implements Screen {
         load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                //load the graf init
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph2"))));
             }
         });
         delete.addListener(new ClickListener() {

@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.util.ArrayList;
 
 public class NewGraph implements Screen {
-    public final Stage stage = new Stage();
+    private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
@@ -30,8 +30,8 @@ public class NewGraph implements Screen {
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
 
-    public NewGraph(final Boolean digraphStatus) {
-        graph = new Graph(digraphStatus);
+    public NewGraph(final Graph graph) {
+        this.graph = graph;
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
         int counter = 1;
@@ -54,6 +54,8 @@ public class NewGraph implements Screen {
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
 
+
+        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
 
         name.setAlignment(1);
         name.setWidth(124 * scaleFactor);
@@ -173,7 +175,7 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 final int weight = Integer.parseInt(edgeWeight.getText());
-                if (digraphStatus) {
+                if (graph.isDigraph()) {
                     graph.addDirectedEdge(firstVertex, secondVertex, weight);
                 } else {
                     graph.addUndirectedEdge(firstVertex, secondVertex, weight);
@@ -218,6 +220,12 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 graph.saveGraph(name.getText());
+            }
+        });
+        finish.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph));
             }
         });
         mainMenu.addListener(new ClickListener() {

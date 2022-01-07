@@ -2,6 +2,7 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -140,6 +141,18 @@ public class Graph {
 
     public int getVertex(final int a, final int b) {
         return adjacencyList.get(a).get(b)[0];
+    }
+
+    public int getEdgeWeight(final int a, final int b) {
+        return adjacencyList.get(a).get(b)[1];
+    }
+
+    public void addToEdgeWeights(ArrayList<EdgeWeight> edgeWeights, final float scaleFactor, final BitmapFont font) {
+        for (int a = 0; a < getAdjacencyListSize(); a++) {
+            for (int b = 0; b < getNumberOfEdges(a); b++) {
+                edgeWeights.add(new EdgeWeight(this, a, getVertex(a, b), Integer.toString(getEdgeWeight(a, b)), font, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
+            }
+        }
     }
 
     public void setCoordinates(final int index, final float[] element) {
