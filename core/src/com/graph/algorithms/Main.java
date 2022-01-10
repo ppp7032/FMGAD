@@ -10,11 +10,11 @@ public class Main extends Game {
         final String[] config = Settings.readFromConfigFile();
         Graphics.setDisplayMode(config[1], config[0]);
         setScreen(new MainMenu());
-        /*final Graph test = new Graph(Gdx.files.internal("graphs/test.graph2"));
-        System.out.println();*/
-        /*Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph2"));
+        /*Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph"));
         DijkstraResult digraphResult = digraph.dijkstra(2, 4);
-        Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph2"));
-        JarnikResult jarnikResult = graph1.jarnik();*/
+        System.out.println();*/
+        /*Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph"));
+        JarnikResult jarnikResult = graph1.jarnik();
+        System.out.println();*/
     }
 }

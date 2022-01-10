@@ -37,7 +37,7 @@ public class SelectGraph implements Screen {
         final FileHandle graphsDirectory = Gdx.files.internal("graphs");
 
 
-        final FileHandle[] graphs = graphsDirectory.list("graph2");
+        final FileHandle[] graphs = graphsDirectory.list("graph");
         final String[] graphNames = new String[graphs.length];
         for (int a = 0; a < graphs.length; a++) {
             graphNames[a] = graphs[a].file().getName();
@@ -75,13 +75,13 @@ public class SelectGraph implements Screen {
         load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph2"))));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph"))));
             }
         });
         delete.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.files.local("graphs/" + graphSelector.getSelected() + ".graph2").delete();
+                Gdx.files.local("graphs/" + graphSelector.getSelected() + ".graph").delete();
                 final Object[] currentItems = graphSelector.getItems().items;
                 final ArrayList<String> newItems = new ArrayList<>();
                 for (final Object o : currentItems) {

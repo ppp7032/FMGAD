@@ -34,10 +34,10 @@ public class NewGraph implements Screen {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
-        FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
+        FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
         while (file.exists()) {
-            file = Gdx.files.local("graphs/New Graph (" + counter + ").graph2");
+            file = Gdx.files.local("graphs/New Graph (" + counter + ").graph");
             counter++;
         }
         graph.changeName(file.name().substring(0, file.name().lastIndexOf(".")));

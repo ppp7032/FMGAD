@@ -15,14 +15,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
-public class GraphTypeSelection implements Screen {
+public class SelectGraphType implements Screen {
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final Stage stage = new Stage();
     private final float scaleFactor = Graphics.findScaleFactor();
 
-    public GraphTypeSelection() {
+    public SelectGraphType() {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)));

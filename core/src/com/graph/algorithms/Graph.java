@@ -94,7 +94,7 @@ public class Graph {
     }
 
     public void saveGraph(final String fileName) {
-        final FileHandle file = Gdx.files.local("graphs/" + fileName + ".graph2");
+        final FileHandle file = Gdx.files.local("graphs/" + fileName + ".graph");
         if (file.exists()) {
             file.delete();
         }
