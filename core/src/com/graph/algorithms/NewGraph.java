@@ -32,16 +32,33 @@ public class NewGraph implements Screen {
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph2");
         int counter = 1;
         while (file.exists()) {
             file = Gdx.files.local("graphs/New Graph (" + counter + ").graph2");
             counter++;
         }
-        final TextField name = new TextField(file.name().substring(0, file.name().lastIndexOf(".")), skin);
-        final TextField edgeWeight = new TextField("0", skin);
+        graph.changeName(file.name().substring(0, file.name().lastIndexOf(".")));
+        GeneralConstructor(twenty, graph.getName());
+    }
+
+    public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights) {
+        this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        this.edgeWeights.addAll(edgeWeights);
+        GeneralConstructor(twenty, graph.getName());
+    }
+
+    private static boolean mouseInBounds(final float scaleFactor) {
+        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+    }
+
+    private void GeneralConstructor(final BitmapFont twenty, final String graphName) {
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final TextField name = new TextField(graphName, skin);
+        final TextField edgeWeight = new TextField("0", skin);
         final Text edgeWeightTitle = new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0);
         final Text edgeWeightLabel = new Text("Edge Weight", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
@@ -54,8 +71,6 @@ public class NewGraph implements Screen {
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
 
-
-        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
 
         name.setAlignment(1);
         name.setWidth(124 * scaleFactor);
@@ -225,7 +240,7 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights));
             }
         });
         mainMenu.addListener(new ClickListener() {
@@ -248,10 +263,6 @@ public class NewGraph implements Screen {
         stage.addActor(finish);
         stage.addActor(mainMenu);
         stage.addActor(viewHotkeys);
-    }
-
-    private static boolean mouseInBounds(final float scaleFactor) {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     private int findVertexBeingClicked() {

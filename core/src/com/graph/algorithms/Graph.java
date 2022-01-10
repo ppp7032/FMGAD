@@ -11,6 +11,7 @@ public class Graph {
     private final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
     private final ArrayList<float[]> coordinates = new ArrayList<>();
     private final boolean digraph;
+    private String name;
 
     public Graph(final Boolean digraph) {
         this.digraph = digraph;
@@ -60,6 +61,8 @@ public class Graph {
                 adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a + 1))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a + 1) + 1, occurrences.get(2).get(a)))});
             }
         }
+        scanner.close();
+        name = graph.nameWithoutExtension();
     }
 
     private static int findSmallestNonPermanentTemporaryLabel(final ArrayList<ArrayList<Integer>> temporaryLabels,
@@ -76,6 +79,14 @@ public class Graph {
             }
         }
         return smallest;
+    }
+
+    public void changeName(final String newName) {
+        name = newName;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean isDigraph() {
@@ -96,6 +107,7 @@ public class Graph {
 
             file.writeString("\n" + line, true);
         }
+        changeName(fileName);
     }
 
     public boolean areVerticesConnected(final int vertex1, final int vertex2) {

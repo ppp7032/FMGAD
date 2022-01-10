@@ -22,13 +22,24 @@ public class LoadGraph implements Screen {
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
+        GeneralConstructor(twenty);
+    }
+
+    public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights) {
+        this.graph = graph;
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        this.edgeWeights.addAll(edgeWeights);
+        GeneralConstructor(twenty);
+    }
+
+    private void GeneralConstructor(final BitmapFont twenty) {
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
 
-
-        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
 
         mainMenu.setWidth(127 * scaleFactor);
         mainMenu.setHeight(46 * scaleFactor);
@@ -49,12 +60,11 @@ public class LoadGraph implements Screen {
         edit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(graph));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(graph, edgeWeights));
             }
         });
 
 
-        this.graph = graph;
         stage.addActor(mainMenu);
         stage.addActor(edit);
     }
