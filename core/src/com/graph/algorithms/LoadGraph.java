@@ -56,7 +56,6 @@ public class LoadGraph implements Screen {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
             }
         });
-
         edit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
