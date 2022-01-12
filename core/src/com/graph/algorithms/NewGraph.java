@@ -67,9 +67,8 @@ public class NewGraph implements Screen {
         final TextButton newVertex = new TextButton("New Vertex", skin, "default");
         final TextButton newEdge = new TextButton("New Edge", skin, "default");
         final TextButton save = new TextButton("Save", skin, "default");
-        final TextButton finish = new TextButton("Finish", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
-        final TextButton viewHotkeys = new TextButton("View Hotkeys", skin, "default");
+        final TextButton finish = new TextButton("Finish", skin, "default");
 
 
         name.setAlignment(1);
@@ -112,17 +111,13 @@ public class NewGraph implements Screen {
         save.setHeight(46 * scaleFactor);
         save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
 
-        finish.setWidth(127 * scaleFactor);
-        finish.setHeight(46 * scaleFactor);
-        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, save.getY() - 71 * scaleFactor);
-
         mainMenu.setWidth(127 * scaleFactor);
         mainMenu.setHeight(46 * scaleFactor);
         mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
 
-        viewHotkeys.setWidth(127 * scaleFactor);
-        viewHotkeys.setHeight(46 * scaleFactor);
-        viewHotkeys.setPosition(80f * scaleFactor - viewHotkeys.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
+        finish.setWidth(127 * scaleFactor);
+        finish.setHeight(46 * scaleFactor);
+        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
 
 
         stage.addListener(new ClickListener() {
@@ -150,7 +145,7 @@ public class NewGraph implements Screen {
                                     save.setTouchable(Touchable.disabled);
                                     finish.setTouchable(Touchable.disabled);
                                     mainMenu.setTouchable(Touchable.disabled);
-                                    viewHotkeys.setTouchable(Touchable.disabled);
+                                    finish.setTouchable(Touchable.disabled);
                                     name.setTouchable(Touchable.disabled);
                                 }
                             }
@@ -179,7 +174,7 @@ public class NewGraph implements Screen {
                 save.setTouchable(Touchable.enabled);
                 finish.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
-                viewHotkeys.setTouchable(Touchable.enabled);
+                finish.setTouchable(Touchable.enabled);
                 name.setTouchable(Touchable.enabled);
                 newEdgeClicked = false;
                 firstVertex = -1;
@@ -206,7 +201,7 @@ public class NewGraph implements Screen {
                 save.setTouchable(Touchable.enabled);
                 finish.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
-                viewHotkeys.setTouchable(Touchable.enabled);
+                finish.setTouchable(Touchable.enabled);
                 name.setTouchable(Touchable.enabled);
                 newEdgeClicked = false;
                 firstVertex = -1;
@@ -214,7 +209,6 @@ public class NewGraph implements Screen {
                 edgeWeight.setText("0");
             }
         });
-
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -237,16 +231,16 @@ public class NewGraph implements Screen {
                 graph.saveGraph(name.getText());
             }
         });
-        finish.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights));
-            }
-        });
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
+        finish.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights));
             }
         });
 
@@ -260,9 +254,8 @@ public class NewGraph implements Screen {
         stage.addActor(newVertex);
         stage.addActor(newEdge);
         stage.addActor(save);
-        stage.addActor(finish);
         stage.addActor(mainMenu);
-        stage.addActor(viewHotkeys);
+        stage.addActor(finish);
     }
 
     private int findVertexBeingClicked() {
