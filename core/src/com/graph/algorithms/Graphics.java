@@ -104,4 +104,8 @@ public abstract class Graphics {
             y -= 61f;
         }
     }
+
+    public static boolean mouseInBounds(final float scaleFactor) {
+        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+    }
 }

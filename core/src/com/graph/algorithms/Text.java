@@ -8,21 +8,25 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Text extends Actor {
-    private final String toPrint;
     private final BitmapFont font;
     private final float[] colour;
-    private final float width;
-    private final float height;
-    private float x;
-    private float y;
+    private final int alignX;
+    private final int alignY;
+    private final float originalX;
+    private final float originalY;
+    private String toPrint;
 
     public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY) { //align -1 means left, 0 means centre, 1 means right
         this.font = font;
         toPrint = input;
         final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
-        width = glyphLayout.width;
-        height = glyphLayout.height;
+        super.setWidth(glyphLayout.width);
+        super.setHeight(glyphLayout.height);
         this.colour = colour;
+        this.alignX = alignX;
+        this.alignY = alignY;
+        this.originalX = x;
+        this.originalY = y;
         setTextPosition(x, y, alignX, alignY);
     }
 
@@ -40,27 +44,36 @@ public class Text extends Actor {
         return font;
     }
 
-    protected void setTextPosition(final float x, final float y, final int alignX, final int alignY) {
+    public void updateText(String newText) {
+        toPrint = newText;
+        final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
+        super.setWidth(glyphLayout.width);
+        super.setHeight(glyphLayout.height);
+        super.setPosition(originalX, originalY);
+        setTextPosition(super.getX(), super.getY(), alignX, alignY);
+    }
+
+    public void setTextPosition(final float x, final float y, final int alignX, final int alignY) {
         switch (alignX) {
             case -1:
-                this.x = x;
+                super.setX(x);
                 break;
             case 0:
-                this.x = x - width / 2;
+                super.setX(x - super.getWidth() / 2);
                 break;
             case 1:
-                this.x = x - width;
+                super.setX(x - super.getWidth());
                 break;
         }
         switch (alignY) {
             case -1:
-                this.y = y + height;
+                super.setY(y + super.getHeight());
                 break;
             case 0:
-                this.y = y + height / 2;
+                super.setY(y + super.getHeight() / 2);
                 break;
             case 1:
-                this.y = y;
+                super.setY(y);
                 break;
         }
     }
@@ -68,7 +81,7 @@ public class Text extends Actor {
     @Override
     public void draw(final Batch batch, final float parentAlpha) {
         font.setColor(colour[0], colour[1], colour[2], colour[3]);
-        font.draw(batch, toPrint, x, y);
+        font.draw(batch, toPrint, super.getX(), super.getY());
     }
 
     @Override

@@ -24,6 +24,8 @@ public class NewGraph implements Screen {
     private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
+    private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
+    private Text temporaryVertexLabel;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
@@ -44,15 +46,12 @@ public class NewGraph implements Screen {
         GeneralConstructor(twenty, graph.getName());
     }
 
-    public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights) {
+    public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<VertexLabel> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
+        this.vertexLabels.addAll(vertexLabels);
         GeneralConstructor(twenty, graph.getName());
-    }
-
-    private static boolean mouseInBounds(final float scaleFactor) {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     private void GeneralConstructor(final BitmapFont twenty, final String graphName) {
@@ -69,6 +68,8 @@ public class NewGraph implements Screen {
         final TextButton save = new TextButton("Save", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton finish = new TextButton("Finish", skin, "default");
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getAdjacencyListSize() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
+        temporaryVertexLabel.setVisible(false);
 
 
         name.setAlignment(1);
@@ -123,10 +124,12 @@ public class NewGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (mouseInBounds(scaleFactor)) {
+                if (Graphics.mouseInBounds(scaleFactor)) {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
+                        vertexLabels.add(new VertexLabel(Character.toString((char) (graph.getAdjacencyListSize() + 64)), graph.getXCoordinate(graph.getAdjacencyListSize() - 1) * scaleFactor, graph.getYCoordinate(graph.getAdjacencyListSize() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, graph.getAdjacencyListSize() - 1, graph));
+                        temporaryVertexLabel.setVisible(false);
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
                         if (clickedVertex != -1) {
@@ -214,6 +217,8 @@ public class NewGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (!newEdgeClicked) {
                     newVertexClicked = true;
+                    temporaryVertexLabel.setVisible(true);
+                    temporaryVertexLabel.updateText(Character.toString((char) (graph.getAdjacencyListSize() + 65)));
                 }
             }
         });
@@ -240,7 +245,7 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
             }
         });
 
@@ -285,15 +290,31 @@ public class NewGraph implements Screen {
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
             shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
-        }
-        if (newVertexClicked && mouseInBounds(scaleFactor)) {
-            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
+            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
+            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 13 * scaleFactor);
+            shapeRenderer.setColor(0, 0, 0, 1);
         }
         shapeRenderer.end();
+        if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            temporaryVertexLabel.setTextPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0, 0);
+            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
+            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
+            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 13 * scaleFactor);
+            shapeRenderer.setColor(0, 0, 0, 1);
+            shapeRenderer.end();
+            stage.getBatch().begin();
+            temporaryVertexLabel.draw(stage.getBatch(), 0);
+            stage.getBatch().end();
+        }
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
+        }
+        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+            vertexLabels.get(a).update(scaleFactor);
+            vertexLabels.get(a).draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -313,13 +334,13 @@ public class NewGraph implements Screen {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
-            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && mouseInBounds(scaleFactor)) {
+            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
                 vertexBeingMoved = findVertexBeingClicked();
             }
         } else {
             vertexBeingMoved = -1;
         }
-        if (vertexBeingMoved != -1 && mouseInBounds(scaleFactor)) {
+        if (vertexBeingMoved != -1 && Graphics.mouseInBounds(scaleFactor)) {
             graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

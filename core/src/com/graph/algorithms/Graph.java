@@ -171,7 +171,26 @@ public class Graph {
         coordinates.set(index, element);
     }
 
-    public DijkstraResult dijkstra(final int startVertex, final int endVertex) {
+    private void updateDijkstraLabels(Text[][] dijkstraLabels, final int[] orderLabels, final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels) {
+        for (int a = 0; a < adjacencyList.size(); a++) {
+            if (orderLabels[a] != -1) {
+                dijkstraLabels[a][1].updateText(Integer.toString(orderLabels[a]));
+            }
+            if (permanentLabels[a] != -1) {
+                dijkstraLabels[a][2].updateText(Integer.toString(permanentLabels[a]));
+            }
+            StringBuilder temp = new StringBuilder();
+            for (int b = 0; b < temporaryLabels.get(a).size(); b++) {
+                temp.append(temporaryLabels.get(a).get(b));
+                if (b != temporaryLabels.get(a).size() - 1) {
+                    temp.append(", ");
+                }
+            }
+            dijkstraLabels[a][3].updateText(temp.toString());
+        }
+    }
+
+    public void dijkstra(final int startVertex, final int endVertex, Text[][] dijkstraLabels) {
         final String[] pathsToEachVertex = new String[adjacencyList.size()];
         pathsToEachVertex[startVertex] = Integer.toString(startVertex);
         final int[] orderLabels = new int[adjacencyList.size()];
@@ -184,28 +203,27 @@ public class Graph {
         }
         orderLabels[startVertex] = 1;
         permanentLabels[startVertex] = 0;
-        return dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
+        dijkstraRecursion(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels, dijkstraLabels);
     }
 
-    private DijkstraResult dijkstraRecursion(final int currentVertex, final int endVertex, final String[] pathsToEachVertex, final int[] orderLabels,
-                                             final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels) {
+    private void dijkstraRecursion(final int currentVertex, final int endVertex, final String[] pathsToEachVertex, final int[] orderLabels,
+                                   final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels, Text[][] dijkstraLabels) {
         for (int a = 0; a < adjacencyList.get(currentVertex).size(); a++) {
             final int edgeTo = adjacencyList.get(currentVertex).get(a)[0];
             final int edgeWeight = adjacencyList.get(currentVertex).get(a)[1];
             if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentVertex] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
                 temporaryLabels.get(edgeTo).add(permanentLabels[currentVertex] + edgeWeight);
                 pathsToEachVertex[edgeTo] = pathsToEachVertex[currentVertex] + edgeTo;
-                //update the boxes
+                updateDijkstraLabels(dijkstraLabels, orderLabels, permanentLabels, temporaryLabels);
             }
         }
         final int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
         permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
         orderLabels[smallest] = orderLabels[currentVertex] + 1;
-        //update the boxes
-        if (permanentLabels[endVertex] != -1) {
-            return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
+        updateDijkstraLabels(dijkstraLabels, orderLabels, permanentLabels, temporaryLabels);
+        if (permanentLabels[endVertex] == -1) {
+            dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels, dijkstraLabels);
         }
-        return dijkstraRecursion(smallest, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
     public JarnikResult jarnik() {
