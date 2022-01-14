@@ -195,11 +195,13 @@ public class Graph {
             if (temporaryLabels.get(edgeTo).size() == 0 || permanentLabels[currentVertex] + edgeWeight < temporaryLabels.get(edgeTo).get(temporaryLabels.get(edgeTo).size() - 1)) {
                 temporaryLabels.get(edgeTo).add(permanentLabels[currentVertex] + edgeWeight);
                 pathsToEachVertex[edgeTo] = pathsToEachVertex[currentVertex] + edgeTo;
+                //update the boxes
             }
         }
         final int smallest = findSmallestNonPermanentTemporaryLabel(temporaryLabels, orderLabels);
         permanentLabels[smallest] = temporaryLabels.get(smallest).get(temporaryLabels.get(smallest).size() - 1);
         orderLabels[smallest] = orderLabels[currentVertex] + 1;
+        //update the boxes
         if (permanentLabels[endVertex] != -1) {
             return new DijkstraResult(pathsToEachVertex[endVertex], permanentLabels[endVertex]);
         }
