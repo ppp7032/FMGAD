@@ -88,17 +88,7 @@ public class NewGraph implements Screen {
 
         edgeWeightLabel.setVisible(false);
 
-        back.setVisible(false);
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-
-        apply.setVisible(false);
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
+        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, false);
 
         newVertex.setWidth(127 * scaleFactor);
         newVertex.setHeight(46 * scaleFactor);
@@ -112,13 +102,7 @@ public class NewGraph implements Screen {
         save.setHeight(46 * scaleFactor);
         save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
 
-        mainMenu.setWidth(127 * scaleFactor);
-        mainMenu.setHeight(46 * scaleFactor);
-        mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
-
-        finish.setWidth(127 * scaleFactor);
-        finish.setHeight(46 * scaleFactor);
-        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
+        Graphics.setupBottomTwoButtons(mainMenu, finish, scaleFactor);
 
 
         stage.addListener(new ClickListener() {
@@ -167,21 +151,7 @@ public class NewGraph implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                edgeWeight.setVisible(false);
-                edgeWeightTitle.setVisible(false);
-                edgeWeightLabel.setVisible(false);
-                back.setVisible(false);
-                apply.setVisible(false);
-                newVertex.setTouchable(Touchable.enabled);
-                newEdge.setTouchable(Touchable.enabled);
-                save.setTouchable(Touchable.enabled);
-                finish.setTouchable(Touchable.enabled);
-                mainMenu.setTouchable(Touchable.enabled);
-                finish.setTouchable(Touchable.enabled);
-                name.setTouchable(Touchable.enabled);
-                newEdgeClicked = false;
-                firstVertex = -1;
-                secondVertex = -1;
+                closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
             }
         });
         apply.addListener(new ClickListener() {
@@ -194,21 +164,7 @@ public class NewGraph implements Screen {
                     graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                 }
                 edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
-                edgeWeight.setVisible(false);
-                edgeWeightTitle.setVisible(false);
-                edgeWeightLabel.setVisible(false);
-                back.setVisible(false);
-                apply.setVisible(false);
-                newVertex.setTouchable(Touchable.enabled);
-                newEdge.setTouchable(Touchable.enabled);
-                save.setTouchable(Touchable.enabled);
-                finish.setTouchable(Touchable.enabled);
-                mainMenu.setTouchable(Touchable.enabled);
-                finish.setTouchable(Touchable.enabled);
-                name.setTouchable(Touchable.enabled);
-                newEdgeClicked = false;
-                firstVertex = -1;
-                secondVertex = -1;
+                closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
                 edgeWeight.setText("0");
             }
         });
@@ -275,25 +231,14 @@ public class NewGraph implements Screen {
     }
 
     private void renderShapes() {
-        shapeRenderer.setColor(1, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
-                Graphics.renderEdge(graph.getXCoordinate(a), graph.getYCoordinate(a), graph.getXCoordinate(graph.getVertex(a, b)), graph.getYCoordinate(graph.getVertex(a, b)), shapeRenderer, graph.isDigraph(), scaleFactor);
-            }
-        }
+        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
         if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
             Graphics.renderEdge(graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
 
         } else if (secondVertex != -1) {
             Graphics.renderEdge(graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex), graph.getXCoordinate(secondVertex), graph.getYCoordinate(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
         }
-        shapeRenderer.setColor(0, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
-            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 13 * scaleFactor);
-            shapeRenderer.setColor(0, 0, 0, 1);
-        }
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
         shapeRenderer.end();
         if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -322,6 +267,23 @@ public class NewGraph implements Screen {
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
+    }
+
+    private void closeEnterEdgeWeightMenu(final TextField edgeWeight, final Text edgeWeightTitle, final Text edgeWeightLabel, final TextButton back, final TextButton apply, final TextButton newVertex, final TextButton newEdge, final TextButton save, final TextButton finish, final TextButton mainMenu, final TextField name) {
+        edgeWeight.setVisible(false);
+        edgeWeightTitle.setVisible(false);
+        edgeWeightLabel.setVisible(false);
+        back.setVisible(false);
+        apply.setVisible(false);
+        newVertex.setTouchable(Touchable.enabled);
+        newEdge.setTouchable(Touchable.enabled);
+        save.setTouchable(Touchable.enabled);
+        finish.setTouchable(Touchable.enabled);
+        mainMenu.setTouchable(Touchable.enabled);
+        name.setTouchable(Touchable.enabled);
+        newEdgeClicked = false;
+        firstVertex = -1;
+        secondVertex = -1;
     }
 
     @Override

@@ -2,11 +2,15 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import java.awt.*;
 
@@ -21,6 +25,68 @@ public abstract class Graphics {
         renderer.rectLine(x, y + height, x + width, y + height, borderWidth);
         renderer.rectLine(x + width, y, x + width, y + height, borderWidth);
         renderer.setColor(previousColor);
+    }
+
+    public static float[] setupDijkstraBoxes(final float scaleFactor, final Graph graph, final int vertex) {
+        final float width = 93f * scaleFactor;
+        final float height = 64f * scaleFactor;
+        final float x = graph.getXCoordinate(vertex) * scaleFactor - width / 2f;
+        final float y = graph.getYCoordinate(vertex) * scaleFactor - height / 2f;
+        return new float[]{x, y, width, height};
+    }
+
+    public static void drawSelectionMenu(final SpriteBatch spriteBatch, final Texture background, final ShapeRenderer shapeRenderer, final Stage stage, final float scaleFactor, final int numberOfAttributes) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        spriteBatch.begin();
+        spriteBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        spriteBatch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        Graphics.drawMenu(numberOfAttributes, scaleFactor, shapeRenderer);
+        shapeRenderer.end();
+        stage.act();
+        stage.draw();
+    }
+
+    public static void setupBottomTwoButtons(final TextButton button1, final TextButton button2, final float scaleFactor) {
+        button1.setWidth(127 * scaleFactor);
+        button1.setHeight(46 * scaleFactor);
+        button1.setPosition(80f * scaleFactor - button1.getWidth() / 2f, 95 * scaleFactor);
+        button2.setWidth(127 * scaleFactor);
+        button2.setHeight(46 * scaleFactor);
+        button2.setPosition(80f * scaleFactor - button1.getWidth() / 2f, button1.getY() - 71 * scaleFactor);
+    }
+
+    public static void renderGraphEdges(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
+        shapeRenderer.setColor(1, 0, 0, 1);
+        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+            for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
+                Graphics.renderEdge(graph.getXCoordinate(a), graph.getYCoordinate(a), graph.getXCoordinate(graph.getVertex(a, b)), graph.getYCoordinate(graph.getVertex(a, b)), shapeRenderer, graph.isDigraph(), scaleFactor);
+            }
+        }
+    }
+
+    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
+        shapeRenderer.setColor(0, 0, 0, 1);
+        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
+            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
+            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 13 * scaleFactor);
+            shapeRenderer.setColor(0, 0, 0, 1);
+        }
+    }
+
+    public static void setupBackAndApplyButtons(final TextButton back, final TextButton apply, final float scaleFactor, final boolean visible) {
+        back.setVisible(visible);
+        back.setWidth(127 * scaleFactor);
+        back.setHeight(46 * scaleFactor);
+        back.setY(162 * scaleFactor);
+        back.setX(414f * scaleFactor);
+        apply.setVisible(visible);
+        apply.setWidth(back.getWidth());
+        apply.setHeight(back.getHeight());
+        apply.setY(back.getY());
+        apply.setX(back.getX() + 325 * scaleFactor);
     }
 
     public static void drawMenu(final int numberOfAttributes, final float scaleFactor, final ShapeRenderer shapeRenderer) {

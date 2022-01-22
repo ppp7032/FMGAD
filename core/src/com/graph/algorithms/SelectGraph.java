@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,15 +49,7 @@ public class SelectGraph implements Screen {
         scrollBar.setHeight(290f * scaleFactor);
         scrollBar.setWidth(452f * scaleFactor);
 
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-
-        load.setWidth(back.getWidth());
-        load.setHeight(back.getHeight());
-        load.setY(back.getY());
-        load.setX(back.getX() + 325 * scaleFactor);
+        Graphics.setupBackAndApplyButtons(back, load, scaleFactor, true);
 
         delete.setX((back.getX() + load.getX()) / 2f);
         delete.setY(back.getY());
@@ -110,16 +101,7 @@ public class SelectGraph implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        spriteBatch.begin();
-        spriteBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        spriteBatch.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.drawMenu(0, scaleFactor, shapeRenderer);
-        shapeRenderer.end();
-        stage.act();
-        stage.draw();
+        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 0);
     }
 
     @Override

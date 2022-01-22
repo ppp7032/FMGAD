@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,15 +49,7 @@ public class Settings implements Screen {
         fullscreenBox.setItems("Fullscreen", "Windowed");
         fullscreenBox.setSelected(config[1]);
 
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
+        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, true);
 
 
         back.addListener(new ClickListener() {
@@ -114,19 +105,7 @@ public class Settings implements Screen {
 
     @Override
     public void render(final float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        spriteBatch.begin();
-        spriteBatch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        spriteBatch.end();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.drawMenu(2, scaleFactor, shapeRenderer);
-        shapeRenderer.end();
-        stage.act();
-        stage.draw();
-
+        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 2);
         //stage.getActors().get(0).setX(stage.getActors().get(0).getX()+1);
     }
 

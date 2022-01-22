@@ -2,6 +2,7 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,10 +25,12 @@ public class LoadGraph implements Screen {
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final Text[][] dijkstraLabels;
     private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
-    TextField startVertexInput;
-    TextField endVertexInput;
+    private TextField startVertexInput;
+    private TextField endVertexInput;
     private boolean dijkstraPressed = false;
     private boolean dijkstraApplied = false;
+    private DijkstraContainer dijkstraContainer = new DijkstraContainer();
+    private boolean spaceKeyPressedLastFrame = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -61,13 +64,10 @@ public class LoadGraph implements Screen {
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
         for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            final float width = 93f * scaleFactor;
-            final float height = 64f * scaleFactor;
-            final float x = graph.getXCoordinate(a) * scaleFactor - width / 2f;
-            final float y = graph.getYCoordinate(a) * scaleFactor - height / 2f;
+            final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
             BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0);
             BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0);
-            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), x + width / 6f, y + height / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", x + width / 2f, y + height / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", x + width / 6f * 5f, y + height / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", x + 10f * scaleFactor, y + height / 4f, small, new float[]{0, 0, 0, 1}, -1, 0)};
+            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0), new Text("", dimensions[0] + 10f * scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0)};
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
             }
@@ -79,13 +79,7 @@ public class LoadGraph implements Screen {
         dijkstraButton.setHeight(46 * scaleFactor);
         dijkstraButton.setPosition(80f * scaleFactor - dijkstraButton.getWidth() / 2f, 652f * scaleFactor);
 
-        mainMenu.setWidth(127 * scaleFactor);
-        mainMenu.setHeight(46 * scaleFactor);
-        mainMenu.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, 95 * scaleFactor);
-
-        edit.setWidth(127 * scaleFactor);
-        edit.setHeight(46 * scaleFactor);
-        edit.setPosition(80f * scaleFactor - mainMenu.getWidth() / 2f, mainMenu.getY() - 71 * scaleFactor);
+        Graphics.setupBottomTwoButtons(mainMenu, edit, scaleFactor);
 
         dijkstraTitle.setVisible(false);
 
@@ -107,17 +101,7 @@ public class LoadGraph implements Screen {
         endVertexInput.setWidth(88 * scaleFactor);
         endVertexInput.setHeight(24 * scaleFactor);
 
-        back.setVisible(false);
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-
-        apply.setVisible(false);
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
+        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, false);
 
 
         dijkstraButton.addListener(new ClickListener() {
@@ -125,6 +109,7 @@ public class LoadGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (dijkstraApplied) {
                     dijkstraApplied = false;
+                    dijkstraContainer.setup = false;
                     for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
                         for (int b = 0; b < 4; b++) {
                             dijkstraLabels[a][b].setVisible(false);
@@ -135,13 +120,7 @@ public class LoadGraph implements Screen {
                     edit.setTouchable(Touchable.enabled);
                 } else if (!dijkstraPressed) {
                     dijkstraPressed = true;
-                    dijkstraTitle.setVisible(!dijkstraTitle.isVisible());
-                    dijkstraStartVertexLabel.setVisible(!dijkstraStartVertexLabel.isVisible());
-                    dijkstraEndVertexLabel.setVisible(!dijkstraEndVertexLabel.isVisible());
-                    startVertexInput.setVisible(!startVertexInput.isVisible());
-                    endVertexInput.setVisible(!endVertexInput.isVisible());
-                    back.setVisible(!back.isVisible());
-                    apply.setVisible(!apply.isVisible());
+                    changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
                     dijkstraButton.setTouchable(Touchable.disabled);
                     mainMenu.setTouchable(Touchable.disabled);
                     edit.setTouchable(Touchable.disabled);
@@ -166,13 +145,7 @@ public class LoadGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 dijkstraPressed = false;
-                dijkstraTitle.setVisible(!dijkstraTitle.isVisible());
-                dijkstraStartVertexLabel.setVisible(!dijkstraStartVertexLabel.isVisible());
-                dijkstraEndVertexLabel.setVisible(!dijkstraEndVertexLabel.isVisible());
-                startVertexInput.setVisible(!startVertexInput.isVisible());
-                endVertexInput.setVisible(!endVertexInput.isVisible());
-                back.setVisible(!back.isVisible());
-                apply.setVisible(!apply.isVisible());
+                changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
                 dijkstraButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
@@ -183,13 +156,7 @@ public class LoadGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 dijkstraPressed = false;
                 dijkstraApplied = true;
-                dijkstraTitle.setVisible(!dijkstraTitle.isVisible());
-                dijkstraStartVertexLabel.setVisible(!dijkstraStartVertexLabel.isVisible());
-                dijkstraEndVertexLabel.setVisible(!dijkstraEndVertexLabel.isVisible());
-                startVertexInput.setVisible(!startVertexInput.isVisible());
-                endVertexInput.setVisible(!endVertexInput.isVisible());
-                back.setVisible(!back.isVisible());
-                apply.setVisible(!apply.isVisible());
+                changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
                 for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
                     for (int b = 0; b < 4; b++) {
                         dijkstraLabels[a][b].setVisible(true);
@@ -229,19 +196,8 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(1, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
-                Graphics.renderEdge(graph.getXCoordinate(a), graph.getYCoordinate(a), graph.getXCoordinate(graph.getVertex(a, b)), graph.getYCoordinate(graph.getVertex(a, b)), shapeRenderer, graph.isDigraph(), scaleFactor);
-            }
-        }
-        shapeRenderer.setColor(0, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
-            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 13 * scaleFactor);
-            shapeRenderer.setColor(0, 0, 0, 1);
-        }
+        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
         shapeRenderer.end();
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
@@ -258,24 +214,51 @@ public class LoadGraph implements Screen {
         }
         if (dijkstraApplied) {
             for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-                final float width = 93f * scaleFactor;
-                final float height = 64f * scaleFactor;
-                final float x = graph.getXCoordinate(a) * scaleFactor - width / 2f;
-                final float y = graph.getYCoordinate(a) * scaleFactor - height / 2f;
+                final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
                 shapeRenderer.setColor(1, 1, 1, 1);
-                shapeRenderer.rect(x, y, width, height);
+                shapeRenderer.rect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
                 shapeRenderer.setColor(0, 0, 0, 1);
-                Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1, 1, 1, 1});
-                shapeRenderer.rectLine(x, y + height / 2f, x + width, y + height / 2f, 2 * scaleFactor);
-                shapeRenderer.rectLine(x + width / 3f, y + height, x + width / 3f, y + height / 2f, 2f * scaleFactor);
-                shapeRenderer.rectLine(x + width / 3f * 2f, y + height / 2f, x + width / 3f * 2f, y + height, 2 * scaleFactor);
-                graph.dijkstra(startVertexInput.getText().charAt(0) - 65, endVertexInput.getText().charAt(0) - 65, dijkstraLabels);
+                Graphics.drawRectangleWithBorder(shapeRenderer, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 2 * scaleFactor, new float[]{1, 1, 1, 1});
+                shapeRenderer.rectLine(dimensions[0], dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2], dimensions[1] + dimensions[3] / 2f, 2 * scaleFactor);
+                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3], dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3] / 2f, 2f * scaleFactor);
+                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3], 2 * scaleFactor);
+            }
+            if (!dijkstraContainer.setup) {
+                final int startVertex = startVertexInput.getText().charAt(0) - 65;
+                final int endVertex = endVertexInput.getText().charAt(0) - 65;
+                final String[] pathsToEachVertex = new String[graph.getAdjacencyListSize()];
+                pathsToEachVertex[startVertex] = Integer.toString(startVertex);
+                final int[] orderLabels = new int[graph.getAdjacencyListSize()];
+                final int[] permanentLabels = new int[graph.getAdjacencyListSize()];
+                final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
+                for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+                    permanentLabels[a] = -1;
+                    orderLabels[a] = -1;
+                    temporaryLabels.add(new ArrayList<Integer>());
+                }
+                orderLabels[startVertex] = 1;
+                permanentLabels[startVertex] = 0;
+                graph.updateDijkstraLabels(dijkstraLabels, orderLabels, permanentLabels, temporaryLabels);
+                dijkstraContainer = new DijkstraContainer(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
+            } else if (!spaceKeyPressedLastFrame && Gdx.input.isKeyPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
+                graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
         }
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.end();
         stage.act();
         stage.draw();
+        spaceKeyPressedLastFrame = Gdx.input.isKeyPressed(Input.Keys.SPACE);
+    }
+
+    private void changeVisibility(final Text dijkstraTitle, final Text dijkstraStartVertexLabel, final Text dijkstraEndVertexLabel, final TextButton back, final TextButton apply) {
+        dijkstraTitle.setVisible(!dijkstraTitle.isVisible());
+        dijkstraStartVertexLabel.setVisible(!dijkstraStartVertexLabel.isVisible());
+        dijkstraEndVertexLabel.setVisible(!dijkstraEndVertexLabel.isVisible());
+        startVertexInput.setVisible(!startVertexInput.isVisible());
+        endVertexInput.setVisible(!endVertexInput.isVisible());
+        back.setVisible(!back.isVisible());
+        apply.setVisible(!apply.isVisible());
     }
 
     @Override
