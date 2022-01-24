@@ -68,7 +68,7 @@ public class NewGraph implements Screen {
         final TextButton save = new TextButton("Save", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton finish = new TextButton("Finish", skin, "default");
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getAdjacencyListSize() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
         temporaryVertexLabel.setVisible(false);
 
 
@@ -112,7 +112,7 @@ public class NewGraph implements Screen {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
-                        vertexLabels.add(new VertexLabel(Character.toString((char) (graph.getAdjacencyListSize() + 64)), graph.getXCoordinate(graph.getAdjacencyListSize() - 1) * scaleFactor, graph.getYCoordinate(graph.getAdjacencyListSize() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, graph.getAdjacencyListSize() - 1, graph));
+                        vertexLabels.add(new VertexLabel(Character.toString((char) (graph.getNumberOfVertices() + 64)), graph.getXCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, graph.getYCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, graph.getNumberOfVertices() - 1, graph));
                         temporaryVertexLabel.setVisible(false);
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
@@ -120,7 +120,7 @@ public class NewGraph implements Screen {
                             if (firstVertex == -1) {
                                 firstVertex = clickedVertex;
                             } else {
-                                if (firstVertex != clickedVertex && !graph.areVerticesConnected(firstVertex, clickedVertex)) {
+                                if (firstVertex != clickedVertex && !graph.areTwoVerticesConnected(firstVertex, clickedVertex)) {
                                     secondVertex = clickedVertex;
                                     edgeWeight.setVisible(true);
                                     edgeWeightTitle.setVisible(true);
@@ -174,7 +174,7 @@ public class NewGraph implements Screen {
                 if (!newEdgeClicked) {
                     newVertexClicked = true;
                     temporaryVertexLabel.setVisible(true);
-                    temporaryVertexLabel.updateText(Character.toString((char) (graph.getAdjacencyListSize() + 65)));
+                    temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
                 }
             }
         });
@@ -220,10 +220,10 @@ public class NewGraph implements Screen {
     }
 
     private int findVertexBeingClicked() {
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             final float mouseX = Gdx.input.getX() / scaleFactor;
             final float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor;
-            if (Math.pow(mouseX - graph.getXCoordinate(a), 2) + Math.pow(mouseY - graph.getYCoordinate(a), 2) <= 15 * 15) {
+            if (Math.pow(mouseX - graph.getXCoordinateOfVertex(a), 2) + Math.pow(mouseY - graph.getYCoordinateOfVertex(a), 2) <= 15 * 15) {
                 return a;
             }
         }
@@ -233,10 +233,10 @@ public class NewGraph implements Screen {
     private void renderShapes() {
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
         if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
-            Graphics.renderEdge(graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
 
         } else if (secondVertex != -1) {
-            Graphics.renderEdge(graph.getXCoordinate(firstVertex), graph.getYCoordinate(firstVertex), graph.getXCoordinate(secondVertex), graph.getYCoordinate(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
         }
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
         shapeRenderer.end();
@@ -257,7 +257,7 @@ public class NewGraph implements Screen {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
         }
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             vertexLabels.get(a).update(scaleFactor);
             vertexLabels.get(a).draw(stage.getBatch(), 0);
         }

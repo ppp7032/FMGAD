@@ -13,6 +13,6 @@ public class VertexLabel extends Text {
     }
 
     public void update(final float scaleFactor) {
-        super.setTextPosition(graph.getXCoordinate(vertex) * scaleFactor, graph.getYCoordinate(vertex) * scaleFactor, 0, 0);
+        super.setTextPosition(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 0, 0);
     }
 }

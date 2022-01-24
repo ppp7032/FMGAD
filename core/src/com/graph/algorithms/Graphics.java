@@ -30,8 +30,8 @@ public abstract class Graphics {
     public static float[] setupDijkstraBoxes(final float scaleFactor, final Graph graph, final int vertex) {
         final float width = 93f * scaleFactor;
         final float height = 64f * scaleFactor;
-        final float x = graph.getXCoordinate(vertex) * scaleFactor - width / 2f;
-        final float y = graph.getYCoordinate(vertex) * scaleFactor - height / 2f;
+        final float x = graph.getXCoordinateOfVertex(vertex) * scaleFactor - width / 2f;
+        final float y = graph.getYCoordinateOfVertex(vertex) * scaleFactor - height / 2f;
         return new float[]{x, y, width, height};
     }
 
@@ -59,19 +59,19 @@ public abstract class Graphics {
 
     public static void renderGraphEdges(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
         shapeRenderer.setColor(1, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            for (int b = 0; b < graph.getNumberOfEdges(a); b++) {
-                Graphics.renderEdge(graph.getXCoordinate(a), graph.getYCoordinate(a), graph.getXCoordinate(graph.getVertex(a, b)), graph.getYCoordinate(graph.getVertex(a, b)), shapeRenderer, graph.isDigraph(), scaleFactor);
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+            for (int b = 0; b < graph.getNumberOfEdgesConnectedToVertex(a); b++) {
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(a), graph.getYCoordinateOfVertex(a), graph.getXCoordinateOfVertex(graph.getVertex(a, b)), graph.getYCoordinateOfVertex(graph.getVertex(a, b)), shapeRenderer, graph.isDigraph(), scaleFactor);
             }
         }
     }
 
     public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
         shapeRenderer.setColor(0, 0, 0, 1);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 15 * scaleFactor);
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+            shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 15 * scaleFactor);
             shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-            shapeRenderer.circle(graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, 13 * scaleFactor);
+            shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 13 * scaleFactor);
             shapeRenderer.setColor(0, 0, 0, 1);
         }
     }

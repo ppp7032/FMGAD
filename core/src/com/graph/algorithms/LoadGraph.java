@@ -36,7 +36,7 @@ public class LoadGraph implements Screen {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
-        dijkstraLabels = new Text[graph.getAdjacencyListSize()][4];
+        dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         GeneralConstructor(twenty);
     }
 
@@ -44,7 +44,7 @@ public class LoadGraph implements Screen {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
-        dijkstraLabels = new Text[graph.getAdjacencyListSize()][4];
+        dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         this.vertexLabels.addAll(vertexLabels);
         GeneralConstructor(twenty);
     }
@@ -63,7 +63,7 @@ public class LoadGraph implements Screen {
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
             BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0);
             BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0);
@@ -71,7 +71,7 @@ public class LoadGraph implements Screen {
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
             }
-            vertexLabels.add(new VertexLabel(Character.toString((char) (a + 65)), graph.getXCoordinate(a) * scaleFactor, graph.getYCoordinate(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, a, graph));
+            vertexLabels.add(new VertexLabel(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, a, graph));
         }
 
 
@@ -110,7 +110,7 @@ public class LoadGraph implements Screen {
                 if (dijkstraApplied) {
                     dijkstraApplied = false;
                     dijkstraContainer.setup = false;
-                    for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                         for (int b = 0; b < 4; b++) {
                             dijkstraLabels[a][b].setVisible(false);
                         }
@@ -157,7 +157,7 @@ public class LoadGraph implements Screen {
                 dijkstraPressed = false;
                 dijkstraApplied = true;
                 changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
-                for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+                for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                     for (int b = 0; b < 4; b++) {
                         dijkstraLabels[a][b].setVisible(true);
                     }
@@ -179,7 +179,7 @@ public class LoadGraph implements Screen {
         stage.addActor(endVertexInput);
         stage.addActor(back);
         stage.addActor(apply);
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             for (int b = 0; b < 4; b++) {
                 stage.addActor(dijkstraLabels[a][b]);
             }
@@ -204,7 +204,7 @@ public class LoadGraph implements Screen {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
         }
-        for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             vertexLabels.get(a).draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
@@ -213,7 +213,7 @@ public class LoadGraph implements Screen {
             Graphics.drawMenu(2, scaleFactor, shapeRenderer);
         }
         if (dijkstraApplied) {
-            for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+            for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                 final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
                 shapeRenderer.setColor(1, 1, 1, 1);
                 shapeRenderer.rect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
@@ -226,12 +226,12 @@ public class LoadGraph implements Screen {
             if (!dijkstraContainer.setup) {
                 final int startVertex = startVertexInput.getText().charAt(0) - 65;
                 final int endVertex = endVertexInput.getText().charAt(0) - 65;
-                final String[] pathsToEachVertex = new String[graph.getAdjacencyListSize()];
+                final String[] pathsToEachVertex = new String[graph.getNumberOfVertices()];
                 pathsToEachVertex[startVertex] = Integer.toString(startVertex);
-                final int[] orderLabels = new int[graph.getAdjacencyListSize()];
-                final int[] permanentLabels = new int[graph.getAdjacencyListSize()];
+                final int[] orderLabels = new int[graph.getNumberOfVertices()];
+                final int[] permanentLabels = new int[graph.getNumberOfVertices()];
                 final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
-                for (int a = 0; a < graph.getAdjacencyListSize(); a++) {
+                for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                     permanentLabels[a] = -1;
                     orderLabels[a] = -1;
                     temporaryLabels.add(new ArrayList<Integer>());

@@ -17,10 +17,10 @@ public class EdgeWeight extends Text {
 
     public void update(final float scaleFactor) {
         final float offset = 30; // number of pixels (not counting scaleFactor) above/below
-        final float x1 = graph.getXCoordinate(vertex1);
-        final float y1 = graph.getYCoordinate(vertex1);
-        final float x2 = graph.getXCoordinate(vertex2);
-        final float y2 = graph.getYCoordinate(vertex2);
+        final float x1 = graph.getXCoordinateOfVertex(vertex1);
+        final float y1 = graph.getYCoordinateOfVertex(vertex1);
+        final float x2 = graph.getXCoordinateOfVertex(vertex2);
+        final float y2 = graph.getYCoordinateOfVertex(vertex2);
         if (x1 == x2) {
             super.setTextPosition((x1 + offset) * scaleFactor, (y1 + y2) / 2f * scaleFactor, 0, 0);
         } else {

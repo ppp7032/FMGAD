@@ -101,24 +101,21 @@ public class Graph {
         file.writeString("digraph=" + digraph, true);
         for (int a = 0; a < adjacencyList.size(); a++) {
             final StringBuilder line = new StringBuilder("(" + coordinates.get(a)[0] + "," + coordinates.get(a)[1] + ")");
-            for (int b = 0; b < adjacencyList.get(a).size(); b++) {
-                line.append(" [").append(adjacencyList.get(a).get(b)[0]).append(",").append(adjacencyList.get(a).get(b)[1]).append("]");
+            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                line.append(" [").append(getVertex(a, b)).append(",").append(getEdgeWeight(a, b)).append("]");
             }
-
             file.writeString("\n" + line, true);
         }
         changeName(fileName);
     }
 
-    public boolean areVerticesConnected(final int vertex1, final int vertex2) {
-        boolean connected = false;
-        for (int a = 0; a < adjacencyList.get(vertex1).size(); a++) {
-            if (adjacencyList.get(vertex1).get(a)[0] == vertex2) {
-                connected = true;
-                break;
+    public boolean areTwoVerticesConnected(final int vertex1, final int vertex2) {
+        for (int a = 0; a < getNumberOfEdgesConnectedToVertex(vertex1); a++) {
+            if (getVertex(vertex1, a) == vertex2) {
+                return true;
             }
         }
-        return connected;
+        return false;
     }
 
     public void addVertex(final float x, final float y) {
@@ -135,19 +132,19 @@ public class Graph {
         addDirectedEdge(vertex2, vertex1, length);
     }
 
-    public int getAdjacencyListSize() {
+    public int getNumberOfVertices() {
         return adjacencyList.size();
     }
 
-    public float getXCoordinate(final int a) {
+    public float getXCoordinateOfVertex(final int a) {
         return coordinates.get(a)[0];
     }
 
-    public float getYCoordinate(final int a) {
+    public float getYCoordinateOfVertex(final int a) {
         return coordinates.get(a)[1];
     }
 
-    public int getNumberOfEdges(final int a) {
+    public int getNumberOfEdgesConnectedToVertex(final int a) {
         return adjacencyList.get(a).size();
     }
 
@@ -160,8 +157,8 @@ public class Graph {
     }
 
     public void addToEdgeWeights(ArrayList<EdgeWeight> edgeWeights, final float scaleFactor, final BitmapFont font) {
-        for (int a = 0; a < getAdjacencyListSize(); a++) {
-            for (int b = 0; b < getNumberOfEdges(a); b++) {
+        for (int a = 0; a < getNumberOfVertices(); a++) {
+            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
                 edgeWeights.add(new EdgeWeight(this, a, getVertex(a, b), Integer.toString(getEdgeWeight(a, b)), font, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
             }
         }
@@ -195,9 +192,9 @@ public class Graph {
     }
 
     public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
-        for (int a = 0; a < adjacencyList.get(dijkstraContainer.currentVertex).size(); a++) {
-            final int edgeTo = adjacencyList.get(dijkstraContainer.currentVertex).get(a)[0];
-            final int edgeWeight = adjacencyList.get(dijkstraContainer.currentVertex).get(a)[1];
+        for (int a = 0; a < getNumberOfEdgesConnectedToVertex(dijkstraContainer.currentVertex); a++) {
+            final int edgeTo = getVertex(dijkstraContainer.currentVertex, a);
+            final int edgeWeight = getEdgeWeight(dijkstraContainer.currentVertex, a);
             if (dijkstraContainer.temporaryLabels.get(edgeTo).size() == 0 || dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight < dijkstraContainer.temporaryLabels.get(edgeTo).get(dijkstraContainer.temporaryLabels.get(edgeTo).size() - 1)) {
                 dijkstraContainer.temporaryLabels.get(edgeTo).add(dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight);
                 dijkstraContainer.pathsToEachVertex[edgeTo] = dijkstraContainer.pathsToEachVertex[dijkstraContainer.currentVertex] + edgeTo;
@@ -221,9 +218,9 @@ public class Graph {
     private JarnikResult jarnikRecursion(final JarnikResult jarnikResult, final ArrayList<Integer> includedVertices) {
         final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
         for (int a = 0; a < includedVertices.size(); a++) {
-            for (int b = 0; b < adjacencyList.get(a).size(); b++) {
-                final int edgeTo = adjacencyList.get(includedVertices.get(a)).get(b)[0];
-                final int edgeWeight = adjacencyList.get(includedVertices.get(a)).get(b)[1];
+            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                final int edgeTo = getVertex(includedVertices.get(a), b);
+                final int edgeWeight = getEdgeWeight(includedVertices.get(a), b);
                 if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {
                     smallestEdge[0] = includedVertices.get(a);
                     smallestEdge[1] = edgeTo;
