@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Graph {
@@ -19,41 +20,30 @@ public class Graph {
 
     public Graph(final FileHandle graph) {
         final Scanner scanner = new Scanner(graph.read());
-        final String firstLine = scanner.nextLine();
-        int currentIndex = firstLine.indexOf('=');
-        digraph = Boolean.parseBoolean(firstLine.substring(currentIndex + 1));
+        String currentLine = scanner.nextLine();
+        int currentIndex = currentLine.indexOf('=');
+        digraph = Boolean.parseBoolean(currentLine.substring(currentIndex + 1));
         while (scanner.hasNext()) {
-            final String currentLine = scanner.nextLine();
-            final ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>();//[0] is open square bracket, [1] is comma, [2] is close square bracket, [3] is open bracket, [4] is close bracket
-            currentIndex = currentLine.indexOf('[');
-            occurrences.add(new ArrayList<Integer>());
-            while (currentIndex != -1) {
-                occurrences.get(0).add(currentIndex);
-                currentIndex = currentLine.indexOf('[', currentIndex + 1);
-            }
-            currentIndex = currentLine.indexOf(',');
-            occurrences.add(new ArrayList<Integer>());
-            while (currentIndex != -1) {
-                occurrences.get(1).add(currentIndex);
-                currentIndex = currentLine.indexOf(',', currentIndex + 1);
-            }
-            currentIndex = currentLine.indexOf(']');
-            occurrences.add(new ArrayList<Integer>());
-            while (currentIndex != -1) {
-                occurrences.get(2).add(currentIndex);
-                currentIndex = currentLine.indexOf(']', currentIndex + 1);
-            }
-            currentIndex = currentLine.indexOf('(');
-            occurrences.add(new ArrayList<Integer>());
-            while (currentIndex != -1) {
-                occurrences.get(3).add(currentIndex);
-                currentIndex = currentLine.indexOf('(', currentIndex + 1);
-            }
-            currentIndex = currentLine.indexOf(')');
-            occurrences.add(new ArrayList<Integer>());
-            while (currentIndex != -1) {
-                occurrences.get(4).add(currentIndex);
-                currentIndex = currentLine.indexOf(')', currentIndex + 1);
+            currentLine = scanner.nextLine();
+            final ArrayList<ArrayList<Integer>> occurrences = new ArrayList<>(Arrays.asList(new ArrayList<Integer>(), new ArrayList<Integer>(), new ArrayList<Integer>(), new ArrayList<Integer>(), new ArrayList<Integer>()));
+            for (int a = 0; a < currentLine.length(); a++) {
+                switch (currentLine.charAt(a)) {
+                    case '[':
+                        occurrences.get(0).add(a);
+                        break;
+                    case ',':
+                        occurrences.get(1).add(a);
+                        break;
+                    case ']':
+                        occurrences.get(2).add(a);
+                        break;
+                    case '(':
+                        occurrences.get(3).add(a);
+                        break;
+                    case ')':
+                        occurrences.get(4).add(a);
+                        break;
+                }
             }
             adjacencyList.add(new ArrayList<int[]>());
             coordinates.add(new float[]{Float.parseFloat(currentLine.substring(occurrences.get(3).get(0) + 1, occurrences.get(1).get(0))), Float.parseFloat(currentLine.substring(occurrences.get(1).get(0) + 1, occurrences.get(4).get(0)))});
