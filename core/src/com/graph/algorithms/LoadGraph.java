@@ -25,19 +25,21 @@ public class LoadGraph implements Screen {
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final Text[][] dijkstraLabels;
     private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
-    private TextField startVertexInput;
-    private TextField endVertexInput;
+    private final TextField startVertexInput;
+    private final TextField endVertexInput;
     private boolean dijkstraPressed = false;
     private boolean dijkstraApplied = false;
     private DijkstraContainer dijkstraContainer = new DijkstraContainer();
-    private boolean spaceKeyPressedLastFrame = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
-        GeneralConstructor(twenty);
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        startVertexInput = new TextField("0", skin);
+        endVertexInput = new TextField("0", skin);
+        GeneralConstructor(twenty, skin);
     }
 
     public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<VertexLabel> vertexLabels) {
@@ -46,11 +48,13 @@ public class LoadGraph implements Screen {
         this.edgeWeights.addAll(edgeWeights);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         this.vertexLabels.addAll(vertexLabels);
-        GeneralConstructor(twenty);
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        startVertexInput = new TextField("0", skin);
+        endVertexInput = new TextField("0", skin);
+        GeneralConstructor(twenty, skin);
     }
 
-    private void GeneralConstructor(final BitmapFont twenty) {
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+    private void GeneralConstructor(final BitmapFont twenty, Skin skin) {
         final TextButton dijkstraButton = new TextButton("Dijsktra's", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
@@ -58,8 +62,6 @@ public class LoadGraph implements Screen {
         final float y1 = 491.5f;
         final Text dijkstraStartVertexLabel = new Text("Start Vertex", 430f * scaleFactor, y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0);
         final Text dijkstraEndVertexLabel = new Text("End Vertex", 430f * scaleFactor, (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0);
-        startVertexInput = new TextField("0", skin);
-        endVertexInput = new TextField("0", skin);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -240,7 +242,7 @@ public class LoadGraph implements Screen {
                 permanentLabels[startVertex] = 0;
                 graph.updateDijkstraLabels(dijkstraLabels, orderLabels, permanentLabels, temporaryLabels);
                 dijkstraContainer = new DijkstraContainer(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
-            } else if (!spaceKeyPressedLastFrame && Gdx.input.isKeyPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
         }
@@ -248,7 +250,6 @@ public class LoadGraph implements Screen {
         shapeRenderer.end();
         stage.act();
         stage.draw();
-        spaceKeyPressedLastFrame = Gdx.input.isKeyPressed(Input.Keys.SPACE);
     }
 
     private void changeVisibility(final Text dijkstraTitle, final Text dijkstraStartVertexLabel, final Text dijkstraEndVertexLabel, final TextButton back, final TextButton apply) {

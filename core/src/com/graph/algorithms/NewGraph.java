@@ -25,7 +25,7 @@ public class NewGraph implements Screen {
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
-    private Text temporaryVertexLabel;
+    private final Text temporaryVertexLabel;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
@@ -43,6 +43,7 @@ public class NewGraph implements Screen {
             counter++;
         }
         graph.changeName(file.name().substring(0, file.name().lastIndexOf(".")));
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
         GeneralConstructor(twenty, graph.getName());
     }
 
@@ -51,6 +52,7 @@ public class NewGraph implements Screen {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
         GeneralConstructor(twenty, graph.getName());
     }
 
@@ -68,7 +70,6 @@ public class NewGraph implements Screen {
         final TextButton save = new TextButton("Save", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton finish = new TextButton("Finish", skin, "default");
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
         temporaryVertexLabel.setVisible(false);
 
 
