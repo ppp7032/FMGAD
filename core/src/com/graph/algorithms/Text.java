@@ -53,7 +53,6 @@ public class Text extends Actor {
             toPrint = "..." + fullText.substring(counter);
             glyphLayout.setText(font, toPrint);
             counter++;
-            System.out.println(toPrint);
         }
         super.setWidth(glyphLayout.width);
         super.setHeight(glyphLayout.height);
