@@ -8,7 +8,7 @@ public class EdgeWeight extends Text {
     private final Graph graph;
 
     public EdgeWeight(final Graph graph, final int vertex1, final int vertex2, final String input, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final float scaleFactor) {
-        super(input, 0, 0, font, colour, alignX, alignY);
+        super(input, 0, 0, font, colour, alignX, alignY, -1);
         this.vertex1 = vertex1;
         this.vertex2 = vertex2;
         this.graph = graph;

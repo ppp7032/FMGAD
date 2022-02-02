@@ -7,7 +7,7 @@ public class VertexLabel extends Text {
     private final Graph graph;
 
     public VertexLabel(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final int vertex, final Graph graph) {
-        super(input, x, y, font, colour, alignX, alignY);
+        super(input, x, y, font, colour, alignX, alignY, -1);
         this.vertex = vertex;
         this.graph = graph;
     }

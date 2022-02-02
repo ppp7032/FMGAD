@@ -163,10 +163,10 @@ public abstract class Graphics {
     }
 
     public static void addTextToMenu(final Stage stage, final String title, final String[] attributes, final float scaleFactor, final BitmapFont titleFont, final BitmapFont attributeFont) {
-        stage.addActor(new Text(title, Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, titleFont, new float[]{0, 0, 0, 1}, 0, 0));
+        stage.addActor(new Text(title, Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, titleFont, new float[]{0, 0, 0, 1}, 0, 0, -1));
         float y = 491.5f;
         for (String attribute : attributes) {
-            stage.addActor(new Text(attribute, 430 * scaleFactor, y * scaleFactor, attributeFont, new float[]{0, 0, 0, 1}, -1, 0));
+            stage.addActor(new Text(attribute, 430 * scaleFactor, y * scaleFactor, attributeFont, new float[]{0, 0, 0, 1}, -1, 0, -1));
             y -= 61f;
         }
     }

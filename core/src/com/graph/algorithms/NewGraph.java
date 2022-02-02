@@ -43,7 +43,7 @@ public class NewGraph implements Screen {
             counter++;
         }
         graph.changeName(file.name().substring(0, file.name().lastIndexOf(".")));
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         GeneralConstructor(twenty, graph.getName());
     }
 
@@ -52,7 +52,7 @@ public class NewGraph implements Screen {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0);
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         GeneralConstructor(twenty, graph.getName());
     }
 
@@ -60,8 +60,8 @@ public class NewGraph implements Screen {
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         final TextField name = new TextField(graphName, skin);
         final TextField edgeWeight = new TextField("0", skin);
-        final Text edgeWeightTitle = new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0);
-        final Text edgeWeightLabel = new Text("Edge Weight", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0);
+        final Text edgeWeightTitle = new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        final Text edgeWeightLabel = new Text("Edge Weight", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");

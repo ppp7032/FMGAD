@@ -14,19 +14,20 @@ public class Text extends Actor {
     private final int alignY;
     private final float originalX;
     private final float originalY;
+    private final float maxWidth;
     private String toPrint;
+    private String fullText;
 
-    public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY) { //align -1 means left, 0 means centre, 1 means right
+    public Text(final String input, final float x, final float y, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final float maxWidth) { //align -1 means left, 0 means centre, 1 means right
         this.font = font;
-        toPrint = input;
-        final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
-        super.setWidth(glyphLayout.width);
-        super.setHeight(glyphLayout.height);
+        fullText = input;
         this.colour = colour;
         this.alignX = alignX;
         this.alignY = alignY;
         this.originalX = x;
         this.originalY = y;
+        this.maxWidth = maxWidth;
+        shrinkText();
         setTextPosition(x, y, alignX, alignY);
     }
 
@@ -44,11 +45,23 @@ public class Text extends Actor {
         return font;
     }
 
-    public void updateText(String newText) {
-        toPrint = newText;
-        final GlyphLayout glyphLayout = new GlyphLayout(font, toPrint);
+    private void shrinkText() {
+        final GlyphLayout glyphLayout = new GlyphLayout(font, fullText);
+        int counter = 1;
+        toPrint = fullText;
+        while (maxWidth != -1 && glyphLayout.width > maxWidth) {
+            toPrint = "..." + fullText.substring(counter);
+            glyphLayout.setText(font, toPrint);
+            counter++;
+            System.out.println(toPrint);
+        }
         super.setWidth(glyphLayout.width);
         super.setHeight(glyphLayout.height);
+    }
+
+    public void updateText(String newText) {
+        fullText = newText;
+        shrinkText();
         super.setPosition(originalX, originalY);
         setTextPosition(super.getX(), super.getY(), alignX, alignY);
     }
