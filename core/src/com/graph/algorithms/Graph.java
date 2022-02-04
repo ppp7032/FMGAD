@@ -197,32 +197,26 @@ public class Graph {
         updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
     }
 
-    public JarnikResult jarnik() {
+    public JarnikResult jarnik(final int startVertex) {
         JarnikResult jarnikResult = new JarnikResult();
         final ArrayList<Integer> includedVertices = new ArrayList<>();
-        includedVertices.add(0);
-        jarnikResult = jarnikRecursion(jarnikResult, includedVertices);
-        return jarnikResult;
-    }
-
-    private JarnikResult jarnikRecursion(final JarnikResult jarnikResult, final ArrayList<Integer> includedVertices) {
-        final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
-        for (int a = 0; a < includedVertices.size(); a++) {
-            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
-                final int edgeTo = getVertex(includedVertices.get(a), b);
-                final int edgeWeight = getEdgeWeight(includedVertices.get(a), b);
-                if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {
-                    smallestEdge[0] = includedVertices.get(a);
-                    smallestEdge[1] = edgeTo;
-                    smallestEdge[2] = edgeWeight;
+        includedVertices.add(startVertex);
+        while (includedVertices.size() < adjacencyList.size()) {
+            final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
+            for (int a = 0; a < includedVertices.size(); a++) {
+                for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                    final int edgeTo = getVertex(includedVertices.get(a), b);
+                    final int edgeWeight = getEdgeWeight(includedVertices.get(a), b);
+                    if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {
+                        smallestEdge[0] = includedVertices.get(a);
+                        smallestEdge[1] = edgeTo;
+                        smallestEdge[2] = edgeWeight;
+                    }
                 }
             }
-        }
-        jarnikResult.addEdge(smallestEdge);
-        includedVertices.add(smallestEdge[1]);
-        jarnikResult.addToTreeWeight(smallestEdge[2]);
-        if (includedVertices.size() < adjacencyList.size()) {
-            return jarnikRecursion(jarnikResult, includedVertices);
+            jarnikResult.addEdge(smallestEdge);
+            includedVertices.add(smallestEdge[1]);
+            jarnikResult.addToTreeWeight(smallestEdge[2]);
         }
         return jarnikResult;
     }
