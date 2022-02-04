@@ -204,7 +204,7 @@ public class Graph {
         while (includedVertices.size() < adjacencyList.size()) {
             final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
             for (int a = 0; a < includedVertices.size(); a++) {
-                for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                for (int b = 0; b < getNumberOfEdgesConnectedToVertex(includedVertices.get(a)); b++) {
                     final int edgeTo = getVertex(includedVertices.get(a), b);
                     final int edgeWeight = getEdgeWeight(includedVertices.get(a), b);
                     if (!includedVertices.contains(edgeTo) && (smallestEdge[0] == -1 || edgeWeight < smallestEdge[2])) {

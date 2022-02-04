@@ -31,6 +31,7 @@ public class LoadGraph implements Screen {
     private boolean dijkstraApplied = false;
     private DijkstraContainer dijkstraContainer = new DijkstraContainer();
     private boolean jarnikPressed = false;
+    private boolean jarnikApplied = false;
     private JarnikResult jarnikResult = new JarnikResult();
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
@@ -61,10 +62,10 @@ public class LoadGraph implements Screen {
         final TextButton jarnikButton = new TextButton("Jarník's", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
-        final Text dijkstraTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text dijkstraStartVertexLabel = new Text("Start Vertex", 430f * scaleFactor, y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
-        final Text dijkstraEndVertexLabel = new Text("End Vertex", 430f * scaleFactor, (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text startVertexLabel = new Text("Start Vertex", 430f * scaleFactor, y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text endVertexLabel = new Text("End Vertex", 430f * scaleFactor, (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -90,11 +91,11 @@ public class LoadGraph implements Screen {
 
         Graphics.setupBottomTwoButtons(mainMenu, edit, scaleFactor);
 
-        dijkstraTitle.setVisible(false);
+        menuTitle.setVisible(false);
 
-        dijkstraStartVertexLabel.setVisible(false);
+        startVertexLabel.setVisible(false);
 
-        dijkstraEndVertexLabel.setVisible(false);
+        endVertexLabel.setVisible(false);
 
         startVertexInput.setVisible(false);
         startVertexInput.setAlignment(1);
@@ -116,37 +117,55 @@ public class LoadGraph implements Screen {
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (dijkstraApplied) {
-                    dijkstraApplied = false;
-                    dijkstraContainer.setup = false;
-                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                        for (int b = 0; b < 4; b++) {
-                            dijkstraLabels[a][b].setVisible(false);
+                if (!jarnikApplied) {
+                    if (dijkstraApplied) {
+                        dijkstraApplied = false;
+                        dijkstraContainer.setup = false;
+                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                            for (int b = 0; b < 4; b++) {
+                                dijkstraLabels[a][b].setVisible(false);
+                            }
                         }
+                        dijkstraButton.setTouchable(Touchable.enabled);
+                        jarnikButton.setTouchable(Touchable.enabled);
+                        mainMenu.setTouchable(Touchable.enabled);
+                        edit.setTouchable(Touchable.enabled);
+                    } else if (!dijkstraPressed) {
+                        dijkstraPressed = true;
+                        changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                        menuTitle.updateText("Dijkstra's Algorithm Options");
+                        startVertexLabel.updateText("Start Vertex");
+                        endVertexLabel.updateText("End Vertex");
+                        dijkstraButton.setTouchable(Touchable.disabled);
+                        jarnikButton.setTouchable(Touchable.disabled);
+                        mainMenu.setTouchable(Touchable.disabled);
+                        edit.setTouchable(Touchable.disabled);
+                        startVertexInput.setText("A");
+                        endVertexInput.setText("A");
                     }
-                    dijkstraButton.setTouchable(Touchable.enabled);
-                    jarnikButton.setTouchable(Touchable.disabled);
-                    mainMenu.setTouchable(Touchable.enabled);
-                    edit.setTouchable(Touchable.enabled);
-                } else if (!dijkstraPressed) {
-                    dijkstraPressed = true;
-                    changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
-                    dijkstraButton.setTouchable(Touchable.disabled);
-                    jarnikButton.setTouchable(Touchable.disabled);
-                    mainMenu.setTouchable(Touchable.disabled);
-                    edit.setTouchable(Touchable.disabled);
-                    startVertexInput.setText("A");
-                    endVertexInput.setText("A");
                 }
             }
         });
         jarnikButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph()) {
-                    jarnikPressed = !jarnikPressed;
-                    if (jarnikPressed) {
-                        jarnikResult = graph.jarnik(0);
+                if (!graph.isDigraph() && !dijkstraApplied) {
+                    if (jarnikApplied) {
+                        jarnikApplied = false;
+                    } else {
+                        jarnikPressed = !jarnikPressed;
+                        if (jarnikPressed) {
+                            changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                            endVertexInput.setVisible(false);
+                            menuTitle.updateText("Jarník's Algorithm Options");
+                            startVertexLabel.updateText("Start Vertex");
+                            endVertexLabel.updateText("");
+                            dijkstraButton.setTouchable(Touchable.disabled);
+                            jarnikButton.setTouchable(Touchable.disabled);
+                            mainMenu.setTouchable(Touchable.disabled);
+                            edit.setTouchable(Touchable.disabled);
+                            startVertexInput.setText("A");
+                        }
                     }
                 }
             }
@@ -166,29 +185,41 @@ public class LoadGraph implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dijkstraPressed = false;
-                changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
+                changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
                 dijkstraButton.setTouchable(Touchable.enabled);
                 jarnikButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
+                if (dijkstraPressed) {
+                    dijkstraPressed = false;
+                } else if (jarnikPressed) {
+                    jarnikPressed = false;
+                    endVertexInput.setVisible(false);
+                }
             }
         });
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dijkstraPressed = false;
-                dijkstraApplied = true;
-                changeVisibility(dijkstraTitle, dijkstraStartVertexLabel, dijkstraEndVertexLabel, back, apply);
-                for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                    for (int b = 0; b < 4; b++) {
-                        dijkstraLabels[a][b].setVisible(true);
-                    }
-                }
                 dijkstraButton.setTouchable(Touchable.enabled);
                 jarnikButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
+                changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                if (dijkstraPressed) {
+                    dijkstraPressed = false;
+                    dijkstraApplied = true;
+                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                        for (int b = 0; b < 4; b++) {
+                            dijkstraLabels[a][b].setVisible(true);
+                        }
+                    }
+                } else if (jarnikPressed) {
+                    jarnikPressed = false;
+                    jarnikApplied = true;
+                    jarnikResult = graph.jarnik(startVertexInput.getText().charAt(0) - 65);
+                    endVertexInput.setVisible(false);
+                }
             }
         });
 
@@ -197,9 +228,9 @@ public class LoadGraph implements Screen {
         stage.addActor(jarnikButton);
         stage.addActor(mainMenu);
         stage.addActor(edit);
-        stage.addActor(dijkstraTitle);
-        stage.addActor(dijkstraStartVertexLabel);
-        stage.addActor(dijkstraEndVertexLabel);
+        stage.addActor(menuTitle);
+        stage.addActor(startVertexLabel);
+        stage.addActor(endVertexLabel);
         stage.addActor(startVertexInput);
         stage.addActor(endVertexInput);
         stage.addActor(back);
@@ -222,7 +253,7 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
-        if (jarnikPressed) {
+        if (jarnikApplied) {
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 0; a < jarnikResult.getCounter(); a++) {
                 Graphics.renderEdge(graph.getXCoordinateOfVertex(jarnikResult.getFromVertex(a)), graph.getYCoordinateOfVertex(jarnikResult.getFromVertex(a)), graph.getXCoordinateOfVertex(jarnikResult.getToVertex(a)), graph.getYCoordinateOfVertex(jarnikResult.getToVertex(a)), shapeRenderer, false, scaleFactor);
@@ -231,7 +262,7 @@ public class LoadGraph implements Screen {
                 jarnikResult.incrementCounter();
             }
             if (jarnikResult.getCounter() == graph.getNumberOfVertices()) {
-                jarnikPressed = false;
+                jarnikApplied = false;
             }
         }
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
@@ -248,6 +279,9 @@ public class LoadGraph implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         if (dijkstraPressed) {
             Graphics.drawMenu(2, scaleFactor, shapeRenderer);
+        }
+        if (jarnikPressed) {
+            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
         if (dijkstraApplied) {
             for (int a = 0; a < graph.getNumberOfVertices(); a++) {
