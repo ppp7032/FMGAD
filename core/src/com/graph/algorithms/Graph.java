@@ -197,8 +197,7 @@ public class Graph {
         updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
     }
 
-    public JarnikResult jarnik(final int startVertex) {
-        JarnikResult jarnikResult = new JarnikResult();
+    public void jarnik(final ArrayList<int[]> minimumEdges, final int startVertex) {
         final ArrayList<Integer> includedVertices = new ArrayList<>();
         includedVertices.add(startVertex);
         while (includedVertices.size() < adjacencyList.size()) {
@@ -214,10 +213,8 @@ public class Graph {
                     }
                 }
             }
-            jarnikResult.addEdge(smallestEdge);
+            minimumEdges.add(smallestEdge);
             includedVertices.add(smallestEdge[1]);
-            jarnikResult.addToTreeWeight(smallestEdge[2]);
         }
-        return jarnikResult;
     }
 }

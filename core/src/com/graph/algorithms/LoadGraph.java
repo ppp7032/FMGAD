@@ -27,12 +27,13 @@ public class LoadGraph implements Screen {
     private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
     private final TextField startVertexInput;
     private final TextField endVertexInput;
+    private final ArrayList<int[]> minimumEdges = new ArrayList<>();
     private boolean dijkstraPressed = false;
     private boolean dijkstraApplied = false;
     private DijkstraContainer dijkstraContainer = new DijkstraContainer();
     private boolean jarnikPressed = false;
     private boolean jarnikApplied = false;
-    private JarnikResult jarnikResult = new JarnikResult();
+    private int jarnikCounter = 1;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -217,7 +218,9 @@ public class LoadGraph implements Screen {
                 } else if (jarnikPressed) {
                     jarnikPressed = false;
                     jarnikApplied = true;
-                    jarnikResult = graph.jarnik(startVertexInput.getText().charAt(0) - 65);
+                    minimumEdges.clear();
+                    jarnikCounter = 1;
+                    graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
                     endVertexInput.setVisible(false);
                 }
             }
@@ -255,13 +258,13 @@ public class LoadGraph implements Screen {
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
         if (jarnikApplied) {
             shapeRenderer.setColor(0, 1, 0, 1);
-            for (int a = 0; a < jarnikResult.getCounter(); a++) {
-                Graphics.renderEdge(graph.getXCoordinateOfVertex(jarnikResult.getFromVertex(a)), graph.getYCoordinateOfVertex(jarnikResult.getFromVertex(a)), graph.getXCoordinateOfVertex(jarnikResult.getToVertex(a)), graph.getYCoordinateOfVertex(jarnikResult.getToVertex(a)), shapeRenderer, false, scaleFactor);
+            for (int a = 0; a < jarnikCounter; a++) {
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false, scaleFactor);
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                jarnikResult.incrementCounter();
+                jarnikCounter++;
             }
-            if (jarnikResult.getCounter() == graph.getNumberOfVertices()) {
+            if (jarnikCounter == graph.getNumberOfVertices()) {
                 jarnikApplied = false;
             }
         }
