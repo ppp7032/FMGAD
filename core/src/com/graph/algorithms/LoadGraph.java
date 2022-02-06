@@ -33,7 +33,8 @@ public class LoadGraph implements Screen {
     private DijkstraContainer dijkstraContainer = new DijkstraContainer();
     private boolean jarnikPressed = false;
     private boolean jarnikApplied = false;
-    private int jarnikCounter = 1;
+    private int minimumSpanningTreeCounter = 1;
+    private boolean kruskalApplied = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -61,6 +62,7 @@ public class LoadGraph implements Screen {
     private void GeneralConstructor(final BitmapFont twenty, Skin skin) {
         final TextButton dijkstraButton = new TextButton("Dijsktra's", skin, "default");
         final TextButton jarnikButton = new TextButton("Jarník's", skin, "default");
+        final TextButton kruskalButton = new TextButton("Kruskal's", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
         final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -90,6 +92,10 @@ public class LoadGraph implements Screen {
         jarnikButton.setHeight(46 * scaleFactor);
         jarnikButton.setPosition(dijkstraButton.getX(), dijkstraButton.getY() - 71 * scaleFactor);
 
+        kruskalButton.setWidth(127 * scaleFactor);
+        kruskalButton.setHeight(46 * scaleFactor);
+        kruskalButton.setPosition(jarnikButton.getX(), jarnikButton.getY() - 71 * scaleFactor);
+
         Graphics.setupBottomTwoButtons(mainMenu, edit, scaleFactor);
 
         menuTitle.setVisible(false);
@@ -118,7 +124,7 @@ public class LoadGraph implements Screen {
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!jarnikApplied) {
+                if (!jarnikApplied && !kruskalApplied) {
                     if (dijkstraApplied) {
                         dijkstraApplied = false;
                         dijkstraContainer.setup = false;
@@ -129,6 +135,7 @@ public class LoadGraph implements Screen {
                         }
                         dijkstraButton.setTouchable(Touchable.enabled);
                         jarnikButton.setTouchable(Touchable.enabled);
+                        kruskalButton.setTouchable(Touchable.enabled);
                         mainMenu.setTouchable(Touchable.enabled);
                         edit.setTouchable(Touchable.enabled);
                     } else if (!dijkstraPressed) {
@@ -139,6 +146,7 @@ public class LoadGraph implements Screen {
                         endVertexLabel.updateText("End Vertex");
                         dijkstraButton.setTouchable(Touchable.disabled);
                         jarnikButton.setTouchable(Touchable.disabled);
+                        kruskalButton.setTouchable(Touchable.disabled);
                         mainMenu.setTouchable(Touchable.disabled);
                         edit.setTouchable(Touchable.disabled);
                         startVertexInput.setText("A");
@@ -150,7 +158,7 @@ public class LoadGraph implements Screen {
         jarnikButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied) {
+                if (!graph.isDigraph() && !dijkstraApplied && !kruskalApplied) {
                     if (jarnikApplied) {
                         jarnikApplied = false;
                     } else {
@@ -163,10 +171,24 @@ public class LoadGraph implements Screen {
                             endVertexLabel.updateText("");
                             dijkstraButton.setTouchable(Touchable.disabled);
                             jarnikButton.setTouchable(Touchable.disabled);
+                            kruskalButton.setTouchable(Touchable.disabled);
                             mainMenu.setTouchable(Touchable.disabled);
                             edit.setTouchable(Touchable.disabled);
                             startVertexInput.setText("A");
                         }
+                    }
+                }
+            }
+        });
+        kruskalButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied) {
+                    kruskalApplied = !kruskalApplied;
+                    if (kruskalApplied) {
+                        minimumEdges.clear();
+                        minimumSpanningTreeCounter = 1;
+                        graph.kruskal(minimumEdges);
                     }
                 }
             }
@@ -189,6 +211,7 @@ public class LoadGraph implements Screen {
                 changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
                 dijkstraButton.setTouchable(Touchable.enabled);
                 jarnikButton.setTouchable(Touchable.enabled);
+                kruskalButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
                 if (dijkstraPressed) {
@@ -204,6 +227,7 @@ public class LoadGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 dijkstraButton.setTouchable(Touchable.enabled);
                 jarnikButton.setTouchable(Touchable.enabled);
+                kruskalButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
                 changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
@@ -219,7 +243,7 @@ public class LoadGraph implements Screen {
                     jarnikPressed = false;
                     jarnikApplied = true;
                     minimumEdges.clear();
-                    jarnikCounter = 1;
+                    minimumSpanningTreeCounter = 1;
                     graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
                     endVertexInput.setVisible(false);
                 }
@@ -229,6 +253,7 @@ public class LoadGraph implements Screen {
 
         stage.addActor(dijkstraButton);
         stage.addActor(jarnikButton);
+        stage.addActor(kruskalButton);
         stage.addActor(mainMenu);
         stage.addActor(edit);
         stage.addActor(menuTitle);
@@ -245,6 +270,22 @@ public class LoadGraph implements Screen {
         }
     }
 
+    private boolean drawMST(boolean condition) {
+        if (condition) {
+            shapeRenderer.setColor(0, 1, 0, 1);
+            for (int a = 0; a < minimumSpanningTreeCounter; a++) {
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false, scaleFactor);
+            }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                minimumSpanningTreeCounter++;
+            }
+            if (minimumSpanningTreeCounter == graph.getNumberOfVertices()) {
+                condition = false;
+            }
+        }
+        return condition;
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -256,18 +297,8 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
-        if (jarnikApplied) {
-            shapeRenderer.setColor(0, 1, 0, 1);
-            for (int a = 0; a < jarnikCounter; a++) {
-                Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false, scaleFactor);
-            }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                jarnikCounter++;
-            }
-            if (jarnikCounter == graph.getNumberOfVertices()) {
-                jarnikApplied = false;
-            }
-        }
+        jarnikApplied = drawMST(jarnikApplied);
+        kruskalApplied = drawMST(kruskalApplied);
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
         shapeRenderer.end();
         stage.getBatch().begin();

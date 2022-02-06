@@ -4,9 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class Graph {
     private final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
@@ -69,6 +67,17 @@ public class Graph {
             }
         }
         return smallest;
+    }
+
+    private static int find(final int[] parents, final int vertex) {
+        if (parents[vertex] == -1) {
+            return vertex;
+        }
+        return find(parents, parents[vertex]);
+    }
+
+    private static void union(final int[] parents, final int fromVertex, final int toVertex) {
+        parents[fromVertex] = toVertex;
     }
 
     public void changeName(final String newName) {
@@ -216,5 +225,56 @@ public class Graph {
             minimumEdges.add(smallestEdge);
             includedVertices.add(smallestEdge[1]);
         }
+    }
+
+    public void kruskal(final ArrayList<int[]> minimumEdges) {
+        final ArrayList<int[]> includedEdges = new ArrayList<>();
+        {
+            for (int a = 0; a < adjacencyList.size(); a++) {
+                for (int b = 0; b < adjacencyList.get(a).size(); b++) {
+                    final int[] currentEdge = new int[]{a, getVertex(a, b), getEdgeWeight(a, b)};
+                    boolean found = false;
+                    for (int[] includedEdge : includedEdges) {
+                        if (includedEdge[0] == currentEdge[1] && includedEdge[1] == currentEdge[0] && includedEdge[2] == currentEdge[2]) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        includedEdges.add(currentEdge);
+                    }
+                }
+            }
+            Collections.sort(includedEdges, new Comparator<int[]>() {
+                public int compare(int[] first, int[] second) {
+                    return -1 * Integer.compare(first[2], second[2]);
+                }
+            });
+        }
+        while (minimumEdges.size() < adjacencyList.size() - 1) {
+            minimumEdges.add(includedEdges.get(includedEdges.size() - 1));
+            //System.out.println("adding " + minimumEdges.get(minimumEdges.size() - 1)[0] + " and " + minimumEdges.get(minimumEdges.size() - 1)[1]);
+            includedEdges.remove(includedEdges.size() - 1);
+            if (cycleDetection(minimumEdges)) {
+                //System.out.println("cycle when adding " + minimumEdges.get(minimumEdges.size() - 1)[0] + " and " + minimumEdges.get(minimumEdges.size() - 1)[1]);
+                minimumEdges.remove(minimumEdges.size() - 1);
+            }
+        }
+    }
+
+    private boolean cycleDetection(final ArrayList<int[]> minimumEdges) {
+        final int[] parents = new int[adjacencyList.size()];
+        for (int a = 0; a < adjacencyList.size(); a++) {
+            parents[a] = -1;
+        }
+        for (int[] minimumEdge : minimumEdges) {
+            final int fromVertex = find(parents, minimumEdge[0]);
+            final int toVertex = find(parents, minimumEdge[1]);
+            if (fromVertex == toVertex) {
+                return true;
+            }
+            union(parents, fromVertex, toVertex);
+        }
+        return false;
     }
 }
