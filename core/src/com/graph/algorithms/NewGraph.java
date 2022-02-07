@@ -172,19 +172,13 @@ public class NewGraph implements Screen {
         newVertex.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!newEdgeClicked) {
-                    newVertexClicked = true;
-                    temporaryVertexLabel.setVisible(true);
-                    temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
-                }
+                clickNewVertex();
             }
         });
         newEdge.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!newVertexClicked) {
-                    newEdgeClicked = true;
-                }
+                clickNewEdge();
             }
         });
         save.addListener(new ClickListener() {
@@ -218,6 +212,20 @@ public class NewGraph implements Screen {
         stage.addActor(save);
         stage.addActor(mainMenu);
         stage.addActor(finish);
+    }
+
+    private void clickNewVertex() {
+        if (!newEdgeClicked) {
+            newVertexClicked = true;
+            temporaryVertexLabel.setVisible(true);
+            temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
+        }
+    }
+
+    private void clickNewEdge() {
+        if (!newVertexClicked) {
+            newEdgeClicked = true;
+        }
     }
 
     private int findVertexBeingClicked() {
@@ -305,6 +313,11 @@ public class NewGraph implements Screen {
         }
         if (vertexBeingMoved != -1 && Graphics.mouseInBounds(scaleFactor)) {
             graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
+            clickNewVertex();
+        } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            clickNewEdge();
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         renderShapes();
