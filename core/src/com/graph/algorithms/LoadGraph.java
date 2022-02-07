@@ -297,6 +297,15 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
+        if (dijkstraApplied && dijkstraContainer.setup && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] != -1) {
+            String path = dijkstraContainer.pathsToEachVertex[dijkstraContainer.endVertex];
+            shapeRenderer.setColor(0, 1, 0, 1);
+            for (int a = 1; a < path.length(); a++) {
+                final int vertex1 = Integer.parseInt(Character.toString(path.charAt(a - 1)));
+                final int vertex2 = Integer.parseInt(Character.toString(path.charAt(a)));
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
+            }
+        }
         jarnikApplied = drawMST(jarnikApplied);
         kruskalApplied = drawMST(kruskalApplied);
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
