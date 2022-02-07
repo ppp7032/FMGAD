@@ -24,7 +24,7 @@ public class NewGraph implements Screen {
     private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
-    private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
+    private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final Text temporaryVertexLabel;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
@@ -47,7 +47,7 @@ public class NewGraph implements Screen {
         GeneralConstructor(twenty, graph.getName());
     }
 
-    public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<VertexLabel> vertexLabels) {
+    public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
@@ -113,7 +113,7 @@ public class NewGraph implements Screen {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
-                        vertexLabels.add(new VertexLabel(Character.toString((char) (graph.getNumberOfVertices() + 64)), graph.getXCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, graph.getYCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, graph.getNumberOfVertices() - 1, graph));
+                        vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), graph.getXCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, graph.getYCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
                         temporaryVertexLabel.setVisible(false);
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
@@ -247,7 +247,7 @@ public class NewGraph implements Screen {
         } else if (secondVertex != -1) {
             Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
         }
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch());
         shapeRenderer.end();
         if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -265,10 +265,6 @@ public class NewGraph implements Screen {
         for (EdgeWeight edgeWeight : edgeWeights) {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
-        }
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            vertexLabels.get(a).update(scaleFactor);
-            vertexLabels.get(a).draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

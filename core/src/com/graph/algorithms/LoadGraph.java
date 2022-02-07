@@ -24,7 +24,7 @@ public class LoadGraph implements Screen {
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final Text[][] dijkstraLabels;
-    private final ArrayList<VertexLabel> vertexLabels = new ArrayList<>();
+    private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final TextField startVertexInput;
     private final TextField endVertexInput;
     private final ArrayList<int[]> minimumEdges = new ArrayList<>();
@@ -47,7 +47,7 @@ public class LoadGraph implements Screen {
         GeneralConstructor(twenty, skin);
     }
 
-    public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<VertexLabel> vertexLabels) {
+    public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         this.edgeWeights.addAll(edgeWeights);
@@ -80,7 +80,7 @@ public class LoadGraph implements Screen {
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
             }
-            vertexLabels.add(new VertexLabel(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, a, graph));
+            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
         }
 
 
@@ -308,15 +308,12 @@ public class LoadGraph implements Screen {
         }
         jarnikApplied = drawMST(jarnikApplied);
         kruskalApplied = drawMST(kruskalApplied);
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor);
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch());
         shapeRenderer.end();
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
             edgeWeight.update(scaleFactor);
             edgeWeight.draw(stage.getBatch(), 0);
-        }
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            vertexLabels.get(a).draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

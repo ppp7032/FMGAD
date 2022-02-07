@@ -158,7 +158,7 @@ public class Graph {
     public void addToEdgeWeights(ArrayList<EdgeWeight> edgeWeights, final float scaleFactor, final BitmapFont font) {
         for (int a = 0; a < getNumberOfVertices(); a++) {
             for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
-                edgeWeights.add(new EdgeWeight(this, a, getVertex(a, b), Integer.toString(getEdgeWeight(a, b)), font, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
+                edgeWeights.add(new EdgeWeight(this, a, getVertex(a, b), Integer.toString(getEdgeWeight(a, b)), font, new float[]{0, 0, 1, 1}, 0, 0, scaleFactor));
             }
         }
     }

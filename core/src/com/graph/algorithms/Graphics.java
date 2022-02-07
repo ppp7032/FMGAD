@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public abstract class Graphics {
     public static void drawRectangleWithBorder(final ShapeRenderer renderer, final float x, final float y, final float width, final float height, final float borderWidth, final float[] colour) {
@@ -66,12 +68,18 @@ public abstract class Graphics {
         }
     }
 
-    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
+    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor, final ArrayList<Text> vertexLabels, Batch batch) {
         shapeRenderer.setColor(0, 0, 0, 1);
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+        for (int a = graph.getNumberOfVertices() - 1; a >= 0; a--) {
             shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 15 * scaleFactor);
             shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
             shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 13 * scaleFactor);
+            shapeRenderer.end();
+            batch.begin();
+            vertexLabels.get(a).setTextPosition(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 0, 0);
+            vertexLabels.get(a).draw(batch, 0);
+            batch.end();
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0, 0, 0, 1);
         }
     }
