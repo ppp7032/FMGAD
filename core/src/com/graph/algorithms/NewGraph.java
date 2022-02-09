@@ -247,7 +247,7 @@ public class NewGraph implements Screen {
         } else if (secondVertex != -1) {
             Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
         }
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch());
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), vertexBeingMoved);
         shapeRenderer.end();
         if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

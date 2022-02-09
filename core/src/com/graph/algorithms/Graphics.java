@@ -68,20 +68,33 @@ public abstract class Graphics {
         }
     }
 
-    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor, final ArrayList<Text> vertexLabels, Batch batch) {
+    private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final ArrayList<Text> vertexLabels, final float scaleFactor) {
+        shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 15 * scaleFactor);
+        shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
+        shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 13 * scaleFactor);
+        shapeRenderer.end();
+        batch.begin();
+        vertexLabels.get(vertex).setTextPosition(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 0, 0);
+        vertexLabels.get(vertex).draw(batch, 0);
+        batch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 1);
+    }
+
+    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor, final ArrayList<Text> vertexLabels, Batch batch, final int vertexBeingMoved) {
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = graph.getNumberOfVertices() - 1; a >= 0; a--) {
-            shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 15 * scaleFactor);
-            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-            shapeRenderer.circle(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 13 * scaleFactor);
-            shapeRenderer.end();
-            batch.begin();
-            vertexLabels.get(a).setTextPosition(graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, 0, 0);
-            vertexLabels.get(a).draw(batch, 0);
-            batch.end();
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(0, 0, 0, 1);
+            if (vertexBeingMoved != a) {
+                renderVertex(shapeRenderer, batch, graph, a, vertexLabels, scaleFactor);
+            }
         }
+        if (vertexBeingMoved != -1) {
+            renderVertex(shapeRenderer, batch, graph, vertexBeingMoved, vertexLabels, scaleFactor);
+        }
+    }
+
+    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor, final ArrayList<Text> vertexLabels, Batch batch) {
+        renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, batch, -1);
     }
 
     public static void setupBackAndApplyButtons(final TextButton back, final TextButton apply, final float scaleFactor, final boolean visible) {

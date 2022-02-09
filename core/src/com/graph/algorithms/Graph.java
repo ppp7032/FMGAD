@@ -12,7 +12,7 @@ public class Graph {
     private final boolean digraph;
     private String name;
 
-    public Graph(final Boolean digraph) {
+    public Graph(final boolean digraph) {
         this.digraph = digraph;
     }
 
