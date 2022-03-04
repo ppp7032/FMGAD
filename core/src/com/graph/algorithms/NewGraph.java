@@ -158,14 +158,22 @@ public class NewGraph implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                final int weight = Integer.parseInt(edgeWeight.getText());
-                if (graph.isDigraph()) {
-                    graph.addDirectedEdge(firstVertex, secondVertex, weight);
-                } else {
-                    graph.addUndirectedEdge(firstVertex, secondVertex, weight);
+                int weight = 0;
+                boolean isInteger = true;
+                try {
+                    weight = Integer.parseInt(edgeWeight.getText());
+                } catch (NumberFormatException e) {
+                    isInteger = false;
                 }
-                edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
-                closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
+                if (isInteger) {
+                    if (graph.isDigraph()) {
+                        graph.addDirectedEdge(firstVertex, secondVertex, weight);
+                    } else {
+                        graph.addUndirectedEdge(firstVertex, secondVertex, weight);
+                    }
+                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
+                    closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
+                }
                 edgeWeight.setText("0");
             }
         });

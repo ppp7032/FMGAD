@@ -16,7 +16,7 @@ public class EdgeWeight extends Text {
     }
 
     public void update(final float scaleFactor) {
-        final float offset = 30; // number of pixels (not counting scaleFactor) above/below
+        final float offset = 20; // number of pixels (not counting scaleFactor) above/below
         final float x1 = graph.getXCoordinateOfVertex(vertex1);
         final float y1 = graph.getYCoordinateOfVertex(vertex1);
         final float x2 = graph.getXCoordinateOfVertex(vertex2);
