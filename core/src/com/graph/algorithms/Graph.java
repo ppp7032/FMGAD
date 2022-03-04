@@ -277,4 +277,20 @@ public class Graph {
         }
         return false;
     }
+
+    public boolean depthFirstSearch(){
+        ArrayList<Integer> toVisit=new ArrayList<>();
+        ArrayList<Integer> visited=new ArrayList<>();
+        toVisit.add(0);
+        while(toVisit.size()>0){
+            int currentVertex=toVisit.remove(toVisit.size()-1);
+            if(!visited.contains(currentVertex)){
+                visited.add(currentVertex);
+                for(int a=0;a<getNumberOfEdgesConnectedToVertex(currentVertex);a++){
+                    toVisit.add(getVertex(currentVertex,a));
+                }
+            }
+        }
+        return visited.size() == getNumberOfVertices();
+    }
 }
