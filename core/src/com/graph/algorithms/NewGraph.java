@@ -171,7 +171,7 @@ public class NewGraph implements Screen {
                     } else {
                         graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                     }
-                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 0, 1}, 0, 0, scaleFactor));
+                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0, scaleFactor));
                     closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
                 }
                 edgeWeight.setText("0");
