@@ -68,14 +68,14 @@ public abstract class Graphics {
         }
     }
 
-    private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final ArrayList<Text> vertexLabels, final float scaleFactor) {
+    private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final Text vertexLabel, final float scaleFactor) {
         shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 15 * scaleFactor);
         shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 13 * scaleFactor);
         shapeRenderer.end();
         batch.begin();
-        vertexLabels.get(vertex).setTextPosition(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 0, 0);
-        vertexLabels.get(vertex).draw(batch, 0);
+        vertexLabel.setTextPosition(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 0, 0);
+        vertexLabel.draw(batch, 0);
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(0, 0, 0, 1);
@@ -85,11 +85,11 @@ public abstract class Graphics {
         shapeRenderer.setColor(0, 0, 0, 1);
         for (int a = graph.getNumberOfVertices() - 1; a >= 0; a--) {
             if (vertexBeingMoved != a) {
-                renderVertex(shapeRenderer, batch, graph, a, vertexLabels, scaleFactor);
+                renderVertex(shapeRenderer, batch, graph, a, vertexLabels.get(a), scaleFactor);
             }
         }
         if (vertexBeingMoved != -1) {
-            renderVertex(shapeRenderer, batch, graph, vertexBeingMoved, vertexLabels, scaleFactor);
+            renderVertex(shapeRenderer, batch, graph, vertexBeingMoved, vertexLabels.get(vertexBeingMoved), scaleFactor);
         }
     }
 
