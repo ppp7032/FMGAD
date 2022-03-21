@@ -31,6 +31,7 @@ public class NewGraph implements Screen {
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
+    private boolean cannotSaveAlert=false;
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
@@ -110,6 +111,7 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (Graphics.mouseInBounds(scaleFactor)) {
+                    cannotSaveAlert=false;
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
@@ -192,7 +194,12 @@ public class NewGraph implements Screen {
         save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                graph.saveGraph(name.getText());
+                if(graph.isConnected()) {
+                    graph.saveGraph(name.getText());
+                }
+                else{
+                    cannotSaveAlert=true;
+                }
             }
         });
         mainMenu.addListener(new ClickListener() {
@@ -204,7 +211,12 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
+                if(graph.isConnected()) {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
+                }
+                else{
+                    cannotSaveAlert=true;
+                }
             }
         });
 
@@ -279,6 +291,11 @@ public class NewGraph implements Screen {
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
+        }
+        if(cannotSaveAlert) {
+            final float width = 300f * scaleFactor;
+            final float height = 200f * scaleFactor;
+            Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         }
     }
 
