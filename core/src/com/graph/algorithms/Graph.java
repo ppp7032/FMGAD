@@ -278,19 +278,37 @@ public class Graph {
         return false;
     }
 
-    public boolean depthFirstSearch(){
-        ArrayList<Integer> toVisit=new ArrayList<>();
-        ArrayList<Integer> visited=new ArrayList<>();
+    public boolean depthFirstSearch() {
+        ArrayList<Integer> toVisit = new ArrayList<>();
+        ArrayList<Integer> visited = new ArrayList<>();
         toVisit.add(0);
-        while(toVisit.size()>0){
-            int currentVertex=toVisit.remove(toVisit.size()-1);
-            if(!visited.contains(currentVertex)){
+        while (toVisit.size() > 0) {
+            int currentVertex = toVisit.remove(toVisit.size() - 1);
+            if (!visited.contains(currentVertex)) {
                 visited.add(currentVertex);
-                for(int a=0;a<getNumberOfEdgesConnectedToVertex(currentVertex);a++){
-                    toVisit.add(getVertex(currentVertex,a));
+                for (int a = 0; a < getNumberOfEdgesConnectedToVertex(currentVertex); a++) {
+                    toVisit.add(getVertex(currentVertex, a));
                 }
             }
         }
         return visited.size() == getNumberOfVertices();
+    }
+
+    public boolean isConnected() {
+        if (digraph) {
+            final Graph graph = new Graph(true);
+            for (int a = 0; a < getNumberOfVertices(); a++) {
+                graph.addVertex(getXCoordinateOfVertex(a), getYCoordinateOfVertex(a));
+            }
+            for (int a = 0; a < getNumberOfVertices(); a++) {
+                for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                    final int toVertex = getVertex(a, b);
+                    graph.addUndirectedEdge(a, toVertex, getEdgeWeight(a, b));
+                }
+            }
+            return graph.depthFirstSearch();
+        } else {
+            return depthFirstSearch();
+        }
     }
 }
