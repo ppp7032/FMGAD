@@ -336,22 +336,8 @@ public class LoadGraph implements Screen {
                 //System.out.println((dimensions[0] + dimensions[2] / 3f)-(dimensions[0] + dimensions[2] / 3f * 2f));
             }
             if (!dijkstraContainer.setup) {
-                final int startVertex = startVertexInput.getText().charAt(0) - 65;
-                final int endVertex = endVertexInput.getText().charAt(0) - 65;
-                final String[] pathsToEachVertex = new String[graph.getNumberOfVertices()];
-                pathsToEachVertex[startVertex] = Integer.toString(startVertex);
-                final int[] orderLabels = new int[graph.getNumberOfVertices()];
-                final int[] permanentLabels = new int[graph.getNumberOfVertices()];
-                final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
-                for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                    permanentLabels[a] = -1;
-                    orderLabels[a] = -1;
-                    temporaryLabels.add(new ArrayList<Integer>());
-                }
-                orderLabels[startVertex] = 1;
-                permanentLabels[startVertex] = 0;
-                graph.updateDijkstraLabels(dijkstraLabels, orderLabels, permanentLabels, temporaryLabels);
-                dijkstraContainer = new DijkstraContainer(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
+                dijkstraContainer = graph.setupDijkstraContainer(startVertexInput.getText().charAt(0) - 65, endVertexInput.getText().charAt(0) - 65);
+                graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }

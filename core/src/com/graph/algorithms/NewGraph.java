@@ -26,16 +26,19 @@ public class NewGraph implements Screen {
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final Text temporaryVertexLabel;
+    private final Text cannotSaveMessage;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
-    private boolean cannotSaveAlert=false;
+    private boolean cannotSaveAlert = false;
+    private TextField edgeWeight;
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        cannotSaveMessage = new Text("Saving disconnected graphs is not supported.", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
@@ -51,6 +54,7 @@ public class NewGraph implements Screen {
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        cannotSaveMessage = new Text("Saving disconnected\ngraphs is not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
         temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -59,8 +63,8 @@ public class NewGraph implements Screen {
 
     private void GeneralConstructor(final BitmapFont twenty, final String graphName) {
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        edgeWeight = new TextField("0", skin);
         final TextField name = new TextField(graphName, skin);
-        final TextField edgeWeight = new TextField("0", skin);
         final Text edgeWeightTitle = new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final Text edgeWeightLabel = new Text("Edge Weight", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
@@ -73,6 +77,8 @@ public class NewGraph implements Screen {
         final TextButton finish = new TextButton("Finish", skin, "default");
         temporaryVertexLabel.setVisible(false);
 
+
+        cannotSaveMessage.setVisible(false);
 
         name.setAlignment(1);
         name.setWidth(124 * scaleFactor);
@@ -111,7 +117,8 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (Graphics.mouseInBounds(scaleFactor)) {
-                    cannotSaveAlert=false;
+                    cannotSaveAlert = false;
+                    cannotSaveMessage.setVisible(false);
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
@@ -176,7 +183,6 @@ public class NewGraph implements Screen {
                     edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0, scaleFactor));
                     closeEnterEdgeWeightMenu(edgeWeight, edgeWeightTitle, edgeWeightLabel, back, apply, newVertex, newEdge, save, finish, mainMenu, name);
                 }
-                edgeWeight.setText("0");
             }
         });
         newVertex.addListener(new ClickListener() {
@@ -194,11 +200,11 @@ public class NewGraph implements Screen {
         save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(graph.isConnected()) {
+                if (graph.isConnected()) {
                     graph.saveGraph(name.getText());
-                }
-                else{
-                    cannotSaveAlert=true;
+                } else {
+                    cannotSaveAlert = true;
+                    cannotSaveMessage.setVisible(true);
                 }
             }
         });
@@ -211,16 +217,16 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(graph.isConnected()) {
+                if (graph.isConnected()) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
-                }
-                else{
-                    cannotSaveAlert=true;
+                } else {
+                    cannotSaveAlert = true;
                 }
             }
         });
 
 
+        stage.addActor(cannotSaveMessage);
         stage.addActor(name);
         stage.addActor(edgeWeight);
         stage.addActor(edgeWeightTitle);
@@ -243,6 +249,7 @@ public class NewGraph implements Screen {
     }
 
     private void clickNewEdge() {
+        edgeWeight.setText("0");
         if (!newVertexClicked) {
             newEdgeClicked = true;
         }
@@ -292,9 +299,14 @@ public class NewGraph implements Screen {
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
-        if(cannotSaveAlert) {
+        if (cannotSaveAlert) {
+            newVertexClicked = false;
+            newEdgeClicked = false;
+            firstVertex = -1;
+            secondVertex = -1;
+            vertexBeingMoved = -1;
             final float width = 300f * scaleFactor;
-            final float height = 200f * scaleFactor;
+            final float height = 75f * scaleFactor;
             Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         }
     }

@@ -190,7 +190,7 @@ public class Graph {
         }
     }
 
-    public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
+    public void dijkstraStep(final DijkstraContainer dijkstraContainer) {
         for (int a = 0; a < getNumberOfEdgesConnectedToVertex(dijkstraContainer.currentVertex); a++) {
             final int edgeTo = getVertex(dijkstraContainer.currentVertex, a);
             final int edgeWeight = getEdgeWeight(dijkstraContainer.currentVertex, a);
@@ -203,7 +203,27 @@ public class Graph {
         dijkstraContainer.permanentLabels[smallest] = dijkstraContainer.temporaryLabels.get(smallest).get(dijkstraContainer.temporaryLabels.get(smallest).size() - 1);
         dijkstraContainer.orderLabels[smallest] = dijkstraContainer.orderLabels[dijkstraContainer.currentVertex] + 1;
         dijkstraContainer.currentVertex = smallest;
+    }
+
+    public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
+        dijkstraStep(dijkstraContainer);
         updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
+    }
+
+    public DijkstraContainer setupDijkstraContainer(final int startVertex, final int endVertex) {
+        final String[] pathsToEachVertex = new String[getNumberOfVertices()];
+        pathsToEachVertex[startVertex] = Integer.toString(startVertex);
+        final int[] orderLabels = new int[getNumberOfVertices()];
+        final int[] permanentLabels = new int[getNumberOfVertices()];
+        final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
+        for (int a = 0; a < getNumberOfVertices(); a++) {
+            permanentLabels[a] = -1;
+            orderLabels[a] = -1;
+            temporaryLabels.add(new ArrayList<Integer>());
+        }
+        orderLabels[startVertex] = 1;
+        permanentLabels[startVertex] = 0;
+        return new DijkstraContainer(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
     public void jarnik(final ArrayList<int[]> minimumEdges, final int startVertex) {
@@ -276,6 +296,100 @@ public class Graph {
             union(parents, fromVertex, toVertex);
         }
         return false;
+    }
+
+    private int[] getOddVertices() {
+        ArrayList<Integer> oddVertices = new ArrayList<>();
+        for (int a = 0; a < getNumberOfVertices(); a++) {
+            if (getNumberOfEdgesConnectedToVertex(a) % 2 == 1) {
+                oddVertices.add(a);
+            }
+        }
+        int[] toReturn = new int[oddVertices.size()];
+        for (int a = 0; a < toReturn.length; a++) {
+            toReturn[a] = oddVertices.get(a);
+        }
+        return toReturn;
+    }
+
+    private ArrayList<ArrayList<int[]>> getAllPairsOfList4(int[] list) {
+        ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
+        ArrayList<int[]> one = new ArrayList<>();
+        one.add(new int[]{list[0], list[1]});
+        one.add(new int[]{list[2], list[3]});
+        ArrayList<int[]> two = new ArrayList<>();
+        two.add(new int[]{list[0], list[2]});
+        two.add(new int[]{list[1], list[3]});
+        ArrayList<int[]> three = new ArrayList<>();
+        three.add(new int[]{list[0], list[3]});
+        three.add(new int[]{list[1], list[2]});
+        toReturn.add(one);
+        toReturn.add(two);
+        toReturn.add(three);
+        return toReturn;
+    }
+
+    private ArrayList<ArrayList<int[]>> getAllPairsOfList(int[] list) {
+        ArrayList<ArrayList<int[]>> allPairs = new ArrayList<>();
+        if (list.length >= 6) {
+            for (int a = 1; a < list.length; a++) {
+                int[] reducedList = new int[list.length - 2];
+                int counter = 0;
+                for (int b = 1; b < list.length; b++) {
+                    if (list[b] != list[a]) {
+                        reducedList[counter] = list[b];
+                        counter++;
+                    }
+                }
+                ArrayList<ArrayList<int[]>> reducedPairs = getAllPairsOfList(reducedList);
+                for (ArrayList<int[]> reducedPair : reducedPairs) {
+                    reducedPair.add(new int[]{list[0], list[a]});
+                    allPairs.add(reducedPair);
+                }
+            }
+        } else if (list.length == 4) {
+            return getAllPairsOfList4(list);
+        } else {
+            final ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
+            final ArrayList<int[]> one = new ArrayList<>();
+            one.add(new int[]{list[0], list[1]});
+            toReturn.add(one);
+            return toReturn;
+        }
+        return allPairs;
+    }
+
+    public void routeInspection() {
+        //ArrayList<int[]> pathsBetweenOddVertices = new ArrayList<>();
+        final ArrayList<ArrayList<int[]>> allPairs = getAllPairsOfList(getOddVertices());
+        final ArrayList<ArrayList<String>> allPaths = new ArrayList<>();
+        final int[][] totalWeights = new int[allPairs.size()][2];
+        for (int a = 0; a < allPairs.size(); a++) {
+            totalWeights[a][0] = 0;
+            totalWeights[a][1] = a;
+            allPaths.add(new ArrayList<String>());
+            for (int b = 0; b < allPairs.get(a).size(); b++) {
+                DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
+                while (container.permanentLabels[container.endVertex] == -1) {
+                    dijkstraStep(container);
+                }
+                allPaths.get(a).add(container.pathsToEachVertex[container.endVertex]);
+                totalWeights[a][0] += container.permanentLabels[container.endVertex];
+            }
+        }
+        java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                return Integer.compare(a[0], b[0]);
+            }
+        });
+        final ArrayList<String> shortestPaths = allPaths.get(totalWeights[0][1]);
+        final ArrayList<String> repeatedEdges = new ArrayList<>();
+        for (String shortestPath : shortestPaths) {
+            for (int b = 0; b < shortestPath.length() - 1; b++) {
+                repeatedEdges.add(shortestPath.charAt(b) + Character.toString(shortestPath.charAt(b + 1)));
+            }
+        }
+        System.out.println();
     }
 
     public boolean depthFirstSearch() {
