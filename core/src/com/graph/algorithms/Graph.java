@@ -196,7 +196,11 @@ public class Graph {
             final int edgeWeight = getEdgeWeight(dijkstraContainer.currentVertex, a);
             if (dijkstraContainer.temporaryLabels.get(edgeTo).size() == 0 || dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight < dijkstraContainer.temporaryLabels.get(edgeTo).get(dijkstraContainer.temporaryLabels.get(edgeTo).size() - 1)) {
                 dijkstraContainer.temporaryLabels.get(edgeTo).add(dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight);
-                dijkstraContainer.pathsToEachVertex[edgeTo] = dijkstraContainer.pathsToEachVertex[dijkstraContainer.currentVertex] + edgeTo;
+                dijkstraContainer.pathsToEachVertex.get(edgeTo).clear();
+                for (int b = 0; b < dijkstraContainer.pathsToEachVertex.get(dijkstraContainer.currentVertex).size(); b++) {
+                    dijkstraContainer.pathsToEachVertex.get(edgeTo).add(dijkstraContainer.pathsToEachVertex.get(dijkstraContainer.currentVertex).get(b));
+                }
+                dijkstraContainer.pathsToEachVertex.get(edgeTo).add(edgeTo);
             }
         }
         final int smallest = findSmallestNonPermanentTemporaryLabel(dijkstraContainer.temporaryLabels, dijkstraContainer.orderLabels);
@@ -211,8 +215,11 @@ public class Graph {
     }
 
     public DijkstraContainer setupDijkstraContainer(final int startVertex, final int endVertex) {
-        final String[] pathsToEachVertex = new String[getNumberOfVertices()];
-        pathsToEachVertex[startVertex] = Integer.toString(startVertex);
+        final ArrayList<ArrayList<Integer>> pathsToEachVertex = new ArrayList<>();
+        for (int a = 0; a < getNumberOfVertices(); a++) {
+            pathsToEachVertex.add(new ArrayList<Integer>());
+        }
+        pathsToEachVertex.set(startVertex, new ArrayList<>(Collections.singletonList(startVertex)));
         final int[] orderLabels = new int[getNumberOfVertices()];
         final int[] permanentLabels = new int[getNumberOfVertices()];
         final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
@@ -349,7 +356,7 @@ public class Graph {
             }
         } else if (list.length == 4) {
             return getAllPairsOfList4(list);
-        } else {
+        } else if (list.length == 2) {
             final ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
             final ArrayList<int[]> one = new ArrayList<>();
             one.add(new int[]{list[0], list[1]});
@@ -359,37 +366,55 @@ public class Graph {
         return allPairs;
     }
 
-    public void routeInspection() {
-        //ArrayList<int[]> pathsBetweenOddVertices = new ArrayList<>();
-        final ArrayList<ArrayList<int[]>> allPairs = getAllPairsOfList(getOddVertices());
-        final ArrayList<ArrayList<String>> allPaths = new ArrayList<>();
-        final int[][] totalWeights = new int[allPairs.size()][2];
-        for (int a = 0; a < allPairs.size(); a++) {
-            totalWeights[a][0] = 0;
-            totalWeights[a][1] = a;
-            allPaths.add(new ArrayList<String>());
-            for (int b = 0; b < allPairs.get(a).size(); b++) {
-                DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
-                while (container.permanentLabels[container.endVertex] == -1) {
-                    dijkstraStep(container);
+    public ArrayList<ArrayList<Integer>> routeInspection() {
+        final int[] oddVertices = getOddVertices();
+        if (oddVertices.length == 0) {
+            return null;
+        } else {
+            final ArrayList<ArrayList<int[]>> allPairs = getAllPairsOfList(oddVertices);
+            final ArrayList<ArrayList<ArrayList<Integer>>> allPaths = new ArrayList<>();
+            final int[][] totalWeights = new int[allPairs.size()][2];
+            for (int a = 0; a < allPairs.size(); a++) {
+                totalWeights[a][0] = 0;
+                totalWeights[a][1] = a;
+                allPaths.add(new ArrayList<ArrayList<Integer>>());
+                for (int b = 0; b < allPairs.get(a).size(); b++) {
+                    DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
+                    while (container.permanentLabels[container.endVertex] == -1) {
+                        dijkstraStep(container);
+                    }
+                    allPaths.get(a).add(container.pathsToEachVertex.get(container.endVertex));
+                    totalWeights[a][0] += container.permanentLabels[container.endVertex];
                 }
-                allPaths.get(a).add(container.pathsToEachVertex[container.endVertex]);
-                totalWeights[a][0] += container.permanentLabels[container.endVertex];
+            }
+            java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
+                public int compare(int[] a, int[] b) {
+                    return Integer.compare(a[0], b[0]);
+                }
+            });
+            final ArrayList<ArrayList<Integer>> shortestPaths = allPaths.get(totalWeights[0][1]);
+            final ArrayList<ArrayList<Integer>> repeatedEdges = new ArrayList<>();
+            for (final ArrayList<Integer> shortestPath : shortestPaths) {
+                for (int b = 0; b < shortestPath.size() - 1; b++) {
+                    repeatedEdges.add(new ArrayList<>(Arrays.asList(shortestPath.get(b), shortestPath.get(b + 1))));
+                }
+            }
+            repeatedEdges.add(new ArrayList<>(Collections.singletonList(totalWeights[0][0] + getSumOfEdgeWeights())));
+            return repeatedEdges;
+        }
+    }
+
+    public int getSumOfEdgeWeights() {
+        int sum = 0;
+        for (int a = 0; a < getNumberOfVertices(); a++) {
+            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
+                sum += getEdgeWeight(a, b);
             }
         }
-        java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
-            public int compare(int[] a, int[] b) {
-                return Integer.compare(a[0], b[0]);
-            }
-        });
-        final ArrayList<String> shortestPaths = allPaths.get(totalWeights[0][1]);
-        final ArrayList<String> repeatedEdges = new ArrayList<>();
-        for (String shortestPath : shortestPaths) {
-            for (int b = 0; b < shortestPath.length() - 1; b++) {
-                repeatedEdges.add(shortestPath.charAt(b) + Character.toString(shortestPath.charAt(b + 1)));
-            }
+        if (!isDigraph()) {
+            sum /= 2;
         }
-        System.out.println();
+        return sum;
     }
 
     public boolean depthFirstSearch() {

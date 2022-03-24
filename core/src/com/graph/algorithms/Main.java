@@ -13,7 +13,8 @@ public class Main extends Game {
         /*Graph digraph = new Graph(Gdx.files.internal("graphs/digraph 3i.graph"));
         DijkstraResult digraphResult = digraph.dijkstra(2, 4);
         System.out.println();*/
-        Graph graph1 = new Graph(Gdx.files.internal("graphs/graph 1.graph"));
+//        Graph graph1 = new Graph(Gdx.files.internal("graphs/New Graph.graph"));
+//        graph1.routeInspection();
         //JarnikResult jarnikResult = graph1.jarnik();
         //System.out.println(graph1.depthFirstSearch());
     }
