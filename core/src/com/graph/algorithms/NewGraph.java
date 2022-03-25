@@ -38,7 +38,7 @@ public class NewGraph implements Screen {
     public NewGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        cannotSaveMessage = new Text("Saving disconnected graphs is not supported.", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        cannotSaveMessage = new Text("Disconnected graphs\nare not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
@@ -54,7 +54,7 @@ public class NewGraph implements Screen {
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        cannotSaveMessage = new Text("Saving disconnected\ngraphs is not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        cannotSaveMessage = new Text("Disconnected graphs\nare not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
         temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -200,7 +200,7 @@ public class NewGraph implements Screen {
         save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (graph.isConnected()) {
+                if (graph.getNumberOfVertices() == 0 || graph.isConnected()) {
                     graph.saveGraph(name.getText());
                 } else {
                     cannotSaveAlert = true;
@@ -217,10 +217,11 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (graph.isConnected()) {
+                if (graph.getNumberOfVertices() == 0 || graph.isConnected()) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
                 } else {
                     cannotSaveAlert = true;
+                    cannotSaveMessage.setVisible(true);
                 }
             }
         });
@@ -305,7 +306,7 @@ public class NewGraph implements Screen {
             firstVertex = -1;
             secondVertex = -1;
             vertexBeingMoved = -1;
-            final float width = 300f * scaleFactor;
+            final float width = 250f * scaleFactor;
             final float height = 75f * scaleFactor;
             Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         }
@@ -326,6 +327,29 @@ public class NewGraph implements Screen {
         newEdgeClicked = false;
         firstVertex = -1;
         secondVertex = -1;
+    }
+
+    private void deleteVertex(final int vertex) {
+        for (int a = edgeWeights.size() - 1; a >= 0; a--) {
+            if (edgeWeights.get(a).getVertex1() == vertex || edgeWeights.get(a).getVertex2() == vertex) {
+                edgeWeights.remove(a);
+            }
+        }
+        for (EdgeWeight weight : edgeWeights) {
+            if (weight.getVertex1() > vertex) {
+                weight.decrementVertex1();
+            }
+            if (weight.getVertex2() > vertex) {
+                weight.decrementVertex2();
+            }
+        }
+        graph.deleteVertex(vertex);
+        vertexLabels.remove(vertex);
+        for (Text vertexLabel : vertexLabels) {
+            if (vertexLabel.getText().charAt(0) > vertex + 65) {
+                vertexLabel.updateText(Character.toString((char) (vertexLabel.getText().charAt(0) - 1)));
+            }
+        }
     }
 
     @Override
@@ -351,6 +375,12 @@ public class NewGraph implements Screen {
             clickNewVertex();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             clickNewEdge();
+        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !cannotSaveAlert) {
+            final int vertexBeingClicked = findVertexBeingClicked();
+            if (vertexBeingClicked != -1) {
+                deleteVertex(vertexBeingClicked);
+                System.out.println();
+            }
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         renderShapes();

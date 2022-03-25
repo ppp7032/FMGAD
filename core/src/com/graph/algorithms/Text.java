@@ -45,6 +45,10 @@ public class Text extends Actor {
         return font;
     }
 
+    public String getText() {
+        return fullText;
+    }
+
     private void shrinkText() {
         final GlyphLayout glyphLayout = new GlyphLayout(font, fullText);
         int counter = 1;

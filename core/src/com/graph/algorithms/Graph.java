@@ -450,4 +450,18 @@ public class Graph {
             return depthFirstSearch();
         }
     }
+
+    public void deleteVertex(final int vertex) {
+        adjacencyList.remove(vertex);
+        coordinates.remove(vertex);
+        for (ArrayList<int[]> vertexEdges : adjacencyList) {
+            for (int b = vertexEdges.size() - 1; b >= 0; b--) {
+                if (vertexEdges.get(b)[0] == vertex) {
+                    vertexEdges.remove(b);
+                } else if (vertexEdges.get(b)[0] > vertex) {
+                    vertexEdges.get(b)[0] -= 1;
+                }
+            }
+        }
+    }
 }

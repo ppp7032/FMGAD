@@ -3,9 +3,9 @@ package com.graph.algorithms;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class EdgeWeight extends Text {
-    private final int vertex1;
-    private final int vertex2;
     private final Graph graph;
+    private int vertex1;
+    private int vertex2;
 
     public EdgeWeight(final Graph graph, final int vertex1, final int vertex2, final String input, final BitmapFont font, final float[] colour, final int alignX, final int alignY, final float scaleFactor) {
         super(input, 0, 0, font, colour, alignX, alignY, -1);
@@ -27,5 +27,21 @@ public class EdgeWeight extends Text {
             final double angle = Math.atan((y1 - y2) / (x1 - x2));
             super.setTextPosition(((x1 + x2) / 2f - offset * (float) Math.sin(angle)) * scaleFactor, ((y1 + y2) / 2f + offset * (float) Math.cos(angle)) * scaleFactor, 0, 0);
         }
+    }
+
+    public int getVertex1() {
+        return vertex1;
+    }
+
+    public int getVertex2() {
+        return vertex2;
+    }
+
+    public void decrementVertex1() {
+        vertex1 -= 1;
+    }
+
+    public void decrementVertex2() {
+        vertex2 -= 1;
     }
 }
