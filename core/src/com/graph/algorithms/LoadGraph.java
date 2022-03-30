@@ -110,9 +110,9 @@ public class LoadGraph implements Screen {
         travellingSalesmanButton.setHeight(46 * scaleFactor);
         travellingSalesmanButton.setPosition(routeInspectionButton.getX(), routeInspectionButton.getY() - 71 * scaleFactor);
 
-        selectTSPAlgorithm.setX(757 * scaleFactor);
+        selectTSPAlgorithm.setX((757 - 50) * scaleFactor);
         selectTSPAlgorithm.setY(479 * scaleFactor);
-        selectTSPAlgorithm.setWidth(88 * scaleFactor);
+        selectTSPAlgorithm.setWidth((88 + 50) * scaleFactor);
         selectTSPAlgorithm.setHeight(24 * scaleFactor);
         selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
         selectTSPAlgorithm.setVisible(false);
