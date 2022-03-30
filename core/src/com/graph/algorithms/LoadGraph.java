@@ -35,6 +35,7 @@ public class LoadGraph implements Screen {
     private boolean kruskalApplied = false;
     private boolean displayingRouteInspection = false;
     private boolean everRanRouteInspection = false;
+    private boolean travellingSalesmanPressed = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -64,6 +65,8 @@ public class LoadGraph implements Screen {
         final TextButton jarnikButton = new TextButton("Jarník's", skin, "default");
         final TextButton kruskalButton = new TextButton("Kruskal's", skin, "default");
         final TextButton routeInspectionButton = new TextButton("C. Postman", skin, "default");
+        final TextButton travellingSalesmanButton = new TextButton("T. Salesman", skin, "default");
+        final SelectBox<String> selectTSPAlgorithm = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)), "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
         final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -103,6 +106,17 @@ public class LoadGraph implements Screen {
         routeInspectionButton.setHeight(46 * scaleFactor);
         routeInspectionButton.setPosition(kruskalButton.getX(), kruskalButton.getY() - 71 * scaleFactor);
 
+        travellingSalesmanButton.setWidth(127 * scaleFactor);
+        travellingSalesmanButton.setHeight(46 * scaleFactor);
+        travellingSalesmanButton.setPosition(routeInspectionButton.getX(), routeInspectionButton.getY() - 71 * scaleFactor);
+
+        selectTSPAlgorithm.setX(757 * scaleFactor);
+        selectTSPAlgorithm.setY(479 * scaleFactor);
+        selectTSPAlgorithm.setWidth(88 * scaleFactor);
+        selectTSPAlgorithm.setHeight(24 * scaleFactor);
+        selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
+        selectTSPAlgorithm.setVisible(false);
+
         Graphics.setupBottomTwoButtons(mainMenu, edit, scaleFactor);
 
         menuTitle.setVisible(false);
@@ -137,7 +151,7 @@ public class LoadGraph implements Screen {
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!jarnikApplied && !kruskalApplied && !displayingRouteInspection) {
+                if (!jarnikApplied && !kruskalApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
                     if (dijkstraApplied) {
                         dijkstraApplied = false;
                         dijkstraContainer.setup = false;
@@ -150,6 +164,7 @@ public class LoadGraph implements Screen {
                         jarnikButton.setTouchable(Touchable.enabled);
                         kruskalButton.setTouchable(Touchable.enabled);
                         routeInspectionButton.setTouchable(Touchable.enabled);
+                        travellingSalesmanButton.setTouchable(Touchable.enabled);
                         mainMenu.setTouchable(Touchable.enabled);
                         edit.setTouchable(Touchable.enabled);
                     } else if (!dijkstraPressed) {
@@ -162,6 +177,7 @@ public class LoadGraph implements Screen {
                         jarnikButton.setTouchable(Touchable.disabled);
                         kruskalButton.setTouchable(Touchable.disabled);
                         routeInspectionButton.setTouchable(Touchable.disabled);
+                        travellingSalesmanButton.setTouchable(Touchable.disabled);
                         mainMenu.setTouchable(Touchable.disabled);
                         edit.setTouchable(Touchable.disabled);
                         startVertexInput.setText("A");
@@ -173,7 +189,7 @@ public class LoadGraph implements Screen {
         jarnikButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !kruskalApplied && !displayingRouteInspection) {
+                if (!graph.isDigraph() && !dijkstraApplied && !kruskalApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
                     if (jarnikApplied) {
                         jarnikApplied = false;
                     } else {
@@ -188,6 +204,7 @@ public class LoadGraph implements Screen {
                             jarnikButton.setTouchable(Touchable.disabled);
                             kruskalButton.setTouchable(Touchable.disabled);
                             routeInspectionButton.setTouchable(Touchable.disabled);
+                            travellingSalesmanButton.setTouchable(Touchable.disabled);
                             mainMenu.setTouchable(Touchable.disabled);
                             edit.setTouchable(Touchable.disabled);
                             startVertexInput.setText("A");
@@ -199,7 +216,7 @@ public class LoadGraph implements Screen {
         kruskalButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !displayingRouteInspection) {
+                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
                     kruskalApplied = !kruskalApplied;
                     if (kruskalApplied) {
                         minimumEdges.clear();
@@ -212,7 +229,7 @@ public class LoadGraph implements Screen {
         routeInspectionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !kruskalApplied) {
+                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !kruskalApplied && !travellingSalesmanPressed) {
                     displayingRouteInspection = true;
                     changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
                     menuTitle.updateText("Chinese Postman Repeated Edges:");
@@ -222,6 +239,7 @@ public class LoadGraph implements Screen {
                     jarnikButton.setTouchable(Touchable.disabled);
                     kruskalButton.setTouchable(Touchable.disabled);
                     routeInspectionButton.setTouchable(Touchable.disabled);
+                    travellingSalesmanButton.setTouchable(Touchable.disabled);
                     mainMenu.setTouchable(Touchable.disabled);
                     edit.setTouchable(Touchable.disabled);
                     if (!everRanRouteInspection) {
@@ -240,6 +258,29 @@ public class LoadGraph implements Screen {
                         }
                         everRanRouteInspection = true;
                     }
+                }
+            }
+        });
+        travellingSalesmanButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !kruskalApplied && !displayingRouteInspection) {
+                    travellingSalesmanPressed = true;
+                    changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    menuTitle.updateText("Travelling Salesman Problem:");
+                    startVertexLabel.updateText("Algorithm: ");
+                    endVertexLabel.setVisible(false);
+                    startVertexInput.setVisible(false);
+                    endVertexInput.setVisible(false);
+                    selectTSPAlgorithm.setVisible(true);
+                    selectTSPAlgorithm.setSelectedIndex(0);
+                    dijkstraButton.setTouchable(Touchable.disabled);
+                    jarnikButton.setTouchable(Touchable.disabled);
+                    kruskalButton.setTouchable(Touchable.disabled);
+                    routeInspectionButton.setTouchable(Touchable.disabled);
+                    travellingSalesmanButton.setTouchable(Touchable.disabled);
+                    mainMenu.setTouchable(Touchable.disabled);
+                    edit.setTouchable(Touchable.disabled);
                 }
             }
         });
@@ -263,6 +304,7 @@ public class LoadGraph implements Screen {
                 jarnikButton.setTouchable(Touchable.enabled);
                 kruskalButton.setTouchable(Touchable.enabled);
                 routeInspectionButton.setTouchable(Touchable.enabled);
+                travellingSalesmanButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
                 if (dijkstraPressed) {
@@ -274,6 +316,12 @@ public class LoadGraph implements Screen {
                     scrollBar.setVisible(false);
                     apply.setVisible(false);
                     displayingRouteInspection = false;
+                } else if (travellingSalesmanPressed) {
+                    endVertexLabel.setVisible(false);
+                    startVertexInput.setVisible(false);
+                    endVertexInput.setVisible(false);
+                    selectTSPAlgorithm.setVisible(false);
+                    travellingSalesmanPressed = false;
                 }
             }
         });
@@ -284,6 +332,7 @@ public class LoadGraph implements Screen {
                 jarnikButton.setTouchable(Touchable.enabled);
                 kruskalButton.setTouchable(Touchable.enabled);
                 routeInspectionButton.setTouchable(Touchable.enabled);
+                travellingSalesmanButton.setTouchable(Touchable.enabled);
                 mainMenu.setTouchable(Touchable.enabled);
                 edit.setTouchable(Touchable.enabled);
                 changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
@@ -311,6 +360,8 @@ public class LoadGraph implements Screen {
         stage.addActor(jarnikButton);
         stage.addActor(kruskalButton);
         stage.addActor(routeInspectionButton);
+        stage.addActor(travellingSalesmanButton);
+        stage.addActor(selectTSPAlgorithm);
         stage.addActor(mainMenu);
         stage.addActor(edit);
         stage.addActor(menuTitle);
@@ -399,6 +450,8 @@ public class LoadGraph implements Screen {
             }
         } else if (displayingRouteInspection) {
             Graphics.drawMenu(0, scaleFactor, shapeRenderer);
+        } else if (travellingSalesmanPressed) {
+            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.end();

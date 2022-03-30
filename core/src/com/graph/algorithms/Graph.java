@@ -417,7 +417,7 @@ public class Graph {
         return sum;
     }
 
-    public boolean depthFirstSearch() {
+    private boolean depthFirstSearch() {
         ArrayList<Integer> toVisit = new ArrayList<>();
         ArrayList<Integer> visited = new ArrayList<>();
         toVisit.add(0);
