@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -194,5 +195,16 @@ public abstract class Graphics {
 
     public static boolean mouseInBounds(final float scaleFactor) {
         return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+    }
+
+    public static ArrayList<String> getItems(List<String> graphSelector) {
+        final Object[] currentItems = graphSelector.getItems().items;
+        final ArrayList<String> newItems = new ArrayList<>();
+        for (final Object o : currentItems) {
+            if (o != null) {
+                newItems.add((String) o);
+            }
+        }
+        return newItems;
     }
 }

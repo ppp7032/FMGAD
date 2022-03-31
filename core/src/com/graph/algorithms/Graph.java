@@ -80,6 +80,32 @@ public class Graph {
         parents[fromVertex] = toVertex;
     }
 
+    //    public void nearestNeighbour(final int startVertex){
+//        boolean stalled=false;
+//        boolean cycleCreated=false;
+//        int currentVertex=startVertex;
+//        final ArrayList<Integer> includedVertices=new ArrayList<>();
+//        while(!stalled&&!cycleCreated) {
+//            int smallestEdge=-1;
+//            int smallestVertex=-1;
+//            for (int a = 0; a < getNumberOfEdgesConnectedToVertex(currentVertex); a++) {
+//                if(includedVertices.contains(getVertex(currentVertex,a))&&smallestEdge==-1||getEdgeWeight(currentVertex,a)<smallestEdge)){
+//                    smallestEdge=getEdgeWeight(currentVertex,a);
+//                    smallestVertex=getVertex(currentVertex,a);
+//                }
+//            }
+//            if(smallestVertex)
+//        }
+//
+//    }
+    private static int getMinimumSpanningTreeSize(final ArrayList<int[]> minimumEdges) {
+        int size = 0;
+        for (int[] minimumEdge : minimumEdges) {
+            size += minimumEdge[2];
+        }
+        return size;
+    }
+
     public void changeName(final String newName) {
         name = newName;
     }
@@ -435,7 +461,7 @@ public class Graph {
 
     public boolean isConnected() {
         if (digraph) {
-            final Graph graph = new Graph(true);
+            final Graph graph = new Graph(false);
             for (int a = 0; a < getNumberOfVertices(); a++) {
                 graph.addVertex(getXCoordinateOfVertex(a), getYCoordinateOfVertex(a));
             }
@@ -463,5 +489,42 @@ public class Graph {
                 }
             }
         }
+    }
+
+    public int[] lowestBoundTSP() {
+        final Graph[] graphs = new Graph[getNumberOfVertices()];
+        final int[] lowerBounds = new int[graphs.length];
+        for (int a = 0; a < graphs.length; a++) {
+            graphs[a] = new Graph(false);
+            for (int b = 0; b < getNumberOfVertices(); b++) {
+                graphs[a].addVertex(getXCoordinateOfVertex(b), getYCoordinateOfVertex(b));
+            }
+            for (int b = 0; b < getNumberOfVertices(); b++) {
+                for (int c = 0; c < getNumberOfEdgesConnectedToVertex(b); c++) {
+                    final int toVertex = getVertex(b, c);
+                    graphs[a].addDirectedEdge(b, toVertex, getEdgeWeight(b, c));
+                }
+            }
+        }
+        for (int a = 0; a < graphs.length; a++) {
+            if (graphs[a].getNumberOfEdgesConnectedToVertex(a) >= 2) {
+                int smallestEdge = -1;
+                int secondSmallestEdge = -1;
+                for (int b = 0; b < graphs[a].getNumberOfEdgesConnectedToVertex(a); b++) {
+                    if (smallestEdge == -1 || graphs[a].getEdgeWeight(a, b) < smallestEdge) {
+                        secondSmallestEdge = smallestEdge;
+                        smallestEdge = graphs[a].getEdgeWeight(a, b);
+                    } else if (secondSmallestEdge == -1 || graphs[a].getEdgeWeight(a, b) < secondSmallestEdge) {
+                        secondSmallestEdge = graphs[a].getEdgeWeight(a, b);
+                    }
+                }
+                lowerBounds[a] += smallestEdge + secondSmallestEdge;
+                graphs[a].deleteVertex(a);
+                final ArrayList<int[]> minimumEdges = new ArrayList<>();
+                graphs[a].kruskal(minimumEdges);
+                lowerBounds[a] += getMinimumSpanningTreeSize(minimumEdges);
+            }
+        }
+        return lowerBounds;
     }
 }

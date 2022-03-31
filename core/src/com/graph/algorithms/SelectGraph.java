@@ -74,13 +74,7 @@ public class SelectGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.files.local("graphs/" + graphSelector.getSelected() + ".graph").delete();
-                final Object[] currentItems = graphSelector.getItems().items;
-                final ArrayList<String> newItems = new ArrayList<>();
-                for (final Object o : currentItems) {
-                    if (o != null) {
-                        newItems.add((String) o);
-                    }
-                }
+                final ArrayList<String> newItems = Graphics.getItems(graphSelector);
                 newItems.remove(graphSelector.getSelected());
                 graphSelector.clearItems();
                 graphSelector.setItems(newItems.toArray(new String[0]));

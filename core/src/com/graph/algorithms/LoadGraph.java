@@ -36,6 +36,8 @@ public class LoadGraph implements Screen {
     private boolean displayingRouteInspection = false;
     private boolean everRanRouteInspection = false;
     private boolean travellingSalesmanPressed = false;
+    private boolean displayingLowerBounds = false;
+    private boolean everRanLowerBounds = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -78,8 +80,10 @@ public class LoadGraph implements Screen {
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
         final BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0);
         final BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0);
-        final List<String> repeatedEdgesList = new List<>(skin);
-        final ScrollPane scrollBar = new ScrollPane(repeatedEdgesList, skin, "default");
+        final List<String> list = new List<>(skin);
+        final ArrayList<String>[] routeInspectionItems = new ArrayList[]{new ArrayList<>()};
+        final ArrayList<String>[] lowerBoundTSPItems = new ArrayList[]{new ArrayList<>()};
+        final ScrollPane scrollBar = new ScrollPane(list, skin, "default");
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
             dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + 5f * scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * scaleFactor)};
@@ -252,11 +256,14 @@ public class LoadGraph implements Screen {
                                 final char[] numbersChar = {(char) (numbers.get(0) + 65), (char) (numbers.get(1) + 65)};
                                 items[a] = new String(numbersChar);
                             }
-                            repeatedEdgesList.setItems(items);
+                            list.setItems(items);
                         } else {
-                            repeatedEdgesList.setItems("Total Weight: " + graph.getSumOfEdgeWeights());
+                            list.setItems("Total Weight: " + graph.getSumOfEdgeWeights());
                         }
                         everRanRouteInspection = true;
+                        routeInspectionItems[0] = Graphics.getItems(list);
+                    } else {
+                        list.setItems(routeInspectionItems[0].toArray(new String[0]));
                     }
                 }
             }
@@ -322,35 +329,73 @@ public class LoadGraph implements Screen {
                     endVertexInput.setVisible(false);
                     selectTSPAlgorithm.setVisible(false);
                     travellingSalesmanPressed = false;
+                } else if (displayingLowerBounds) {
+                    endVertexInput.setVisible(false);
+                    endVertexLabel.setVisible(false);
+                    menuTitle.setVisible(true);
+                    startVertexInput.setVisible(false);
+                    selectTSPAlgorithm.setVisible(true);
+                    back.setVisible(true);
+                    apply.setVisible(true);
+                    menuTitle.updateText("Travelling Salesman Problem:");
+                    displayingLowerBounds = false;
+                    travellingSalesmanPressed = true;
+                    scrollBar.setVisible(false);
                 }
             }
         });
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                dijkstraButton.setTouchable(Touchable.enabled);
-                jarnikButton.setTouchable(Touchable.enabled);
-                kruskalButton.setTouchable(Touchable.enabled);
-                routeInspectionButton.setTouchable(Touchable.enabled);
-                travellingSalesmanButton.setTouchable(Touchable.enabled);
-                mainMenu.setTouchable(Touchable.enabled);
-                edit.setTouchable(Touchable.enabled);
-                changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                if (dijkstraPressed) {
-                    dijkstraPressed = false;
-                    dijkstraApplied = true;
-                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                        for (int b = 0; b < 4; b++) {
-                            dijkstraLabels[a][b].setVisible(true);
+                if (travellingSalesmanPressed) {
+                    endVertexLabel.setVisible(false);
+                    startVertexInput.setVisible(false);
+                    startVertexLabel.setVisible(false);
+                    endVertexInput.setVisible(false);
+                    selectTSPAlgorithm.setVisible(false);
+                    travellingSalesmanPressed = false;
+                    scrollBar.setVisible(true);
+                    if (selectTSPAlgorithm.getSelectedIndex() == 1) {
+                        menuTitle.updateText("Lower Bounds:");
+                        displayingLowerBounds = true;
+                        if (!everRanLowerBounds) {
+                            final int[] lowestBounds = graph.lowestBoundTSP();
+                            final String[] items = new String[lowestBounds.length];
+                            for (int a = 0; a < lowestBounds.length; a++) {
+                                items[a] = String.valueOf(lowestBounds[a]);
+                            }
+                            list.setItems(items);
+                            lowerBoundTSPItems[0] = Graphics.getItems(list);
+                            everRanLowerBounds = true;
+                        } else {
+                            list.setItems(lowerBoundTSPItems[0].toArray(new String[0]));
                         }
                     }
-                } else if (jarnikPressed) {
-                    jarnikPressed = false;
-                    jarnikApplied = true;
-                    minimumEdges.clear();
-                    minimumSpanningTreeCounter = 1;
-                    graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
-                    endVertexInput.setVisible(false);
+                } else {
+                    dijkstraButton.setTouchable(Touchable.enabled);
+                    jarnikButton.setTouchable(Touchable.enabled);
+                    kruskalButton.setTouchable(Touchable.enabled);
+                    routeInspectionButton.setTouchable(Touchable.enabled);
+                    travellingSalesmanButton.setTouchable(Touchable.enabled);
+                    mainMenu.setTouchable(Touchable.enabled);
+                    edit.setTouchable(Touchable.enabled);
+                    changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    if (dijkstraPressed) {
+                        dijkstraPressed = false;
+                        dijkstraApplied = true;
+                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                            for (int b = 0; b < 4; b++) {
+                                dijkstraLabels[a][b].setVisible(true);
+                            }
+                        }
+                    } else if (jarnikPressed) {
+                        jarnikPressed = false;
+                        jarnikApplied = true;
+                        minimumEdges.clear();
+                        minimumSpanningTreeCounter = 1;
+                        graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
+                        endVertexInput.setVisible(false);
+                    }
                 }
             }
         });
@@ -448,7 +493,7 @@ public class LoadGraph implements Screen {
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
-        } else if (displayingRouteInspection) {
+        } else if (displayingRouteInspection || displayingLowerBounds) {
             Graphics.drawMenu(0, scaleFactor, shapeRenderer);
         } else if (travellingSalesmanPressed) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
