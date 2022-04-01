@@ -55,9 +55,7 @@ public abstract class Graphics {
         button1.setWidth(127 * scaleFactor);
         button1.setHeight(46 * scaleFactor);
         button1.setPosition(80f * scaleFactor - button1.getWidth() / 2f, 95 * scaleFactor);
-        button2.setWidth(127 * scaleFactor);
-        button2.setHeight(46 * scaleFactor);
-        button2.setPosition(80f * scaleFactor - button1.getWidth() / 2f, button1.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(button1, button2, scaleFactor);
     }
 
     public static void renderGraphEdges(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
@@ -70,12 +68,16 @@ public abstract class Graphics {
     }
 
     private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final Text vertexLabel, final float scaleFactor) {
-        shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 15 * scaleFactor);
+        renderVertex(shapeRenderer, batch, graph.getXCoordinateOfVertex(vertex), graph.getYCoordinateOfVertex(vertex), vertexLabel, scaleFactor);
+    }
+
+    public static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final float x, final float y, final Text vertexLabel, final float scaleFactor) {
+        shapeRenderer.circle(x * scaleFactor, y * scaleFactor, 15 * scaleFactor);
         shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-        shapeRenderer.circle(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 13 * scaleFactor);
+        shapeRenderer.circle(x * scaleFactor, y * scaleFactor, 13 * scaleFactor);
         shapeRenderer.end();
         batch.begin();
-        vertexLabel.setTextPosition(graph.getXCoordinateOfVertex(vertex) * scaleFactor, graph.getYCoordinateOfVertex(vertex) * scaleFactor, 0, 0);
+        vertexLabel.setTextPosition(x * scaleFactor, y * scaleFactor, 0, 0);
         vertexLabel.draw(batch, 0);
         batch.end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -206,5 +208,11 @@ public abstract class Graphics {
             }
         }
         return newItems;
+    }
+
+    public static void setupButtonBelow(final TextButton above, final TextButton toSetUp, final float scaleFactor) {
+        toSetUp.setWidth(127 * scaleFactor);
+        toSetUp.setHeight(46 * scaleFactor);
+        toSetUp.setPosition(above.getX(), above.getY() - 71 * scaleFactor);
     }
 }

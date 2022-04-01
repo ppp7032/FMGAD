@@ -80,30 +80,47 @@ public class Graph {
         parents[fromVertex] = toVertex;
     }
 
-    //    public void nearestNeighbour(final int startVertex){
-//        boolean stalled=false;
-//        boolean cycleCreated=false;
-//        int currentVertex=startVertex;
-//        final ArrayList<Integer> includedVertices=new ArrayList<>();
-//        while(!stalled&&!cycleCreated) {
-//            int smallestEdge=-1;
-//            int smallestVertex=-1;
-//            for (int a = 0; a < getNumberOfEdgesConnectedToVertex(currentVertex); a++) {
-//                if(includedVertices.contains(getVertex(currentVertex,a))&&smallestEdge==-1||getEdgeWeight(currentVertex,a)<smallestEdge)){
-//                    smallestEdge=getEdgeWeight(currentVertex,a);
-//                    smallestVertex=getVertex(currentVertex,a);
-//                }
-//            }
-//            if(smallestVertex)
-//        }
-//
-//    }
     private static int getMinimumSpanningTreeSize(final ArrayList<int[]> minimumEdges) {
         int size = 0;
         for (int[] minimumEdge : minimumEdges) {
             size += minimumEdge[2];
         }
         return size;
+    }
+
+    public ArrayList<Integer> nearestNeighbour(final int startVertex) {
+        int currentVertex = startVertex;
+        final ArrayList<Integer> includedVertices = new ArrayList<>();
+        int totalWeight = 0;
+        includedVertices.add(startVertex);
+        while (true) {
+            int smallestEdge = -1;
+            int smallestVertex = -1;
+            for (int a = 0; a < getNumberOfEdgesConnectedToVertex(currentVertex); a++) {
+                if ((smallestEdge == -1 || getEdgeWeight(currentVertex, a) < smallestEdge) && !includedVertices.contains(getVertex(currentVertex, a))) {
+                    smallestEdge = getEdgeWeight(currentVertex, a);
+                    smallestVertex = getVertex(currentVertex, a);
+                }
+            }
+            if (smallestVertex != -1) {
+                includedVertices.add(smallestVertex);
+                totalWeight += smallestEdge;
+            } else if (includedVertices.size() == getNumberOfVertices()) {
+                final int relativeVertexNumber = getRelativeVertexNumber(currentVertex, startVertex);
+                if (relativeVertexNumber != -1) {
+                    smallestEdge = getEdgeWeight(currentVertex, relativeVertexNumber);
+                    includedVertices.add(startVertex);
+                    totalWeight += smallestEdge;
+                    break;
+                }
+            } else {
+                totalWeight = -1;
+                break;
+            }
+            currentVertex = smallestVertex;
+        }
+        includedVertices.add(totalWeight);
+        return includedVertices;//Final int is the weight, unless it stalled.
     }
 
     public void changeName(final String newName) {
@@ -179,6 +196,15 @@ public class Graph {
 
     public int getEdgeWeight(final int a, final int b) {
         return adjacencyList.get(a).get(b)[1];
+    }
+
+    public int getRelativeVertexNumber(final int vertex1, final int vertex2) {
+        for (int a = 0; a < getNumberOfEdgesConnectedToVertex(vertex1); a++) {
+            if (getVertex(vertex1, a) == vertex2) {
+                return a;
+            }
+        }
+        return -1;
     }
 
     public void addToEdgeWeights(ArrayList<EdgeWeight> edgeWeights, final float scaleFactor, final BitmapFont font) {

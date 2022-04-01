@@ -102,13 +102,9 @@ public class NewGraph implements Screen {
         newVertex.setHeight(46 * scaleFactor);
         newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, name.getY() - 71 * scaleFactor);
 
-        newEdge.setWidth(127 * scaleFactor);
-        newEdge.setHeight(46 * scaleFactor);
-        newEdge.setPosition(80f * scaleFactor - newEdge.getWidth() / 2f, newVertex.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(newVertex, newEdge, scaleFactor);
 
-        save.setWidth(127 * scaleFactor);
-        save.setHeight(46 * scaleFactor);
-        save.setPosition(80f * scaleFactor - save.getWidth() / 2f, newEdge.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(newEdge, save, scaleFactor);
 
         Graphics.setupBottomTwoButtons(mainMenu, finish, scaleFactor);
 
@@ -267,51 +263,6 @@ public class NewGraph implements Screen {
         return -1;
     }
 
-    private void renderShapes() {
-        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
-        if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
-
-        } else if (secondVertex != -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
-        }
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), vertexBeingMoved);
-        shapeRenderer.end();
-        if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            temporaryVertexLabel.setTextPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 0, 0);
-            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 15 * scaleFactor);
-            shapeRenderer.setColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
-            shapeRenderer.circle(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY(), 13 * scaleFactor);
-            shapeRenderer.setColor(0, 0, 0, 1);
-            shapeRenderer.end();
-            stage.getBatch().begin();
-            temporaryVertexLabel.draw(stage.getBatch(), 0);
-            stage.getBatch().end();
-        }
-        stage.getBatch().begin();
-        for (EdgeWeight edgeWeight : edgeWeights) {
-            edgeWeight.update(scaleFactor);
-            edgeWeight.draw(stage.getBatch(), 0);
-        }
-        stage.getBatch().end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
-        if (secondVertex != -1) {
-            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
-        }
-        if (cannotSaveAlert) {
-            newVertexClicked = false;
-            newEdgeClicked = false;
-            firstVertex = -1;
-            secondVertex = -1;
-            vertexBeingMoved = -1;
-            final float width = 250f * scaleFactor;
-            final float height = 75f * scaleFactor;
-            Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
-        }
-    }
-
     private void closeEnterEdgeWeightMenu(final TextField edgeWeight, final Text edgeWeightTitle, final Text edgeWeightLabel, final TextButton back, final TextButton apply, final TextButton newVertex, final TextButton newEdge, final TextButton save, final TextButton finish, final TextButton mainMenu, final TextField name) {
         edgeWeight.setVisible(false);
         edgeWeightTitle.setVisible(false);
@@ -379,11 +330,44 @@ public class NewGraph implements Screen {
             final int vertexBeingClicked = findVertexBeingClicked();
             if (vertexBeingClicked != -1) {
                 deleteVertex(vertexBeingClicked);
-                System.out.println();
             }
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderShapes();
+        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
+        if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
+
+        } else if (secondVertex != -1) {
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
+        }
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), vertexBeingMoved);
+        shapeRenderer.end();
+        if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            Graphics.renderVertex(shapeRenderer, stage.getBatch(), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, temporaryVertexLabel, scaleFactor);
+            shapeRenderer.end();
+        }
+        stage.getBatch().begin();
+        for (EdgeWeight edgeWeight : edgeWeights) {
+            edgeWeight.update(scaleFactor);
+            edgeWeight.draw(stage.getBatch(), 0);
+        }
+        stage.getBatch().end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        if (secondVertex != -1) {
+            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
+        }
+        if (cannotSaveAlert) {
+            newVertexClicked = false;
+            newEdgeClicked = false;
+            firstVertex = -1;
+            secondVertex = -1;
+            vertexBeingMoved = -1;
+            final float width = 250f * scaleFactor;
+            final float height = 75f * scaleFactor;
+            Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        }
         shapeRenderer.end();
         stage.act();
         stage.draw();

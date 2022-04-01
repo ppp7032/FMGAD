@@ -81,8 +81,10 @@ public class LoadGraph implements Screen {
         final BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0);
         final BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0);
         final List<String> list = new List<>(skin);
-        final ArrayList<String>[] routeInspectionItems = new ArrayList[]{new ArrayList<>()};
-        final ArrayList<String>[] lowerBoundTSPItems = new ArrayList[]{new ArrayList<>()};
+        final ArrayList<ArrayList<String>> routeInspectionItems = new ArrayList<>();
+        routeInspectionItems.add(new ArrayList<String>());
+        final ArrayList<ArrayList<String>> lowerBoundTSPItems = new ArrayList<>();
+        lowerBoundTSPItems.add(new ArrayList<String>());
         final ScrollPane scrollBar = new ScrollPane(list, skin, "default");
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
@@ -98,21 +100,13 @@ public class LoadGraph implements Screen {
         dijkstraButton.setHeight(46 * scaleFactor);
         dijkstraButton.setPosition(80f * scaleFactor - dijkstraButton.getWidth() / 2f, 652f * scaleFactor);
 
-        jarnikButton.setWidth(127 * scaleFactor);
-        jarnikButton.setHeight(46 * scaleFactor);
-        jarnikButton.setPosition(dijkstraButton.getX(), dijkstraButton.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(dijkstraButton, jarnikButton, scaleFactor);
 
-        kruskalButton.setWidth(127 * scaleFactor);
-        kruskalButton.setHeight(46 * scaleFactor);
-        kruskalButton.setPosition(jarnikButton.getX(), jarnikButton.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(jarnikButton, kruskalButton, scaleFactor);
 
-        routeInspectionButton.setWidth(127 * scaleFactor);
-        routeInspectionButton.setHeight(46 * scaleFactor);
-        routeInspectionButton.setPosition(kruskalButton.getX(), kruskalButton.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(kruskalButton, routeInspectionButton, scaleFactor);
 
-        travellingSalesmanButton.setWidth(127 * scaleFactor);
-        travellingSalesmanButton.setHeight(46 * scaleFactor);
-        travellingSalesmanButton.setPosition(routeInspectionButton.getX(), routeInspectionButton.getY() - 71 * scaleFactor);
+        Graphics.setupButtonBelow(routeInspectionButton, travellingSalesmanButton, scaleFactor);
 
         selectTSPAlgorithm.setX((757 - 50) * scaleFactor);
         selectTSPAlgorithm.setY(479 * scaleFactor);
@@ -261,9 +255,9 @@ public class LoadGraph implements Screen {
                             list.setItems("Total Weight: " + graph.getSumOfEdgeWeights());
                         }
                         everRanRouteInspection = true;
-                        routeInspectionItems[0] = Graphics.getItems(list);
+                        routeInspectionItems.set(0, Graphics.getItems(list));
                     } else {
-                        list.setItems(routeInspectionItems[0].toArray(new String[0]));
+                        list.setItems(routeInspectionItems.get(0).toArray(new String[0]));
                     }
                 }
             }
@@ -365,10 +359,10 @@ public class LoadGraph implements Screen {
                                 items[a] = String.valueOf(lowestBounds[a]);
                             }
                             list.setItems(items);
-                            lowerBoundTSPItems[0] = Graphics.getItems(list);
+                            lowerBoundTSPItems.set(0, Graphics.getItems(list));
                             everRanLowerBounds = true;
                         } else {
-                            list.setItems(lowerBoundTSPItems[0].toArray(new String[0]));
+                            list.setItems(lowerBoundTSPItems.get(0).toArray(new String[0]));
                         }
                     }
                 } else {
