@@ -418,20 +418,16 @@ public class LoadGraph implements Screen {
         }
     }
 
-    private boolean drawMST(boolean condition) {
+    private void drawMST(boolean condition) {
         if (condition) {
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 0; a < minimumSpanningTreeCounter; a++) {
                 Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false, scaleFactor);
             }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && minimumSpanningTreeCounter < graph.getNumberOfVertices() - 1) {
                 minimumSpanningTreeCounter++;
             }
-            if (minimumSpanningTreeCounter == graph.getNumberOfVertices()) {
-                condition = false;
-            }
         }
-        return condition;
     }
 
     @Override
@@ -454,8 +450,8 @@ public class LoadGraph implements Screen {
                 Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
             }
         }
-        jarnikApplied = drawMST(jarnikApplied);
-        kruskalApplied = drawMST(kruskalApplied);
+        drawMST(jarnikApplied);
+        drawMST(kruskalApplied);
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch());
         shapeRenderer.end();
         stage.getBatch().begin();
