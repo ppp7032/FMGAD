@@ -33,11 +33,12 @@ public class LoadGraph implements Screen {
     private boolean jarnikApplied = false;
     private int minimumSpanningTreeCounter = 1;
     private boolean kruskalApplied = false;
-    private boolean displayingRouteInspection = false;
+    private boolean chinesePostmanPressed = false;
     private boolean everRanRouteInspection = false;
     private boolean travellingSalesmanPressed = false;
     private boolean displayingLowerBounds = false;
     private boolean everRanLowerBounds = false;
+    private boolean nearestNeighbourPressed = false;
 
     public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
         this.graph = graph;
@@ -71,6 +72,7 @@ public class LoadGraph implements Screen {
         final SelectBox<String> selectTSPAlgorithm = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)), "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
+        final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton};
         final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
         final Text startVertexLabel = new Text("Start Vertex", 430f * scaleFactor, y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
@@ -149,64 +151,36 @@ public class LoadGraph implements Screen {
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!jarnikApplied && !kruskalApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
-                    if (dijkstraApplied) {
-                        dijkstraApplied = false;
-                        dijkstraContainer.setup = false;
-                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                            for (int b = 0; b < 4; b++) {
-                                dijkstraLabels[a][b].setVisible(false);
-                            }
+                if (dijkstraApplied) {
+                    dijkstraApplied = false;
+                    dijkstraContainer.setup = false;
+                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                        for (int b = 0; b < 4; b++) {
+                            dijkstraLabels[a][b].setVisible(false);
                         }
-                        dijkstraButton.setTouchable(Touchable.enabled);
-                        jarnikButton.setTouchable(Touchable.enabled);
-                        kruskalButton.setTouchable(Touchable.enabled);
-                        routeInspectionButton.setTouchable(Touchable.enabled);
-                        travellingSalesmanButton.setTouchable(Touchable.enabled);
-                        mainMenu.setTouchable(Touchable.enabled);
-                        edit.setTouchable(Touchable.enabled);
-                    } else if (!dijkstraPressed) {
-                        dijkstraPressed = true;
-                        changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                        menuTitle.updateText("Dijkstra's Algorithm Options");
-                        startVertexLabel.updateText("Start Vertex");
-                        endVertexLabel.updateText("End Vertex");
-                        dijkstraButton.setTouchable(Touchable.disabled);
-                        jarnikButton.setTouchable(Touchable.disabled);
-                        kruskalButton.setTouchable(Touchable.disabled);
-                        routeInspectionButton.setTouchable(Touchable.disabled);
-                        travellingSalesmanButton.setTouchable(Touchable.disabled);
-                        mainMenu.setTouchable(Touchable.disabled);
-                        edit.setTouchable(Touchable.disabled);
-                        startVertexInput.setText("A");
-                        endVertexInput.setText("A");
                     }
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                    dijkstraButton.setText("Dijkstra's");
+                    //toggleButtonTouchability(sidePanelButtons);
+                } else if (!dijkstraPressed) {
+                    dijkstraPressed = true;
+                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 }
             }
         });
         jarnikButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !kruskalApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
+                if (!graph.isDigraph()) {
                     if (jarnikApplied) {
                         jarnikApplied = false;
-                    } else {
-                        jarnikPressed = !jarnikPressed;
-                        if (jarnikPressed) {
-                            changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                            endVertexInput.setVisible(false);
-                            menuTitle.updateText("Jarník's Algorithm Options");
-                            startVertexLabel.updateText("Start Vertex");
-                            endVertexLabel.updateText("");
-                            dijkstraButton.setTouchable(Touchable.disabled);
-                            jarnikButton.setTouchable(Touchable.disabled);
-                            kruskalButton.setTouchable(Touchable.disabled);
-                            routeInspectionButton.setTouchable(Touchable.disabled);
-                            travellingSalesmanButton.setTouchable(Touchable.disabled);
-                            mainMenu.setTouchable(Touchable.disabled);
-                            edit.setTouchable(Touchable.disabled);
-                            startVertexInput.setText("A");
-                        }
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                        jarnikButton.setText("Jarník's");
+                    } else if (!jarnikPressed) {
+                        jarnikPressed = true;
+                        toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     }
                 }
             }
@@ -214,12 +188,20 @@ public class LoadGraph implements Screen {
         kruskalButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !displayingRouteInspection && !travellingSalesmanPressed) {
+                if (!graph.isDigraph()) {
                     kruskalApplied = !kruskalApplied;
                     if (kruskalApplied) {
                         minimumEdges.clear();
                         minimumSpanningTreeCounter = 1;
                         graph.kruskal(minimumEdges);
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
+                        mainMenu.setTouchable(Touchable.enabled);
+                        edit.setTouchable(Touchable.enabled);
+                        kruskalButton.setTouchable(Touchable.enabled);
+                        kruskalButton.setText("Back");
+                    } else {
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                        kruskalButton.setText("Kruskal's");
                     }
                 }
             }
@@ -227,19 +209,10 @@ public class LoadGraph implements Screen {
         routeInspectionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !kruskalApplied && !travellingSalesmanPressed) {
-                    displayingRouteInspection = true;
-                    changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                    menuTitle.updateText("Chinese Postman Repeated Edges:");
-                    scrollBar.setVisible(true);
-                    apply.setVisible(false);
-                    dijkstraButton.setTouchable(Touchable.disabled);
-                    jarnikButton.setTouchable(Touchable.disabled);
-                    kruskalButton.setTouchable(Touchable.disabled);
-                    routeInspectionButton.setTouchable(Touchable.disabled);
-                    travellingSalesmanButton.setTouchable(Touchable.disabled);
-                    mainMenu.setTouchable(Touchable.disabled);
-                    edit.setTouchable(Touchable.disabled);
+                if (!graph.isDigraph()) {
+                    chinesePostmanPressed = true;
+                    toggleChinesePostman(menuTitle, scrollBar, back);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     if (!everRanRouteInspection) {
                         final ArrayList<ArrayList<Integer>> repeatedEdges = graph.routeInspection();
                         if (repeatedEdges != null) {
@@ -265,23 +238,10 @@ public class LoadGraph implements Screen {
         travellingSalesmanButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph() && !dijkstraApplied && !jarnikApplied && !kruskalApplied && !displayingRouteInspection) {
+                if (!graph.isDigraph()) {
                     travellingSalesmanPressed = true;
-                    changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                    menuTitle.updateText("Travelling Salesman Problem:");
-                    startVertexLabel.updateText("Algorithm: ");
-                    endVertexLabel.setVisible(false);
-                    startVertexInput.setVisible(false);
-                    endVertexInput.setVisible(false);
-                    selectTSPAlgorithm.setVisible(true);
-                    selectTSPAlgorithm.setSelectedIndex(0);
-                    dijkstraButton.setTouchable(Touchable.disabled);
-                    jarnikButton.setTouchable(Touchable.disabled);
-                    kruskalButton.setTouchable(Touchable.disabled);
-                    routeInspectionButton.setTouchable(Touchable.disabled);
-                    travellingSalesmanButton.setTouchable(Touchable.disabled);
-                    mainMenu.setTouchable(Touchable.disabled);
-                    edit.setTouchable(Touchable.disabled);
+                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 }
             }
         });
@@ -300,41 +260,30 @@ public class LoadGraph implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                dijkstraButton.setTouchable(Touchable.enabled);
-                jarnikButton.setTouchable(Touchable.enabled);
-                kruskalButton.setTouchable(Touchable.enabled);
-                routeInspectionButton.setTouchable(Touchable.enabled);
-                travellingSalesmanButton.setTouchable(Touchable.enabled);
-                mainMenu.setTouchable(Touchable.enabled);
-                edit.setTouchable(Touchable.enabled);
                 if (dijkstraPressed) {
                     dijkstraPressed = false;
+                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 } else if (jarnikPressed) {
                     jarnikPressed = false;
-                    endVertexInput.setVisible(false);
-                } else if (displayingRouteInspection) {
-                    scrollBar.setVisible(false);
-                    apply.setVisible(false);
-                    displayingRouteInspection = false;
-                } else if (travellingSalesmanPressed) {
-                    endVertexLabel.setVisible(false);
-                    startVertexInput.setVisible(false);
-                    endVertexInput.setVisible(false);
-                    selectTSPAlgorithm.setVisible(false);
-                    travellingSalesmanPressed = false;
+                    toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                } else if (chinesePostmanPressed) {
+                    chinesePostmanPressed = false;
+                    toggleChinesePostman(menuTitle, scrollBar, back);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 } else if (displayingLowerBounds) {
-                    endVertexInput.setVisible(false);
-                    endVertexLabel.setVisible(false);
-                    menuTitle.setVisible(true);
-                    startVertexInput.setVisible(false);
-                    selectTSPAlgorithm.setVisible(true);
-                    back.setVisible(true);
-                    apply.setVisible(true);
-                    menuTitle.updateText("Travelling Salesman Problem:");
                     displayingLowerBounds = false;
-                    travellingSalesmanPressed = true;
-                    scrollBar.setVisible(false);
+                    toggleLowerBounds(menuTitle, scrollBar, back, apply);
+                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                } else if (nearestNeighbourPressed) {
+                    toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
+                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    nearestNeighbourPressed = false;
+                } else if (travellingSalesmanPressed) {
+                    travellingSalesmanPressed = false;
+                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 }
             }
         });
@@ -342,16 +291,10 @@ public class LoadGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (travellingSalesmanPressed) {
-                    endVertexLabel.setVisible(false);
-                    startVertexInput.setVisible(false);
-                    startVertexLabel.setVisible(false);
-                    endVertexInput.setVisible(false);
-                    selectTSPAlgorithm.setVisible(false);
-                    travellingSalesmanPressed = false;
-                    scrollBar.setVisible(true);
                     if (selectTSPAlgorithm.getSelectedIndex() == 1) {
-                        menuTitle.updateText("Lower Bounds:");
                         displayingLowerBounds = true;
+                        toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                        toggleLowerBounds(menuTitle, scrollBar, back, apply);
                         if (!everRanLowerBounds) {
                             final int[] lowestBounds = graph.lowestBoundTSP();
                             final String[] items = new String[lowestBounds.length];
@@ -364,32 +307,35 @@ public class LoadGraph implements Screen {
                         } else {
                             list.setItems(lowerBoundTSPItems.get(0).toArray(new String[0]));
                         }
+                    } else {
+                        nearestNeighbourPressed = true;
+                        toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                        toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
                     }
-                } else {
+                } else if (dijkstraPressed) {
+                    dijkstraPressed = false;
+                    dijkstraApplied = true;
+                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                        for (int b = 0; b < 4; b++) {
+                            dijkstraLabels[a][b].setVisible(true);
+                        }
+                    }
+                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
                     dijkstraButton.setTouchable(Touchable.enabled);
-                    jarnikButton.setTouchable(Touchable.enabled);
-                    kruskalButton.setTouchable(Touchable.enabled);
-                    routeInspectionButton.setTouchable(Touchable.enabled);
-                    travellingSalesmanButton.setTouchable(Touchable.enabled);
                     mainMenu.setTouchable(Touchable.enabled);
                     edit.setTouchable(Touchable.enabled);
-                    changeVisibility(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                    if (dijkstraPressed) {
-                        dijkstraPressed = false;
-                        dijkstraApplied = true;
-                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                            for (int b = 0; b < 4; b++) {
-                                dijkstraLabels[a][b].setVisible(true);
-                            }
-                        }
-                    } else if (jarnikPressed) {
-                        jarnikPressed = false;
-                        jarnikApplied = true;
-                        minimumEdges.clear();
-                        minimumSpanningTreeCounter = 1;
-                        graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
-                        endVertexInput.setVisible(false);
-                    }
+                    dijkstraButton.setText("Back");
+                } else if (jarnikPressed) {
+                    jarnikPressed = false;
+                    jarnikApplied = true;
+                    minimumEdges.clear();
+                    minimumSpanningTreeCounter = 1;
+                    graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
+                    toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                    jarnikButton.setTouchable(Touchable.enabled);
+                    mainMenu.setTouchable(Touchable.enabled);
+                    edit.setTouchable(Touchable.enabled);
+                    jarnikButton.setText("Back");
                 }
             }
         });
@@ -416,6 +362,93 @@ public class LoadGraph implements Screen {
                 stage.addActor(dijkstraLabels[a][b]);
             }
         }
+    }
+
+    private void toggleButtonTouchableStatus(final TextButton[] buttons, final Touchable status) {
+        for (TextButton button : buttons) {
+            button.setTouchable(status);
+        }
+    }
+
+    private void toggleDijkstraPressed(final Text menuTitle, final Text startVertexLabel, final Text endVertexLabel, final TextButton back, final TextButton apply) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Dijkstra's Algorithm Options");
+            startVertexLabel.updateText("Start Vertex");
+            endVertexLabel.updateText("End Vertex");
+            startVertexInput.setText("A");
+            endVertexInput.setText("A");
+        }
+        menuTitle.setVisible(newStatus);
+        startVertexInput.setVisible(newStatus);
+        startVertexLabel.setVisible(newStatus);
+        endVertexInput.setVisible(newStatus);
+        endVertexLabel.setVisible(newStatus);
+        back.setVisible(newStatus);
+        apply.setVisible(newStatus);
+    }
+
+    private void toggleJarnikPressed(final Text menuTitle, final Text startVertexLabel, final TextButton back, final TextButton apply) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Jarník's Algorithm Options");
+            startVertexLabel.updateText("Start Vertex");
+            startVertexInput.setText("A");
+        }
+        menuTitle.setVisible(newStatus);
+        startVertexInput.setVisible(newStatus);
+        startVertexLabel.setVisible(newStatus);
+        back.setVisible(newStatus);
+        apply.setVisible(newStatus);
+    }
+
+    private void toggleChinesePostman(final Text menuTitle, final ScrollPane scrollBar, final TextButton back) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Chinese Postman Repeated Edges:");
+        }
+        menuTitle.setVisible(newStatus);
+        scrollBar.setVisible(newStatus);
+        back.setVisible(newStatus);
+    }
+
+    private void toggleTravellingSalesman(final Text menuTitle, final Text startVertexLabel, final SelectBox<String> selector, final TextButton back, final TextButton apply) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Travelling Salesman Problem");
+            startVertexLabel.updateText("Algorithm");
+            selector.setSelectedIndex(0);
+        }
+        menuTitle.setVisible(newStatus);
+        startVertexLabel.setVisible(newStatus);
+        selector.setVisible(newStatus);
+        back.setVisible(newStatus);
+        apply.setVisible(newStatus);
+    }
+
+    private void toggleLowerBounds(final Text menuTitle, final ScrollPane scrollBar, final TextButton back, final TextButton apply) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Lower Bounds:");
+        }
+        menuTitle.setVisible(newStatus);
+        scrollBar.setVisible(newStatus);
+        back.setVisible(newStatus);
+        apply.setVisible(newStatus);
+    }
+
+    private void toggleNearestNeighbourPressed(final Text menuTitle, final Text startVertexLabel, final TextButton back, final TextButton apply) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Nearest Neighbour Options");
+            startVertexLabel.updateText("Start Vertex");
+            startVertexInput.setText("A");
+        }
+        menuTitle.setVisible(newStatus);
+        startVertexInput.setVisible(newStatus);
+        startVertexLabel.setVisible(newStatus);
+        back.setVisible(newStatus);
+        apply.setVisible(newStatus);
     }
 
     private void drawMST(boolean condition) {
@@ -483,25 +516,15 @@ public class LoadGraph implements Screen {
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
-        } else if (displayingRouteInspection || displayingLowerBounds) {
+        } else if (chinesePostmanPressed || displayingLowerBounds) {
             Graphics.drawMenu(0, scaleFactor, shapeRenderer);
-        } else if (travellingSalesmanPressed) {
+        } else if (travellingSalesmanPressed || nearestNeighbourPressed) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.end();
         stage.act();
         stage.draw();
-    }
-
-    private void changeVisibility(final Text title, final Text startVertexLabel, final Text endVertexLabel, final TextButton back, final TextButton apply) {
-        title.setVisible(!title.isVisible());
-        startVertexLabel.setVisible(!startVertexLabel.isVisible());
-        endVertexLabel.setVisible(!endVertexLabel.isVisible());
-        startVertexInput.setVisible(!startVertexInput.isVisible());
-        endVertexInput.setVisible(!endVertexInput.isVisible());
-        back.setVisible(!back.isVisible());
-        apply.setVisible(!apply.isVisible());
     }
 
     @Override
