@@ -364,9 +364,7 @@ public class NewGraph implements Screen {
             firstVertex = -1;
             secondVertex = -1;
             vertexBeingMoved = -1;
-            final float width = 250f * scaleFactor;
-            final float height = 75f * scaleFactor;
-            Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+            Graphics.renderAlert(shapeRenderer, cannotSaveMessage, scaleFactor);
         }
         shapeRenderer.end();
         stage.act();

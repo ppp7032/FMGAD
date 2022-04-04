@@ -67,6 +67,12 @@ public abstract class Graphics {
         }
     }
 
+    public static void renderAlert(final ShapeRenderer shapeRenderer, final Text alertMessage, final float scaleFactor) {
+        final float width = alertMessage.getWidth() + 24f * scaleFactor;
+        final float height = alertMessage.getHeight() + 24f * scaleFactor;
+        Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+    }
+
     private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final Text vertexLabel, final float scaleFactor) {
         renderVertex(shapeRenderer, batch, graph.getXCoordinateOfVertex(vertex), graph.getYCoordinateOfVertex(vertex), vertexLabel, scaleFactor);
     }

@@ -291,7 +291,7 @@ public class LoadGraph implements Screen {
                 } else if (displayingLowerBounds) {
                     displayingLowerBounds = false;
                     travellingSalesmanPressed = true;
-                    toggleLowerBounds(menuTitle, scrollBar, back, apply);
+                    toggleLowerBounds(menuTitle, scrollBar, back);
                     toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
                 } else if (nearestNeighbourPressed) {
                     toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
@@ -323,7 +323,7 @@ public class LoadGraph implements Screen {
                     if (selectTSPAlgorithm.getSelectedIndex() == 1) {
                         displayingLowerBounds = true;
                         toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
-                        toggleLowerBounds(menuTitle, scrollBar, back, apply);
+                        toggleLowerBounds(menuTitle, scrollBar, back);
                         if (!everRanLowerBounds) {
                             final int[] lowestBounds = graph.lowestBoundTSP();
                             final String[] items = new String[lowestBounds.length];
@@ -457,7 +457,7 @@ public class LoadGraph implements Screen {
         apply.setVisible(newStatus);
     }
 
-    private void toggleLowerBounds(final Text menuTitle, final ScrollPane scrollBar, final TextButton back, final TextButton apply) {
+    private void toggleLowerBounds(final Text menuTitle, final ScrollPane scrollBar, final TextButton back) {
         final boolean newStatus = !menuTitle.isVisible();
         if (newStatus) {
             menuTitle.updateText("Lower Bounds:");
@@ -565,9 +565,7 @@ public class LoadGraph implements Screen {
         } else if (travellingSalesmanPressed || nearestNeighbourPressed) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         } else if (alertShowing) {
-            final float width = 250f * scaleFactor;
-            final float height = 75f * scaleFactor;
-            Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
         }
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.end();
