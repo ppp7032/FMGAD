@@ -88,10 +88,10 @@ public class Graph {
         return size;
     }
 
-    public ArrayList<Integer> nearestNeighbour(final int startVertex) {
+    public void nearestNeighbour(final int startVertex, final ArrayList<Integer> includedVertices) {
         int currentVertex = startVertex;
-        final ArrayList<Integer> includedVertices = new ArrayList<>();
         int totalWeight = 0;
+        includedVertices.clear();
         includedVertices.add(startVertex);
         while (true) {
             int smallestEdge = -1;
@@ -111,8 +111,10 @@ public class Graph {
                     smallestEdge = getEdgeWeight(currentVertex, relativeVertexNumber);
                     includedVertices.add(startVertex);
                     totalWeight += smallestEdge;
-                    break;
+                } else {
+                    totalWeight = -1;
                 }
+                break;
             } else {
                 totalWeight = -1;
                 break;
@@ -120,7 +122,7 @@ public class Graph {
             currentVertex = smallestVertex;
         }
         includedVertices.add(totalWeight);
-        return includedVertices;//Final int is the weight, unless it stalled.
+        //return includedVertices; Final int is the weight, unless it stalled.
     }
 
     public void changeName(final String newName) {
