@@ -44,7 +44,7 @@ public class SelectGraph implements Screen {
         }
         graphSelector.setItems(graphNames);
 
-        scrollBar.setX(414f * scaleFactor);
+        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
         scrollBar.setY(224f * scaleFactor);
         scrollBar.setHeight(290f * scaleFactor);
         scrollBar.setWidth(452f * scaleFactor);

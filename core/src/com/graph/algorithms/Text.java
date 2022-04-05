@@ -36,10 +36,6 @@ public class Text extends Actor {
         final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = (int) size;
         parameter.borderWidth = borderWidth;
-        /*parameter.color = Color.WHITE;
-        parameter.shadowOffsetX = 3;
-        parameter.shadowOffsetY = 3;
-        parameter.shadowColor = new Color(0, 0.5f, 0, 0.75f);*/
         final BitmapFont font = generator.generateFont(parameter);
         generator.dispose();
         return font;

@@ -29,7 +29,7 @@ public class SelectGraphType implements Screen {
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
 
 
-        graphType.setX(757 * scaleFactor);
+        graphType.setX(343 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
         graphType.setY(479 * scaleFactor);
         graphType.setWidth(88 * scaleFactor);
         graphType.setHeight(24 * scaleFactor);

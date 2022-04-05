@@ -40,11 +40,11 @@ public class LoadGraph implements Screen {
     private boolean travellingSalesmanPressed = false;
     private boolean displayingLowerBounds = false;
     private boolean everRanLowerBounds = false;
-    private boolean nearestNeighbourPressed = false; //todo: make it not generate the same font every 2 seconds.
+    private boolean nearestNeighbourPressed = false;
     private boolean nearestNeighbourApplied = false;
-    private boolean alertShowing;
+    private boolean alertShowing = false;
 
-    public LoadGraph(final Graph graph) { //To-do: make it not make two edgeWeights for every edge on an undirected graph.
+    public LoadGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
         alertMessage = new Text("Nearest Neighbour\nhas stalled!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -81,8 +81,8 @@ public class LoadGraph implements Screen {
         final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton};
         final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text startVertexLabel = new Text("Start Vertex", 430f * scaleFactor, y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
-        final Text endVertexLabel = new Text("End Vertex", 430f * scaleFactor, (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text startVertexLabel = new Text("Start Vertex", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text endVertexLabel = new Text("End Vertex", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -116,9 +116,9 @@ public class LoadGraph implements Screen {
 
         Graphics.setupButtonBelow(routeInspectionButton, travellingSalesmanButton, scaleFactor);
 
-        selectTSPAlgorithm.setX((757 - 50) * scaleFactor);
+        selectTSPAlgorithm.setX(277 * scaleFactor + startVertexLabel.getX());
         selectTSPAlgorithm.setY(479 * scaleFactor);
-        selectTSPAlgorithm.setWidth((88 + 50) * scaleFactor);
+        selectTSPAlgorithm.setWidth(138 * scaleFactor);
         selectTSPAlgorithm.setHeight(24 * scaleFactor);
         selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
         selectTSPAlgorithm.setVisible(false);
@@ -133,19 +133,19 @@ public class LoadGraph implements Screen {
 
         startVertexInput.setVisible(false);
         startVertexInput.setAlignment(1);
-        startVertexInput.setX(757 * scaleFactor);
+        startVertexInput.setX(327 * scaleFactor + startVertexLabel.getX());
         startVertexInput.setY(479 * scaleFactor);
         startVertexInput.setWidth(88 * scaleFactor);
         startVertexInput.setHeight(24 * scaleFactor);
 
         endVertexInput.setVisible(false);
         endVertexInput.setAlignment(1);
-        endVertexInput.setX(757 * scaleFactor);
+        endVertexInput.setX(327 * scaleFactor + endVertexLabel.getX());
         endVertexInput.setY(startVertexInput.getY() - 61 * scaleFactor);
         endVertexInput.setWidth(88 * scaleFactor);
         endVertexInput.setHeight(24 * scaleFactor);
 
-        scrollBar.setX(414f * scaleFactor);
+        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
         scrollBar.setY(224f * scaleFactor);
         scrollBar.setHeight(290f * scaleFactor);
         scrollBar.setWidth(452f * scaleFactor);
@@ -156,6 +156,15 @@ public class LoadGraph implements Screen {
         alertMessage.setVisible(false);
 
 
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (alertShowing && Graphics.mouseInBounds(scaleFactor)) {
+                    alertShowing = false;
+                    alertMessage.setVisible(false);
+                }
+            }
+        });
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -169,7 +178,6 @@ public class LoadGraph implements Screen {
                     }
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                     dijkstraButton.setText("Dijkstra's");
-                    //toggleButtonTouchability(sidePanelButtons);
                 } else if (!dijkstraPressed) {
                     dijkstraPressed = true;
                     toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
@@ -309,15 +317,18 @@ public class LoadGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (nearestNeighbourPressed) {
-                    toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
-                    travellingSalesmanButton.setTouchable(Touchable.enabled);
-                    mainMenu.setTouchable(Touchable.enabled);
-                    edit.setTouchable(Touchable.enabled);
-                    travellingSalesmanButton.setText("Back");
-                    nearestNeighbourPressed = false;
-                    nearestNeighbourApplied = true;
-                    graph.nearestNeighbour(startVertexInput.getText().charAt(0) - 65, nearestNeighbourPath);
-                    counter = 1;
+                    final int vertex = graph.getVertexFromInput(startVertexInput.getText());
+                    if (vertex != -1) {
+                        toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
+                        travellingSalesmanButton.setTouchable(Touchable.enabled);
+                        mainMenu.setTouchable(Touchable.enabled);
+                        edit.setTouchable(Touchable.enabled);
+                        travellingSalesmanButton.setText("Back");
+                        nearestNeighbourPressed = false;
+                        nearestNeighbourApplied = true;
+                        graph.nearestNeighbour(vertex, nearestNeighbourPath);
+                        counter = 1;
+                    }
                 } else if (travellingSalesmanPressed) {
                     travellingSalesmanPressed = false;
                     if (selectTSPAlgorithm.getSelectedIndex() == 1) {
@@ -328,7 +339,13 @@ public class LoadGraph implements Screen {
                             final int[] lowestBounds = graph.lowestBoundTSP();
                             final String[] items = new String[lowestBounds.length];
                             for (int a = 0; a < lowestBounds.length; a++) {
-                                items[a] = String.valueOf(lowestBounds[a]);
+                                final String value;
+                                if (lowestBounds[a] == -1) {
+                                    value = "Algorithm Stalled";
+                                } else {
+                                    value = String.valueOf(lowestBounds[a]);
+                                }
+                                items[a] = (char) (a + 65) + ": " + value;
                             }
                             list.setItems(items);
                             lowerBoundTSPItems.set(0, Graphics.getItems(list));
@@ -343,29 +360,36 @@ public class LoadGraph implements Screen {
                         toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
                     }
                 } else if (dijkstraPressed) {
-                    dijkstraPressed = false;
-                    dijkstraApplied = true;
-                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                        for (int b = 0; b < 4; b++) {
-                            dijkstraLabels[a][b].setVisible(true);
+                    final int vertex1 = graph.getVertexFromInput(startVertexInput.getText());
+                    final int vertex2 = graph.getVertexFromInput(endVertexInput.getText());
+                    if (vertex1 != -1 && vertex2 != -1) {
+                        dijkstraPressed = false;
+                        dijkstraApplied = true;
+                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                            for (int b = 0; b < 4; b++) {
+                                dijkstraLabels[a][b].setVisible(true);
+                            }
                         }
+                        toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                        dijkstraButton.setTouchable(Touchable.enabled);
+                        mainMenu.setTouchable(Touchable.enabled);
+                        edit.setTouchable(Touchable.enabled);
+                        dijkstraButton.setText("Back");
                     }
-                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
-                    dijkstraButton.setTouchable(Touchable.enabled);
-                    mainMenu.setTouchable(Touchable.enabled);
-                    edit.setTouchable(Touchable.enabled);
-                    dijkstraButton.setText("Back");
                 } else if (jarnikPressed) {
-                    jarnikPressed = false;
-                    jarnikApplied = true;
-                    minimumEdges.clear();
-                    counter = 1;
-                    graph.jarnik(minimumEdges, startVertexInput.getText().charAt(0) - 65);
-                    toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
-                    jarnikButton.setTouchable(Touchable.enabled);
-                    mainMenu.setTouchable(Touchable.enabled);
-                    edit.setTouchable(Touchable.enabled);
-                    jarnikButton.setText("Back");
+                    final int vertex = graph.getVertexFromInput(startVertexInput.getText());
+                    if (vertex != -1) {
+                        jarnikPressed = false;
+                        jarnikApplied = true;
+                        minimumEdges.clear();
+                        counter = 1;
+                        graph.jarnik(minimumEdges, vertex);
+                        toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                        jarnikButton.setTouchable(Touchable.enabled);
+                        mainMenu.setTouchable(Touchable.enabled);
+                        edit.setTouchable(Touchable.enabled);
+                        jarnikButton.setText("Back");
+                    }
                 }
             }
         });
@@ -514,10 +538,10 @@ public class LoadGraph implements Screen {
         } else if (nearestNeighbourApplied) {
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && counter < nearestNeighbourPath.size() - 2) {
                 counter++;
-            }
-            if (!alertShowing && counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
-                alertShowing = true;
-                alertMessage.setVisible(true);
+                if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
+                    alertShowing = true;
+                    alertMessage.setVisible(true);
+                }
             }
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 1; a <= counter; a++) {
@@ -552,10 +576,9 @@ public class LoadGraph implements Screen {
                 shapeRenderer.rectLine(dimensions[0], dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2], dimensions[1] + dimensions[3] / 2f, 2 * scaleFactor);
                 shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3], dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3] / 2f, 2f * scaleFactor);
                 shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3], 2 * scaleFactor);
-                //System.out.println((dimensions[0] + dimensions[2] / 3f)-(dimensions[0] + dimensions[2] / 3f * 2f));
             }
             if (!dijkstraContainer.setup) {
-                dijkstraContainer = graph.setupDijkstraContainer(startVertexInput.getText().charAt(0) - 65, endVertexInput.getText().charAt(0) - 65);
+                dijkstraContainer = graph.setupDijkstraContainer(graph.getVertexFromInput(startVertexInput.getText()), graph.getVertexFromInput(endVertexInput.getText()));
                 graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);

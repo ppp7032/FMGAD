@@ -122,7 +122,7 @@ public class Graph {
             currentVertex = smallestVertex;
         }
         includedVertices.add(totalWeight);
-        //return includedVertices; Final int is the weight, unless it stalled.
+        //Final int is the weight, unless it stalled.
     }
 
     public void changeName(final String newName) {
@@ -334,10 +334,8 @@ public class Graph {
         }
         while (minimumEdges.size() < adjacencyList.size() - 1) {
             minimumEdges.add(includedEdges.get(includedEdges.size() - 1));
-            //System.out.println("adding " + minimumEdges.get(minimumEdges.size() - 1)[0] + " and " + minimumEdges.get(minimumEdges.size() - 1)[1]);
             includedEdges.remove(includedEdges.size() - 1);
             if (cycleDetection(minimumEdges)) {
-                //System.out.println("cycle when adding " + minimumEdges.get(minimumEdges.size() - 1)[0] + " and " + minimumEdges.get(minimumEdges.size() - 1)[1]);
                 minimumEdges.remove(minimumEdges.size() - 1);
             }
         }
@@ -549,10 +547,33 @@ public class Graph {
                 lowerBounds[a] += smallestEdge + secondSmallestEdge;
                 graphs[a].deleteVertex(a);
                 final ArrayList<int[]> minimumEdges = new ArrayList<>();
-                graphs[a].kruskal(minimumEdges);
-                lowerBounds[a] += getMinimumSpanningTreeSize(minimumEdges);
+                if (graphs[a].isConnected()) {
+                    graphs[a].kruskal(minimumEdges);
+                    lowerBounds[a] += getMinimumSpanningTreeSize(minimumEdges);
+                } else {
+                    lowerBounds[a] = -1;
+                }
+            } else {
+                lowerBounds[a] = -1;
             }
         }
         return lowerBounds;
+    }
+
+    public int getVertexFromInput(final String input) {
+        final int numberOfVertices = getNumberOfVertices();
+        int vertex = -1;
+        if (input.length() == 1 && numberOfVertices != 0) {
+            final char vertexChar = input.charAt(0);
+            if (vertexChar >= 65 && vertexChar <= 90) {
+                vertex = vertexChar - 65;
+            } else if (vertexChar >= 97 && vertexChar <= 122) {
+                vertex = vertexChar - 97;
+            }
+            if (vertex >= numberOfVertices) {
+                vertex = -1;
+            }
+        }
+        return vertex;
     }
 }

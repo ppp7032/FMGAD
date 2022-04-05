@@ -38,7 +38,7 @@ public class NewGraph implements Screen {
     public NewGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        cannotSaveMessage = new Text("Disconnected graphs\nare not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        cannotSaveMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
@@ -66,7 +66,7 @@ public class NewGraph implements Screen {
         edgeWeight = new TextField("0", skin);
         final TextField name = new TextField(graphName, skin);
         final Text edgeWeightTitle = new Text("Edge Properties", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
-        final Text edgeWeightLabel = new Text("Edge Weight", 430f * scaleFactor, 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text edgeWeightLabel = new Text("Edge Weight", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), 491.5f * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -87,7 +87,7 @@ public class NewGraph implements Screen {
 
         edgeWeight.setAlignment(1);
         edgeWeight.setVisible(false);
-        edgeWeight.setX(757 * scaleFactor);
+        edgeWeight.setX(327 * scaleFactor + edgeWeightLabel.getX());
         edgeWeight.setY(479 * scaleFactor);
         edgeWeight.setWidth(88 * scaleFactor);
         edgeWeight.setHeight(24 * scaleFactor);
@@ -196,11 +196,8 @@ public class NewGraph implements Screen {
         save.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (graph.getNumberOfVertices() == 0 || graph.isConnected()) {
+                if (finaliseGraph()) {
                     graph.saveGraph(name.getText());
-                } else {
-                    cannotSaveAlert = true;
-                    cannotSaveMessage.setVisible(true);
                 }
             }
         });
@@ -213,11 +210,8 @@ public class NewGraph implements Screen {
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (graph.getNumberOfVertices() == 0 || graph.isConnected()) {
+                if (finaliseGraph()) {
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
-                } else {
-                    cannotSaveAlert = true;
-                    cannotSaveMessage.setVisible(true);
                 }
             }
         });
@@ -235,6 +229,23 @@ public class NewGraph implements Screen {
         stage.addActor(save);
         stage.addActor(mainMenu);
         stage.addActor(finish);
+    }
+
+    private boolean finaliseGraph() {
+        if (graph.getNumberOfVertices() > 1) {
+            if (graph.isConnected()) {
+                return true;
+            } else {
+                cannotSaveAlert = true;
+                cannotSaveMessage.setVisible(true);
+                cannotSaveMessage.updateText("Please ensure the\ngraph is connected!");
+            }
+        } else {
+            cannotSaveAlert = true;
+            cannotSaveMessage.setVisible(true);
+            cannotSaveMessage.updateText("Please ensure the\ngraph contains at\nleast 2 vertices!");
+        }
+        return false;
     }
 
     private void clickNewVertex() {

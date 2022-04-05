@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class Graphics {
@@ -106,38 +105,6 @@ public abstract class Graphics {
         renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, batch, -1);
     }
 
-    public static void setupBackAndApplyButtons(final TextButton back, final TextButton apply, final float scaleFactor, final boolean visible) {
-        back.setVisible(visible);
-        back.setWidth(127 * scaleFactor);
-        back.setHeight(46 * scaleFactor);
-        back.setY(162 * scaleFactor);
-        back.setX(414f * scaleFactor);
-        apply.setVisible(visible);
-        apply.setWidth(back.getWidth());
-        apply.setHeight(back.getHeight());
-        apply.setY(back.getY());
-        apply.setX(back.getX() + 325 * scaleFactor);
-    }
-
-    public static void drawMenu(final int numberOfAttributes, final float scaleFactor, final ShapeRenderer shapeRenderer) {
-        float width = 514 * scaleFactor;
-        float height = 424 * scaleFactor;
-        float x = (Gdx.graphics.getWidth() - width) / 2;
-        float y = (Gdx.graphics.getHeight() - height) / 2;
-        Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
-        if (numberOfAttributes > 0) {
-            x = 414 * scaleFactor;
-            y = 468 * scaleFactor;
-            width = 452 * scaleFactor;
-            height = 46 * scaleFactor;
-            Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
-            for (int a = 1; a < numberOfAttributes; a++) {
-                y -= 61 * scaleFactor;
-                Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, new float[]{1f, 229f / 255f, 153f / 255f, 1});
-            }
-        }
-    }
-
     public static Skin generateSkin(final BitmapFont font) {
         final Skin skin = new Skin();
         skin.add("font", font, BitmapFont.class);
@@ -178,27 +145,57 @@ public abstract class Graphics {
     }
 
     public static void setDisplayMode(final String fullscreenMode, final String resolution) {
-        final int height = Integer.parseInt(resolution.substring(0, resolution.length() - 1));
-        final int width = height / 9 * 16;
-        final Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        if (dimension.width * 9 == dimension.height * 16) {
-            if (fullscreenMode.equals("Fullscreen")) {
-                Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-            } else {
-                Gdx.graphics.setWindowedMode(width, height);
-            }
+        if (fullscreenMode.equals("Fullscreen")) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         } else {
-            Gdx.graphics.setWindowedMode(width, height); //Todo- make the app tell the user fullscreen is not supported for aspect ratios other than 16:9.
+            final int height = Integer.parseInt(resolution.substring(0, resolution.length() - 1));
+            final int width = height / 9 * 16;
+            Gdx.graphics.setWindowedMode(width, height);
         }
     }
 
     public static void addTextToMenu(final Stage stage, final String title, final String[] attributes, final float scaleFactor, final BitmapFont titleFont, final BitmapFont attributeFont) {
-        stage.addActor(new Text(title, Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, titleFont, new float[]{0, 0, 0, 1}, 0, 0, -1));
+        final float[] black = new float[]{0, 0, 0, 1};
+        stage.addActor(new Text(title, Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, titleFont, black, 0, 0, -1));
         float y = 491.5f;
         for (String attribute : attributes) {
-            stage.addActor(new Text(attribute, 430 * scaleFactor, y * scaleFactor, attributeFont, new float[]{0, 0, 0, 1}, -1, 0, -1));
+            stage.addActor(new Text(attribute, 0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor) + 16f * scaleFactor, y * scaleFactor, attributeFont, black, -1, 0, -1));
             y -= 61f;
         }
+    }
+
+    public static void drawMenu(final int numberOfAttributes, final float scaleFactor, final ShapeRenderer shapeRenderer) {
+        float width = 514 * scaleFactor;
+        float height = 424 * scaleFactor;
+        float x = (Gdx.graphics.getWidth() - width) / 2;
+        float y = (Gdx.graphics.getHeight() - height) / 2;
+        final float[] blue = new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1};
+        final float[] yellow = new float[]{1f, 229f / 255f, 153f / 255f, 1};
+        Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, blue);
+        if (numberOfAttributes > 0) {
+            width = 452 * scaleFactor;
+            height = 46 * scaleFactor;
+            x = 0.5f * (Gdx.graphics.getWidth() - width); //old x was 414
+            y = 468 * scaleFactor;
+            Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, yellow);
+            for (int a = 1; a < numberOfAttributes; a++) {
+                y -= 61 * scaleFactor;
+                Graphics.drawRectangleWithBorder(shapeRenderer, x, y, width, height, 2 * scaleFactor, yellow);
+            }
+        }
+    }
+
+    public static void setupBackAndApplyButtons(final TextButton back, final TextButton apply, final float scaleFactor, final boolean visible) {
+        back.setVisible(visible);
+        back.setWidth(127 * scaleFactor);
+        back.setHeight(46 * scaleFactor);
+        back.setY(162 * scaleFactor);
+        back.setX(0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor));
+        apply.setVisible(visible);
+        apply.setWidth(back.getWidth());
+        apply.setHeight(back.getHeight());
+        apply.setY(back.getY());
+        apply.setX(back.getX() + 325 * scaleFactor);
     }
 
     public static boolean mouseInBounds(final float scaleFactor) {

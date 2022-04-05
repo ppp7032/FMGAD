@@ -35,14 +35,14 @@ public class Settings implements Screen {
         final String[] config = Settings.readFromConfigFile();
 
 
-        resolutionBox.setX(790 * scaleFactor);
+        resolutionBox.setX(376 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
         resolutionBox.setY(479 * scaleFactor);
         resolutionBox.setWidth(55 * scaleFactor);
         resolutionBox.setHeight(24 * scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
         resolutionBox.setSelected(config[0]);
 
-        fullscreenBox.setX(757 * scaleFactor);
+        fullscreenBox.setX(resolutionBox.getX() - 33f * scaleFactor);
         fullscreenBox.setY(418 * scaleFactor);
         fullscreenBox.setWidth(88 * scaleFactor);
         fullscreenBox.setHeight(24 * scaleFactor);
@@ -106,7 +106,6 @@ public class Settings implements Screen {
     @Override
     public void render(final float delta) {
         Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 2);
-        //stage.getActors().get(0).setX(stage.getActors().get(0).getX()+1);
     }
 
     @Override
