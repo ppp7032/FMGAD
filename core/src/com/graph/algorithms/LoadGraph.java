@@ -79,10 +79,9 @@ public class LoadGraph implements Screen {
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
         final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton};
-        final Text menuTitle = new Text("Dijkstra's Algorithm Options", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text startVertexLabel = new Text("Start Vertex", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
-        final Text endVertexLabel = new Text("End Vertex", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1);
+        final Text[] attributes = new Text[]{new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -116,31 +115,35 @@ public class LoadGraph implements Screen {
 
         Graphics.setupButtonBelow(routeInspectionButton, travellingSalesmanButton, scaleFactor);
 
-        selectTSPAlgorithm.setX(277 * scaleFactor + startVertexLabel.getX());
+        selectTSPAlgorithm.setX(277 * scaleFactor + attributes[0].getX());
         selectTSPAlgorithm.setY(479 * scaleFactor);
         selectTSPAlgorithm.setWidth(138 * scaleFactor);
         selectTSPAlgorithm.setHeight(24 * scaleFactor);
         selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
         selectTSPAlgorithm.setVisible(false);
 
-        Graphics.setupBottomTwoButtons(mainMenu, edit, scaleFactor);
+        edit.setWidth(127 * scaleFactor);
+        edit.setHeight(46 * scaleFactor);
+        edit.setPosition(80f * scaleFactor - edit.getWidth() / 2f, 24f * scaleFactor);
+
+        Graphics.setupButtonAbove(edit, mainMenu, scaleFactor);
 
         menuTitle.setVisible(false);
 
-        startVertexLabel.setVisible(false);
-
-        endVertexLabel.setVisible(false);
+        for (final Text attribute : attributes) {
+            attribute.setVisible(false);
+        }
 
         startVertexInput.setVisible(false);
         startVertexInput.setAlignment(1);
-        startVertexInput.setX(327 * scaleFactor + startVertexLabel.getX());
+        startVertexInput.setX(327 * scaleFactor + attributes[0].getX());
         startVertexInput.setY(479 * scaleFactor);
         startVertexInput.setWidth(88 * scaleFactor);
         startVertexInput.setHeight(24 * scaleFactor);
 
         endVertexInput.setVisible(false);
         endVertexInput.setAlignment(1);
-        endVertexInput.setX(327 * scaleFactor + endVertexLabel.getX());
+        endVertexInput.setX(327 * scaleFactor + attributes[1].getX());
         endVertexInput.setY(startVertexInput.getY() - 61 * scaleFactor);
         endVertexInput.setWidth(88 * scaleFactor);
         endVertexInput.setHeight(24 * scaleFactor);
@@ -180,7 +183,7 @@ public class LoadGraph implements Screen {
                     dijkstraButton.setText("Dijkstra's");
                 } else if (!dijkstraPressed) {
                     dijkstraPressed = true;
-                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 }
             }
@@ -195,7 +198,7 @@ public class LoadGraph implements Screen {
                         jarnikButton.setText("Jarník's");
                     } else if (!jarnikPressed) {
                         jarnikPressed = true;
-                        toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                        toggleJarnikPressed(menuTitle, attributes[0], back, apply);
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     }
                 }
@@ -257,7 +260,7 @@ public class LoadGraph implements Screen {
                 if (!graph.isDigraph()) {
                     if (!nearestNeighbourApplied) {
                         travellingSalesmanPressed = true;
-                        toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                        toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     } else {
                         travellingSalesmanButton.setText("T. Salesman");
@@ -286,11 +289,11 @@ public class LoadGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (dijkstraPressed) {
                     dijkstraPressed = false;
-                    toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                    toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 } else if (jarnikPressed) {
                     jarnikPressed = false;
-                    toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                    toggleJarnikPressed(menuTitle, attributes[0], back, apply);
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 } else if (chinesePostmanPressed) {
                     chinesePostmanPressed = false;
@@ -300,15 +303,15 @@ public class LoadGraph implements Screen {
                     displayingLowerBounds = false;
                     travellingSalesmanPressed = true;
                     toggleLowerBounds(menuTitle, scrollBar, back);
-                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                 } else if (nearestNeighbourPressed) {
-                    toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
-                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    toggleNearestNeighbourPressed(menuTitle, attributes[0], back, apply);
+                    toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                     nearestNeighbourPressed = false;
                     travellingSalesmanPressed = true;
                 } else if (travellingSalesmanPressed) {
                     travellingSalesmanPressed = false;
-                    toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                    toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 }
             }
@@ -319,7 +322,7 @@ public class LoadGraph implements Screen {
                 if (nearestNeighbourPressed) {
                     final int vertex = graph.getVertexFromInput(startVertexInput.getText());
                     if (vertex != -1) {
-                        toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
+                        toggleNearestNeighbourPressed(menuTitle, attributes[0], back, apply);
                         travellingSalesmanButton.setTouchable(Touchable.enabled);
                         mainMenu.setTouchable(Touchable.enabled);
                         edit.setTouchable(Touchable.enabled);
@@ -333,7 +336,7 @@ public class LoadGraph implements Screen {
                     travellingSalesmanPressed = false;
                     if (selectTSPAlgorithm.getSelectedIndex() == 1) {
                         displayingLowerBounds = true;
-                        toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
+                        toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                         toggleLowerBounds(menuTitle, scrollBar, back);
                         if (!everRanLowerBounds) {
                             final int[] lowestBounds = graph.lowestBoundTSP();
@@ -356,8 +359,8 @@ public class LoadGraph implements Screen {
                     } else {
                         nearestNeighbourPressed = true;
                         travellingSalesmanPressed = false;
-                        toggleTravellingSalesman(menuTitle, startVertexLabel, selectTSPAlgorithm, back, apply);
-                        toggleNearestNeighbourPressed(menuTitle, startVertexLabel, back, apply);
+                        toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
+                        toggleNearestNeighbourPressed(menuTitle, attributes[0], back, apply);
                     }
                 } else if (dijkstraPressed) {
                     final int vertex1 = graph.getVertexFromInput(startVertexInput.getText());
@@ -370,7 +373,7 @@ public class LoadGraph implements Screen {
                                 dijkstraLabels[a][b].setVisible(true);
                             }
                         }
-                        toggleDijkstraPressed(menuTitle, startVertexLabel, endVertexLabel, back, apply);
+                        toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
                         dijkstraButton.setTouchable(Touchable.enabled);
                         mainMenu.setTouchable(Touchable.enabled);
                         edit.setTouchable(Touchable.enabled);
@@ -384,7 +387,7 @@ public class LoadGraph implements Screen {
                         minimumEdges.clear();
                         counter = 1;
                         graph.jarnik(minimumEdges, vertex);
-                        toggleJarnikPressed(menuTitle, startVertexLabel, back, apply);
+                        toggleJarnikPressed(menuTitle, attributes[0], back, apply);
                         jarnikButton.setTouchable(Touchable.enabled);
                         mainMenu.setTouchable(Touchable.enabled);
                         edit.setTouchable(Touchable.enabled);
@@ -395,17 +398,14 @@ public class LoadGraph implements Screen {
         });
 
 
-        stage.addActor(dijkstraButton);
-        stage.addActor(jarnikButton);
-        stage.addActor(kruskalButton);
-        stage.addActor(routeInspectionButton);
-        stage.addActor(travellingSalesmanButton);
+        for (final TextButton sidePanelButton : sidePanelButtons) {
+            stage.addActor(sidePanelButton);
+        }
         stage.addActor(selectTSPAlgorithm);
-        stage.addActor(mainMenu);
-        stage.addActor(edit);
+        for (final Text attribute : attributes) {
+            stage.addActor(attribute);
+        }
         stage.addActor(menuTitle);
-        stage.addActor(startVertexLabel);
-        stage.addActor(endVertexLabel);
         stage.addActor(startVertexInput);
         stage.addActor(endVertexInput);
         stage.addActor(back);
@@ -467,15 +467,15 @@ public class LoadGraph implements Screen {
         back.setVisible(newStatus);
     }
 
-    private void toggleTravellingSalesman(final Text menuTitle, final Text startVertexLabel, final SelectBox<String> selector, final TextButton back, final TextButton apply) {
+    private void toggleTravellingSalesman(final Text menuTitle, final Text algorithmLabel, final SelectBox<String> selector, final TextButton back, final TextButton apply) {
         final boolean newStatus = !menuTitle.isVisible();
         if (newStatus) {
             menuTitle.updateText("Travelling Salesman Problem");
-            startVertexLabel.updateText("Algorithm");
+            algorithmLabel.updateText("Algorithm");
             selector.setSelectedIndex(0);
         }
         menuTitle.setVisible(newStatus);
-        startVertexLabel.setVisible(newStatus);
+        algorithmLabel.setVisible(newStatus);
         selector.setVisible(newStatus);
         back.setVisible(newStatus);
         apply.setVisible(newStatus);

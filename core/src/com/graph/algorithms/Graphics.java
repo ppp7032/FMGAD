@@ -50,13 +50,6 @@ public abstract class Graphics {
         stage.draw();
     }
 
-    public static void setupBottomTwoButtons(final TextButton button1, final TextButton button2, final float scaleFactor) {
-        button1.setWidth(127 * scaleFactor);
-        button1.setHeight(46 * scaleFactor);
-        button1.setPosition(80f * scaleFactor - button1.getWidth() / 2f, 95 * scaleFactor);
-        Graphics.setupButtonBelow(button1, button2, scaleFactor);
-    }
-
     public static void renderGraphEdges(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor) {
         shapeRenderer.setColor(1, 0, 0, 1);
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
@@ -217,5 +210,11 @@ public abstract class Graphics {
         toSetUp.setWidth(127 * scaleFactor);
         toSetUp.setHeight(46 * scaleFactor);
         toSetUp.setPosition(above.getX(), above.getY() - 71 * scaleFactor);
+    }
+
+    public static void setupButtonAbove(final TextButton below, final TextButton toSetUp, final float scaleFactor) {
+        toSetUp.setWidth(127 * scaleFactor);
+        toSetUp.setHeight(46 * scaleFactor);
+        toSetUp.setPosition(below.getX(), below.getY() + 71 * scaleFactor);
     }
 }
