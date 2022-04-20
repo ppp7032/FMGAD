@@ -454,7 +454,7 @@ public class LoadGraph implements Screen {
 
     private void enableDigraphAlert() {
         alertShowing = true;
-        alertMessage.updateText("Only Dijkstra's\nalgorithm is supported\non digraphs!");
+        alertMessage.updateText("Only Dijkstra's algorithm\nis supported on digraphs!");
         alertMessage.setVisible(true);
     }
 
@@ -575,13 +575,12 @@ public class LoadGraph implements Screen {
                 Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
             }
         } else if (nearestNeighbourApplied) {
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && counter < nearestNeighbourPath.size() - 2) {
+            if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
+                alertShowing = true;
+                alertMessage.updateText("Nearest Neighbour\nhas stalled!");
+                alertMessage.setVisible(true);
+            } else if (counter < nearestNeighbourPath.size() - 2 && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 counter++;
-                if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
-                    alertShowing = true;
-                    alertMessage.updateText("Nearest Neighbour\nhas stalled!");
-                    alertMessage.setVisible(true);
-                }
             }
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 1; a <= counter; a++) {
