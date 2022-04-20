@@ -128,7 +128,7 @@ public class NewGraph implements Screen {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
-                        vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), graph.getXCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, graph.getYCoordinateOfVertex(graph.getNumberOfVertices() - 1) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
+                        vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), x, y, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
                         temporaryVertexLabel.setVisible(false);
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();

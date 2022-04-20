@@ -173,20 +173,22 @@ public class LoadGraph implements Screen {
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (dijkstraApplied) {
-                    dijkstraApplied = false;
-                    dijkstraContainer.setup = false;
-                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                        for (int b = 0; b < 4; b++) {
-                            dijkstraLabels[a][b].setVisible(false);
+                if (!alertShowing) {
+                    if (dijkstraApplied) {
+                        dijkstraApplied = false;
+                        dijkstraContainer.setup = false;
+                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                            for (int b = 0; b < 4; b++) {
+                                dijkstraLabels[a][b].setVisible(false);
+                            }
                         }
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                        dijkstraButton.setText("Dijkstra's");
+                    } else if (!dijkstraPressed) {
+                        dijkstraPressed = true;
+                        toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
+                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     }
-                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
-                    dijkstraButton.setText("Dijkstra's");
-                } else if (!dijkstraPressed) {
-                    dijkstraPressed = true;
-                    toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
-                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 }
             }
         });
@@ -285,9 +287,11 @@ public class LoadGraph implements Screen {
         help.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
-                toggleHelpMenu(menuTitle, attributes[0], back);
-                viewingHelp = true;
+                if (!alertShowing) {
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
+                    toggleHelpMenu(menuTitle, attributes[0], back);
+                    viewingHelp = true;
+                }
             }
         });
         mainMenu.addListener(new ClickListener() {
@@ -445,7 +449,7 @@ public class LoadGraph implements Screen {
         final boolean newStatus = !menuTitle.isVisible();
         if (newStatus) {
             menuTitle.updateText("Help");
-            attribute.updateText("Press space to do an iteration");
+            attribute.updateText("Press space to run an iteration");
         }
         attribute.setVisible(newStatus);
         menuTitle.setVisible(newStatus);
