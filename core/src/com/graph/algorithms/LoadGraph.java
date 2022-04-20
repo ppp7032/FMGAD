@@ -48,7 +48,7 @@ public class LoadGraph implements Screen {
     public LoadGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        alertMessage = new Text("Nearest Neighbour\nhas stalled!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
@@ -60,7 +60,7 @@ public class LoadGraph implements Screen {
     public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        alertMessage = new Text("Nearest Neighbour\nhas stalled!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         this.vertexLabels.addAll(vertexLabels);
@@ -203,6 +203,8 @@ public class LoadGraph implements Screen {
                         toggleJarnikPressed(menuTitle, attributes[0], back, apply);
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     }
+                } else {
+                    enableDigraphAlert();
                 }
             }
         });
@@ -224,6 +226,8 @@ public class LoadGraph implements Screen {
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                         kruskalButton.setText("Kruskal's");
                     }
+                } else {
+                    enableDigraphAlert();
                 }
             }
         });
@@ -253,6 +257,8 @@ public class LoadGraph implements Screen {
                     } else {
                         list.setItems(routeInspectionItems.get(0).toArray(new String[0]));
                     }
+                } else {
+                    enableDigraphAlert();
                 }
             }
         });
@@ -271,6 +277,8 @@ public class LoadGraph implements Screen {
                         alertMessage.setVisible(false);
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                     }
+                } else {
+                    enableDigraphAlert();
                 }
             }
         });
@@ -444,6 +452,12 @@ public class LoadGraph implements Screen {
         back.setVisible(newStatus);
     }
 
+    private void enableDigraphAlert() {
+        alertShowing = true;
+        alertMessage.updateText("Only Dijkstra's\nalgorithm is supported\non digraphs!");
+        alertMessage.setVisible(true);
+    }
+
     private void toggleButtonTouchableStatus(final TextButton[] buttons, final Touchable status) {
         for (TextButton button : buttons) {
             button.setTouchable(status);
@@ -565,6 +579,7 @@ public class LoadGraph implements Screen {
                 counter++;
                 if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
                     alertShowing = true;
+                    alertMessage.updateText("Nearest Neighbour\nhas stalled!");
                     alertMessage.setVisible(true);
                 }
             }

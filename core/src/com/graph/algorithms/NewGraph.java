@@ -26,20 +26,20 @@ public class NewGraph implements Screen {
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final Text temporaryVertexLabel;
-    private final Text cannotSaveMessage;
+    private final Text alertMessage;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
-    private boolean cannotSaveAlert = false;
+    private boolean alertShowing = false;
     private TextField edgeWeight;
     private boolean viewingHelp = false;
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        cannotSaveMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
@@ -55,7 +55,7 @@ public class NewGraph implements Screen {
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        cannotSaveMessage = new Text("Disconnected graphs\nare not supported!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
         temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
@@ -82,7 +82,7 @@ public class NewGraph implements Screen {
         temporaryVertexLabel.setVisible(false);
 
 
-        cannotSaveMessage.setVisible(false);
+        alertMessage.setVisible(false);
 
         name.setAlignment(1);
         name.setWidth(124 * scaleFactor);
@@ -123,8 +123,8 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (Graphics.mouseInBounds(scaleFactor)) {
-                    cannotSaveAlert = false;
-                    cannotSaveMessage.setVisible(false);
+                    alertShowing = false;
+                    alertMessage.setVisible(false);
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
@@ -235,7 +235,7 @@ public class NewGraph implements Screen {
         });
 
 
-        stage.addActor(cannotSaveMessage);
+        stage.addActor(alertMessage);
         stage.addActor(name);
         stage.addActor(edgeWeight);
         stage.addActor(menuTitle);
@@ -274,14 +274,14 @@ public class NewGraph implements Screen {
             if (graph.isConnected()) {
                 return true;
             } else {
-                cannotSaveAlert = true;
-                cannotSaveMessage.setVisible(true);
-                cannotSaveMessage.updateText("Please ensure the\ngraph is connected!");
+                alertShowing = true;
+                alertMessage.setVisible(true);
+                alertMessage.updateText("Please ensure the\ngraph is connected!");
             }
         } else {
-            cannotSaveAlert = true;
-            cannotSaveMessage.setVisible(true);
-            cannotSaveMessage.updateText("Please ensure the\ngraph contains at\nleast 2 vertices!");
+            alertShowing = true;
+            alertMessage.setVisible(true);
+            alertMessage.updateText("Please ensure the\ngraph contains at\nleast 2 vertices!");
         }
         return false;
     }
@@ -373,7 +373,7 @@ public class NewGraph implements Screen {
             clickNewVertex();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             clickNewEdge();
-        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !cannotSaveAlert) {
+        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !alertShowing) {
             final int vertexBeingClicked = findVertexBeingClicked();
             if (vertexBeingClicked != -1) {
                 deleteVertex(vertexBeingClicked);
@@ -405,13 +405,13 @@ public class NewGraph implements Screen {
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
-        if (cannotSaveAlert) {
+        if (alertShowing) {
             newVertexClicked = false;
             newEdgeClicked = false;
             firstVertex = -1;
             secondVertex = -1;
             vertexBeingMoved = -1;
-            Graphics.renderAlert(shapeRenderer, cannotSaveMessage, scaleFactor);
+            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
         } else if (viewingHelp) {
             newVertexClicked = false;
             newEdgeClicked = false;
