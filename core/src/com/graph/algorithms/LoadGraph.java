@@ -43,6 +43,7 @@ public class LoadGraph implements Screen {
     private boolean nearestNeighbourPressed = false;
     private boolean nearestNeighbourApplied = false;
     private boolean alertShowing = false;
+    private boolean viewingHelp = false;
 
     public LoadGraph(final Graph graph) {
         this.graph = graph;
@@ -76,9 +77,10 @@ public class LoadGraph implements Screen {
         final TextButton routeInspectionButton = new TextButton("C. Postman", skin, "default");
         final TextButton travellingSalesmanButton = new TextButton("T. Salesman", skin, "default");
         final SelectBox<String> selectTSPAlgorithm = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)), "default");
+        final TextButton help = new TextButton("Help", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
-        final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton};
+        final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton, help};
         final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
         final Text[] attributes = new Text[]{new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
@@ -122,11 +124,11 @@ public class LoadGraph implements Screen {
         selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
         selectTSPAlgorithm.setVisible(false);
 
-        edit.setWidth(127 * scaleFactor);
-        edit.setHeight(46 * scaleFactor);
-        edit.setPosition(80f * scaleFactor - edit.getWidth() / 2f, 24f * scaleFactor);
+        Graphics.setupBottomButton(edit, scaleFactor);
 
         Graphics.setupButtonAbove(edit, mainMenu, scaleFactor);
+
+        Graphics.setupButtonAbove(mainMenu, help, scaleFactor);
 
         menuTitle.setVisible(false);
 
@@ -272,6 +274,14 @@ public class LoadGraph implements Screen {
                 }
             }
         });
+        help.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
+                toggleHelpMenu(menuTitle, attributes[0], back);
+                viewingHelp = true;
+            }
+        });
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -313,6 +323,10 @@ public class LoadGraph implements Screen {
                     travellingSalesmanPressed = false;
                     toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                } else if (viewingHelp) {
+                    viewingHelp = false;
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                    toggleHelpMenu(menuTitle, attributes[0], back);
                 }
             }
         });
@@ -417,6 +431,17 @@ public class LoadGraph implements Screen {
             }
         }
         stage.addActor(alertMessage);
+    }
+
+    private void toggleHelpMenu(final Text menuTitle, final Text attribute, final TextButton back) {
+        final boolean newStatus = !menuTitle.isVisible();
+        if (newStatus) {
+            menuTitle.updateText("Help");
+            attribute.updateText("Press space to do an iteration");
+        }
+        attribute.setVisible(newStatus);
+        menuTitle.setVisible(newStatus);
+        back.setVisible(newStatus);
     }
 
     private void toggleButtonTouchableStatus(final TextButton[] buttons, final Touchable status) {
@@ -564,8 +589,6 @@ public class LoadGraph implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         if (dijkstraPressed) {
             Graphics.drawMenu(2, scaleFactor, shapeRenderer);
-        } else if (jarnikPressed) {
-            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         } else if (dijkstraApplied) {
             for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                 final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
@@ -585,7 +608,7 @@ public class LoadGraph implements Screen {
             }
         } else if (chinesePostmanPressed || displayingLowerBounds) {
             Graphics.drawMenu(0, scaleFactor, shapeRenderer);
-        } else if (travellingSalesmanPressed || nearestNeighbourPressed) {
+        } else if (travellingSalesmanPressed || nearestNeighbourPressed || jarnikPressed || viewingHelp) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         } else if (alertShowing) {
             Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);

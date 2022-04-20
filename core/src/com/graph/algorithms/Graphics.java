@@ -217,4 +217,10 @@ public abstract class Graphics {
         toSetUp.setHeight(46 * scaleFactor);
         toSetUp.setPosition(below.getX(), below.getY() + 71 * scaleFactor);
     }
+
+    public static void setupBottomButton(final TextButton button, final float scaleFactor) {
+        button.setWidth(127 * scaleFactor);
+        button.setHeight(46 * scaleFactor);
+        button.setPosition(80f * scaleFactor - button.getWidth() / 2f, 24f * scaleFactor);
+    }
 }

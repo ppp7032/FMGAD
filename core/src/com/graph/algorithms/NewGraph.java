@@ -34,7 +34,7 @@ public class NewGraph implements Screen {
     private int vertexBeingMoved = -1;
     private boolean cannotSaveAlert = false;
     private TextField edgeWeight;
-    private boolean viewingHotkeys = false;
+    private boolean viewingHelp = false;
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
@@ -112,9 +112,7 @@ public class NewGraph implements Screen {
 
         Graphics.setupButtonBelow(newEdge, save, scaleFactor);
 
-        finish.setWidth(127 * scaleFactor);
-        finish.setHeight(46 * scaleFactor);
-        finish.setPosition(80f * scaleFactor - finish.getWidth() / 2f, 24f * scaleFactor);
+        Graphics.setupBottomButton(finish, scaleFactor);
 
         Graphics.setupButtonAbove(finish, mainMenu, scaleFactor);
 
@@ -146,12 +144,9 @@ public class NewGraph implements Screen {
                                 attributes[0].setVisible(true);
                                 back.setVisible(true);
                                 apply.setVisible(true);
-                                newVertex.setTouchable(Touchable.disabled);
-                                newEdge.setTouchable(Touchable.disabled);
-                                save.setTouchable(Touchable.disabled);
-                                finish.setTouchable(Touchable.disabled);
-                                mainMenu.setTouchable(Touchable.disabled);
-                                finish.setTouchable(Touchable.disabled);
+                                for (TextButton sidePanelButton : sidePanelButtons) {
+                                    sidePanelButton.setTouchable(Touchable.disabled);
+                                }
                                 name.setTouchable(Touchable.disabled);
                             }
 
@@ -171,9 +166,9 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (newEdgeClicked) {
-                    closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, newVertex, newEdge, save, finish, mainMenu, name);
-                } else if (viewingHotkeys) {
-                    toggleViewingHotkeys(false, sidePanelButtons, back, menuTitle, attributes);
+                    closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, sidePanelButtons, name);
+                } else if (viewingHelp) {
+                    toggleHelpMenu(false, sidePanelButtons, back, menuTitle, attributes);
                 }
             }
         });
@@ -194,7 +189,7 @@ public class NewGraph implements Screen {
                         graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                     }
                     edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0, scaleFactor));
-                    closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, newVertex, newEdge, save, finish, mainMenu, name);
+                    closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, sidePanelButtons, name);
                 }
             }
         });
@@ -221,7 +216,7 @@ public class NewGraph implements Screen {
         help.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                toggleViewingHotkeys(true, sidePanelButtons, back, menuTitle, attributes);
+                toggleHelpMenu(true, sidePanelButtons, back, menuTitle, attributes);
             }
         });
         mainMenu.addListener(new ClickListener() {
@@ -254,8 +249,8 @@ public class NewGraph implements Screen {
         }
     }
 
-    private void toggleViewingHotkeys(final boolean newStatus, final TextButton[] sidePanelButtons, final TextButton back, final Text menuTitle, final Text[] attributes) {
-        viewingHotkeys = newStatus;
+    private void toggleHelpMenu(final boolean newStatus, final TextButton[] sidePanelButtons, final TextButton back, final Text menuTitle, final Text[] attributes) {
+        viewingHelp = newStatus;
         back.setVisible(newStatus);
         menuTitle.setVisible(newStatus);
         for (final Text attribute : attributes) {
@@ -317,17 +312,15 @@ public class NewGraph implements Screen {
         return -1;
     }
 
-    private void closeEnterEdgeWeightMenu(final TextField edgeWeight, final Text edgeWeightTitle, final Text edgeWeightLabel, final TextButton back, final TextButton apply, final TextButton newVertex, final TextButton newEdge, final TextButton save, final TextButton finish, final TextButton mainMenu, final TextField name) {
+    private void closeEnterEdgeWeightMenu(final TextField edgeWeight, final Text edgeWeightTitle, final Text edgeWeightLabel, final TextButton back, final TextButton apply, final TextButton[] sidePanelButtons, final TextField name) {
         edgeWeight.setVisible(false);
         edgeWeightTitle.setVisible(false);
         edgeWeightLabel.setVisible(false);
         back.setVisible(false);
         apply.setVisible(false);
-        newVertex.setTouchable(Touchable.enabled);
-        newEdge.setTouchable(Touchable.enabled);
-        save.setTouchable(Touchable.enabled);
-        finish.setTouchable(Touchable.enabled);
-        mainMenu.setTouchable(Touchable.enabled);
+        for (final TextButton sidePanelButton : sidePanelButtons) {
+            sidePanelButton.setTouchable(Touchable.enabled);
+        }
         name.setTouchable(Touchable.enabled);
         newEdgeClicked = false;
         firstVertex = -1;
@@ -419,7 +412,7 @@ public class NewGraph implements Screen {
             secondVertex = -1;
             vertexBeingMoved = -1;
             Graphics.renderAlert(shapeRenderer, cannotSaveMessage, scaleFactor);
-        } else if (viewingHotkeys) {
+        } else if (viewingHelp) {
             newVertexClicked = false;
             newEdgeClicked = false;
             firstVertex = -1;
