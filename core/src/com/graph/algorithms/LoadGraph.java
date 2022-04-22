@@ -54,6 +54,9 @@ public class LoadGraph implements Screen {
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
         startVertexInput = new TextField("0", skin);
         endVertexInput = new TextField("0", skin);
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
+        }
         GeneralConstructor(twenty, skin);
     }
 
@@ -101,7 +104,6 @@ public class LoadGraph implements Screen {
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
             }
-            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
         }
 
 
