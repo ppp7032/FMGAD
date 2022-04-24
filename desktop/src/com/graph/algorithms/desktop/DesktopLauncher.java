@@ -10,19 +10,19 @@ import java.awt.*;
 
 public class DesktopLauncher {
     public static void main(final String[] args) {
-        final LwjglApplicationConfiguration cnfg = new LwjglApplicationConfiguration();
-        String[] config = Settings.readFromConfigFile();
-        cnfg.width = Integer.parseInt(config[0].substring(0, config[0].length() - 1));
-        cnfg.height = cnfg.width * 9 / 16;
-        if (config[1].equals("Fullscreen")) {
+        final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        String[] displaySettings = Settings.readFromConfigFile();
+        if (displaySettings[1].equals("Fullscreen")) {
             final Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-            cnfg.width = dimension.width;
-            cnfg.height = dimension.height;
-            cnfg.fullscreen = true;
+            config.width = dimension.width;
+            config.height = dimension.height;
+            config.fullscreen = true;
+        } else {
+            config.height = Integer.parseInt(displaySettings[0].substring(0, displaySettings[0].length() - 1));
+            config.width = config.height * 16 / 9;
         }
-        cnfg.resizable = false;
-        cnfg.foregroundFPS = 60;
-        cnfg.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
-        new LwjglApplication(new Main(), cnfg);
+        config.resizable = false;
+        config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
+        new LwjglApplication(new Main(), config);
     }
 }
