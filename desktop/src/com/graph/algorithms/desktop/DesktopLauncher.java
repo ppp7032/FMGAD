@@ -10,6 +10,7 @@ import java.awt.*;
 
 public class DesktopLauncher {
     public static void main(final String[] args) {
+        LwjglApplicationConfiguration.disableAudio = true;
         final LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         String[] displaySettings = Settings.readFromConfigFile();
         if (displaySettings[1].equals("Fullscreen")) {
@@ -22,6 +23,7 @@ public class DesktopLauncher {
             config.width = config.height * 16 / 9;
         }
         config.resizable = false;
+        config.title = "FMGAD";
         config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
         new LwjglApplication(new Main(), config);
     }
