@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Settings implements Screen {
@@ -23,6 +25,7 @@ public class Settings implements Screen {
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
+    private final Text alertMessage;
 
     public Settings() {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
@@ -33,6 +36,7 @@ public class Settings implements Screen {
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
         final String[] config = Settings.readFromConfigFile();
+        alertMessage = new Text("Please restart the application\nto apply any changes made!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
 
 
         resolutionBox.setX(376 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
@@ -51,7 +55,17 @@ public class Settings implements Screen {
 
         Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, true);
 
+        alertMessage.setVisible(false);
 
+
+        stage.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (!(x >= apply.getX() && x <= apply.getX() + apply.getWidth() && y >= apply.getY() && y <= apply.getY() + apply.getHeight())) {
+                    alertMessage.setVisible(false);
+                }
+            }
+        });
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -61,9 +75,8 @@ public class Settings implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Graphics.setDisplayMode(fullscreenBox.getSelected(), resolutionBox.getSelected());
                 Settings.writeToConfigFile(new String[]{resolutionBox.getSelected(), fullscreenBox.getSelected()});
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
+                alertMessage.setVisible(true);
             }
         });
 
@@ -76,7 +89,11 @@ public class Settings implements Screen {
     }
 
     public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode
-        final Scanner scanner = new Scanner(Gdx.files.internal("config.txt").read());
+        Scanner scanner = new Scanner(System.in);
+        try {
+            scanner = new Scanner(new File("config.txt"));
+        } catch (FileNotFoundException ignored) { //This should never happen
+        }
         final String[] config = new String[2];
         while (scanner.hasNext()) {
             final String currentLine = scanner.nextLine();
@@ -106,6 +123,14 @@ public class Settings implements Screen {
     @Override
     public void render(final float delta) {
         Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 2);
+        if (alertMessage.isVisible()) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
+            shapeRenderer.end();
+            stage.getBatch().begin();
+            alertMessage.draw(stage.getBatch(), 0);
+            stage.getBatch().end();
+        }
     }
 
     @Override

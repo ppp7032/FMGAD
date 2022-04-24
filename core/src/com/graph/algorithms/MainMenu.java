@@ -76,7 +76,7 @@ public class MainMenu implements Screen {
         stage.addActor(loadGraph);
         stage.addActor(settings);
         stage.addActor(exit);
-        stage.addActor(new Text("Further Maths Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) scaleFactor), new float[]{1, 1, 1, 1}, 0, 0, -1));
+        stage.addActor(new Text("FM Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) scaleFactor), new float[]{1, 1, 1, 1}, 0, 0, -1));
     }
 
     @Override

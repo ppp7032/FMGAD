@@ -32,7 +32,6 @@ public class NewGraph implements Screen {
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
-    private boolean alertShowing = false;
     private TextField edgeWeight;
     private boolean viewingHelp = false;
 
@@ -123,7 +122,6 @@ public class NewGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (Graphics.mouseInBounds(scaleFactor)) {
-                    alertShowing = false;
                     alertMessage.setVisible(false);
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
@@ -274,12 +272,10 @@ public class NewGraph implements Screen {
             if (graph.isConnected()) {
                 return true;
             } else {
-                alertShowing = true;
                 alertMessage.setVisible(true);
                 alertMessage.updateText("Please ensure the\ngraph is connected!");
             }
         } else {
-            alertShowing = true;
             alertMessage.setVisible(true);
             alertMessage.updateText("Please ensure the\ngraph contains at\nleast 2 vertices!");
         }
@@ -373,7 +369,7 @@ public class NewGraph implements Screen {
             clickNewVertex();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             clickNewEdge();
-        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !alertShowing) {
+        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !alertMessage.isVisible()) {
             final int vertexBeingClicked = findVertexBeingClicked();
             if (vertexBeingClicked != -1) {
                 deleteVertex(vertexBeingClicked);
@@ -405,7 +401,7 @@ public class NewGraph implements Screen {
         if (secondVertex != -1) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
         }
-        if (alertShowing) {
+        if (alertMessage.isVisible()) {
             newVertexClicked = false;
             newEdgeClicked = false;
             firstVertex = -1;

@@ -62,7 +62,7 @@ public abstract class Graphics {
     public static void renderAlert(final ShapeRenderer shapeRenderer, final Text alertMessage, final float scaleFactor) {
         final float width = alertMessage.getWidth() + 24f * scaleFactor;
         final float height = alertMessage.getHeight() + 24f * scaleFactor;
-        Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        Graphics.drawRectangleWithBorder(shapeRenderer, (Gdx.graphics.getWidth() - width) / 2f, (Gdx.graphics.getHeight() - height) / 2f, width, height, 2f, new float[]{1, 1, 1, 1});
     }
 
     private static void renderVertex(final ShapeRenderer shapeRenderer, final Batch batch, final Graph graph, final int vertex, final Text vertexLabel, final float scaleFactor) {
@@ -134,16 +134,6 @@ public abstract class Graphics {
         if (digraphStatus) {
             final float[][] points = Graphics.arrowHeadGenerator(new float[]{x1, y1}, new float[]{x2, y2}, scaleFactor);
             shapeRenderer.triangle(points[0][0], points[0][1], points[1][0], points[1][1], points[2][0], points[2][1]);
-        }
-    }
-
-    public static void setDisplayMode(final String fullscreenMode, final String resolution) {
-        if (fullscreenMode.equals("Fullscreen")) {
-            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        } else {
-            final int height = Integer.parseInt(resolution.substring(0, resolution.length() - 1));
-            final int width = height / 9 * 16;
-            Gdx.graphics.setWindowedMode(width, height);
         }
     }
 
