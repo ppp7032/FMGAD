@@ -46,7 +46,7 @@ public class Graph {
             adjacencyList.add(new ArrayList<int[]>());
             coordinates.add(new float[]{Float.parseFloat(currentLine.substring(occurrences.get(3).get(0) + 1, occurrences.get(1).get(0))), Float.parseFloat(currentLine.substring(occurrences.get(1).get(0) + 1, occurrences.get(4).get(0)))});
             for (int a = 0; a < occurrences.get(0).size(); a++) {
-                adjacencyList.get(adjacencyList.size() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a + 1))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a + 1) + 1, occurrences.get(2).get(a)))});
+                adjacencyList.get(getNumberOfVertices() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a + 1))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a + 1) + 1, occurrences.get(2).get(a)))});
             }
         }
         scanner.close();
@@ -143,7 +143,7 @@ public class Graph {
             file.delete();
         }
         file.writeString("digraph=" + digraph, true);
-        for (int a = 0; a < adjacencyList.size(); a++) {
+        for (int a = 0; a < getNumberOfVertices(); a++) {
             final StringBuilder line = new StringBuilder("(" + coordinates.get(a)[0] + "," + coordinates.get(a)[1] + ")");
             for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
                 line.append(" [").append(getVertex(a, b)).append(",").append(getEdgeWeight(a, b)).append("]");
@@ -222,7 +222,7 @@ public class Graph {
     }
 
     public void updateDijkstraLabels(final Text[][] dijkstraLabels, final int[] orderLabels, final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels) {
-        for (int a = 0; a < adjacencyList.size(); a++) {
+        for (int a = 0; a < getNumberOfVertices(); a++) {
             if (orderLabels[a] != -1) {
                 dijkstraLabels[a][1].updateText(Integer.toString(orderLabels[a]));
             } else {
@@ -290,7 +290,7 @@ public class Graph {
     public void jarnik(final ArrayList<int[]> minimumEdges, final int startVertex) {
         final ArrayList<Integer> includedVertices = new ArrayList<>();
         includedVertices.add(startVertex);
-        while (includedVertices.size() < adjacencyList.size()) {
+        while (includedVertices.size() < getNumberOfVertices()) {
             final int[] smallestEdge = new int[]{-1, -1, -1}; // {from,to,weight}
             for (int a = 0; a < includedVertices.size(); a++) {
                 for (int b = 0; b < getNumberOfEdgesConnectedToVertex(includedVertices.get(a)); b++) {
@@ -311,8 +311,8 @@ public class Graph {
     public void kruskal(final ArrayList<int[]> minimumEdges) {
         final ArrayList<int[]> includedEdges = new ArrayList<>();
         {
-            for (int a = 0; a < adjacencyList.size(); a++) {
-                for (int b = 0; b < adjacencyList.get(a).size(); b++) {
+            for (int a = 0; a < getNumberOfVertices(); a++) {
+                for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
                     final int[] currentEdge = new int[]{a, getVertex(a, b), getEdgeWeight(a, b)};
                     boolean found = false;
                     for (int[] includedEdge : includedEdges) {
@@ -328,33 +328,25 @@ public class Graph {
             }
             Collections.sort(includedEdges, new Comparator<int[]>() {
                 public int compare(int[] first, int[] second) {
-                    return -1 * Integer.compare(first[2], second[2]);
+                    return Integer.compare(first[2], second[2]);
                 }
             });
         }
-        while (minimumEdges.size() < adjacencyList.size() - 1) {
-            minimumEdges.add(includedEdges.get(includedEdges.size() - 1));
-            includedEdges.remove(includedEdges.size() - 1);
-            if (cycleDetection(minimumEdges)) {
-                minimumEdges.remove(minimumEdges.size() - 1);
-            }
-        }
-    }
-
-    private boolean cycleDetection(final ArrayList<int[]> minimumEdges) {
-        final int[] parents = new int[adjacencyList.size()];
-        for (int a = 0; a < adjacencyList.size(); a++) {
+        final int[] parents = new int[getNumberOfVertices()];
+        for (int a = 0; a < getNumberOfVertices(); a++) {
             parents[a] = -1;
         }
-        for (int[] minimumEdge : minimumEdges) {
-            final int fromVertex = find(parents, minimumEdge[0]);
-            final int toVertex = find(parents, minimumEdge[1]);
-            if (fromVertex == toVertex) {
-                return true;
+        for (int[] edge : includedEdges) {
+            final int root0 = find(parents, edge[0]);
+            final int root1 = find(parents, edge[1]);
+            if (root0 != root1) {
+                minimumEdges.add(edge);
+                union(parents, root0, root1);
             }
-            union(parents, fromVertex, toVertex);
+            if (minimumEdges.size() == getNumberOfVertices() - 1) {
+                break;
+            }
         }
-        return false;
     }
 
     private int[] getOddVertices() {
