@@ -166,29 +166,33 @@ public class LoadGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (alertMessage.isVisible() && Graphics.mouseInBounds(scaleFactor)) {
-                    alertMessage.setVisible(false);
+                    if (travellingSalesmanPressed) {
+                        if (Graphics.applyNotPressed(apply, x, y)) {
+                            alertMessage.setVisible(false);
+                        }
+                    } else {
+                        alertMessage.setVisible(false);
+                    }
                 }
             }
         });
         dijkstraButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!alertMessage.isVisible()) {
-                    if (dijkstraApplied) {
-                        dijkstraApplied = false;
-                        dijkstraContainer.setup = false;
-                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                            for (int b = 0; b < 4; b++) {
-                                dijkstraLabels[a][b].setVisible(false);
-                            }
+                if (dijkstraApplied) {
+                    dijkstraApplied = false;
+                    dijkstraContainer.setup = false;
+                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+                        for (int b = 0; b < 4; b++) {
+                            dijkstraLabels[a][b].setVisible(false);
                         }
-                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
-                        dijkstraButton.setText("Dijkstra's");
-                    } else if (!dijkstraPressed) {
-                        dijkstraPressed = true;
-                        toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
-                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                     }
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
+                    dijkstraButton.setText("Dijkstra's");
+                } else if (!dijkstraPressed) {
+                    dijkstraPressed = true;
+                    toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 }
             }
         });
@@ -267,30 +271,24 @@ public class LoadGraph implements Screen {
         travellingSalesmanButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!graph.isDigraph()) {
-                    if (!nearestNeighbourApplied) {
-                        travellingSalesmanPressed = true;
-                        toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
-                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
-                    } else {
-                        travellingSalesmanButton.setText("T. Salesman");
-                        nearestNeighbourApplied = false;
-                        alertMessage.setVisible(false);
-                        toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
-                    }
+                if (!nearestNeighbourApplied) {
+                    travellingSalesmanPressed = true;
+                    toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
                 } else {
-                    enableDigraphAlert();
+                    travellingSalesmanButton.setText("T. Salesman");
+                    nearestNeighbourApplied = false;
+                    alertMessage.setVisible(false);
+                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                 }
             }
         });
         help.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!alertMessage.isVisible()) {
-                    toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
-                    toggleHelpMenu(menuTitle, attributes[0], back);
-                    viewingHelp = true;
-                }
+                toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
+                toggleHelpMenu(menuTitle, attributes[0], back);
+                viewingHelp = true;
             }
         });
         mainMenu.addListener(new ClickListener() {
@@ -358,28 +356,32 @@ public class LoadGraph implements Screen {
                         counter = 1;
                     }
                 } else if (travellingSalesmanPressed) {
-                    travellingSalesmanPressed = false;
                     if (selectTSPAlgorithm.getSelectedIndex() == 1) {
-                        displayingLowerBounds = true;
-                        toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
-                        toggleLowerBounds(menuTitle, scrollBar, back);
-                        if (!everRanLowerBounds) {
-                            final int[] lowestBounds = graph.lowestBoundTSP();
-                            final String[] items = new String[lowestBounds.length];
-                            for (int a = 0; a < lowestBounds.length; a++) {
-                                final String value;
-                                if (lowestBounds[a] == -1) {
-                                    value = "Algorithm Stalled";
-                                } else {
-                                    value = String.valueOf(lowestBounds[a]);
+                        if (!graph.isDigraph()) {
+                            travellingSalesmanPressed = false;
+                            displayingLowerBounds = true;
+                            toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
+                            toggleLowerBounds(menuTitle, scrollBar, back);
+                            if (!everRanLowerBounds) {
+                                final int[] lowestBounds = graph.lowestBoundTSP();
+                                final String[] items = new String[lowestBounds.length];
+                                for (int a = 0; a < lowestBounds.length; a++) {
+                                    final String value;
+                                    if (lowestBounds[a] == -1) {
+                                        value = "Algorithm Stalled";
+                                    } else {
+                                        value = String.valueOf(lowestBounds[a]);
+                                    }
+                                    items[a] = (char) (a + 65) + ": " + value;
                                 }
-                                items[a] = (char) (a + 65) + ": " + value;
+                                list.setItems(items);
+                                lowerBoundTSPItems.set(0, Graphics.getItems(list));
+                                everRanLowerBounds = true;
+                            } else {
+                                list.setItems(lowerBoundTSPItems.get(0).toArray(new String[0]));
                             }
-                            list.setItems(items);
-                            lowerBoundTSPItems.set(0, Graphics.getItems(list));
-                            everRanLowerBounds = true;
                         } else {
-                            list.setItems(lowerBoundTSPItems.get(0).toArray(new String[0]));
+                            enableDigraphAlert();
                         }
                     } else {
                         nearestNeighbourPressed = true;
@@ -456,7 +458,7 @@ public class LoadGraph implements Screen {
     }
 
     private void enableDigraphAlert() {
-        alertMessage.updateText("Only Dijkstra's algorithm\nis supported on digraphs!");
+        alertMessage.updateText("This algorithm is not\nsupported on digraphs!");
         alertMessage.setVisible(true);
     }
 
@@ -587,7 +589,11 @@ public class LoadGraph implements Screen {
             for (int a = 1; a <= counter; a++) {
                 final int vertex1 = nearestNeighbourPath.get(a - 1);
                 final int vertex2 = nearestNeighbourPath.get(a);
-                Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
+                try {
+                    Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    counter = 0;
+                }
             }
         }
         shapeRenderer.setColor(0, 1, 0, 1);
@@ -619,13 +625,17 @@ public class LoadGraph implements Screen {
                 dijkstraContainer = graph.setupDijkstraContainer(graph.getVertexFromInput(startVertexInput.getText()), graph.getVertexFromInput(endVertexInput.getText()));
                 graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
             } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
-                graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
+                try {
+                    graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
             }
         } else if (chinesePostmanPressed || displayingLowerBounds) {
             Graphics.drawMenu(0, scaleFactor, shapeRenderer);
         } else if (travellingSalesmanPressed || nearestNeighbourPressed || jarnikPressed || viewingHelp) {
             Graphics.drawMenu(1, scaleFactor, shapeRenderer);
-        } else if (alertMessage.isVisible()) {
+        }
+        if (alertMessage.isVisible()) {
             Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
         }
         Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});

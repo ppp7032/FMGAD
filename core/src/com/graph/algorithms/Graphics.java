@@ -181,8 +181,12 @@ public abstract class Graphics {
         apply.setX(back.getX() + 325 * scaleFactor);
     }
 
-    public static boolean mouseInBounds(final float scaleFactor) {
+    public static boolean mouseInBoundsForVertex(final float scaleFactor) {
         return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+    }
+
+    public static boolean mouseInBounds(final float scaleFactor) {
+        return Gdx.input.getX() / scaleFactor > 160f && Gdx.input.getY() > 0 && Gdx.input.getY() < Gdx.graphics.getHeight() && Gdx.input.getX() < Gdx.graphics.getWidth();
     }
 
     public static ArrayList<String> getItems(List<String> graphSelector) {
@@ -212,5 +216,9 @@ public abstract class Graphics {
         button.setWidth(127 * scaleFactor);
         button.setHeight(46 * scaleFactor);
         button.setPosition(80f * scaleFactor - button.getWidth() / 2f, 24f * scaleFactor);
+    }
+
+    public static boolean applyNotPressed(final TextButton apply, final float x, final float y) {
+        return !(x >= apply.getX()) || !(x <= apply.getX() + apply.getWidth()) || !(y >= apply.getY()) || !(y <= apply.getY() + apply.getHeight());
     }
 }

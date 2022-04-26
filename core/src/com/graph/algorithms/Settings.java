@@ -61,7 +61,7 @@ public class Settings implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (!(x >= apply.getX() && x <= apply.getX() + apply.getWidth() && y >= apply.getY() && y <= apply.getY() + apply.getHeight())) {
+                if (Graphics.applyNotPressed(apply, x, y)) {
                     alertMessage.setVisible(false);
                 }
             }

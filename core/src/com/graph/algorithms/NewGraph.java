@@ -121,8 +121,7 @@ public class NewGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Graphics.mouseInBounds(scaleFactor)) {
-                    alertMessage.setVisible(false);
+                if (Graphics.mouseInBoundsForVertex(scaleFactor)) {
                     if (newVertexClicked) {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
@@ -157,6 +156,9 @@ public class NewGraph implements Screen {
                     newVertexClicked = false;
                     newEdgeClicked = false;
                     firstVertex = -1;
+                }
+                if (alertMessage.isVisible() && Graphics.mouseInBounds(scaleFactor)) {
+                    alertMessage.setVisible(false);
                 }
             }
         });
@@ -362,7 +364,7 @@ public class NewGraph implements Screen {
         } else {
             vertexBeingMoved = -1;
         }
-        if (vertexBeingMoved != -1 && Graphics.mouseInBounds(scaleFactor)) {
+        if (vertexBeingMoved != -1 && Graphics.mouseInBoundsForVertex(scaleFactor)) {
             graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
@@ -385,7 +387,7 @@ public class NewGraph implements Screen {
         }
         Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), vertexBeingMoved);
         shapeRenderer.end();
-        if (newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
+        if (newVertexClicked && Graphics.mouseInBoundsForVertex(scaleFactor)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             Graphics.renderVertex(shapeRenderer, stage.getBatch(), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, temporaryVertexLabel, scaleFactor);
             shapeRenderer.end();
