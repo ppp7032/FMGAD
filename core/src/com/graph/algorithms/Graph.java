@@ -553,16 +553,15 @@ public class Graph {
     }
 
     public int getVertexFromInput(final String input) {
-        final int numberOfVertices = getNumberOfVertices();
         int vertex = -1;
-        if (input.length() == 1 && numberOfVertices != 0) {
+        if (input.length() == 1) {
             final char vertexChar = input.charAt(0);
             if (vertexChar >= 65 && vertexChar <= 90) {
                 vertex = vertexChar - 65;
             } else if (vertexChar >= 97 && vertexChar <= 122) {
                 vertex = vertexChar - 97;
             }
-            if (vertex >= numberOfVertices) {
+            if (vertex >= getNumberOfVertices()) {
                 vertex = -1;
             }
         }

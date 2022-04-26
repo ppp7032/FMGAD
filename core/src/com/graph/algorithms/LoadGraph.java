@@ -589,10 +589,10 @@ public class LoadGraph implements Screen {
             for (int a = 1; a <= counter; a++) {
                 final int vertex1 = nearestNeighbourPath.get(a - 1);
                 final int vertex2 = nearestNeighbourPath.get(a);
-                try {
-                    Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
-                } catch (ArrayIndexOutOfBoundsException e) {
+                if (vertex2 == -1) {
                     counter = 0;
+                } else {
+                    Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
                 }
             }
         }
