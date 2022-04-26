@@ -181,7 +181,7 @@ public class LoadGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (dijkstraApplied) {
                     dijkstraApplied = false;
-                    dijkstraContainer.setup = false;
+                    dijkstraContainer.markAsNotSetup();
                     for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                         for (int b = 0; b < 4; b++) {
                             dijkstraLabels[a][b].setVisible(false);
@@ -570,8 +570,8 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
-        if (dijkstraApplied && dijkstraContainer.setup && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] != -1) {
-            ArrayList<Integer> path = dijkstraContainer.pathsToEachVertex.get(dijkstraContainer.endVertex);
+        if (dijkstraApplied && dijkstraContainer.getSetup() && dijkstraContainer.getPermanentLabels()[dijkstraContainer.getEndVertex()] != -1) {
+            ArrayList<Integer> path = dijkstraContainer.getPathToVertex(dijkstraContainer.getEndVertex());
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 1; a < path.size(); a++) {
                 final int vertex1 = path.get(a - 1);
@@ -621,10 +621,10 @@ public class LoadGraph implements Screen {
                 shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3], dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3] / 2f, 2f * scaleFactor);
                 shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3], 2 * scaleFactor);
             }
-            if (!dijkstraContainer.setup) {
+            if (!dijkstraContainer.getSetup()) {
                 dijkstraContainer = graph.setupDijkstraContainer(graph.getVertexFromInput(startVertexInput.getText()), graph.getVertexFromInput(endVertexInput.getText()));
-                graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.permanentLabels[dijkstraContainer.endVertex] == -1) {
+                graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.getOrderLabels(), dijkstraContainer.getPermanentLabels(), dijkstraContainer.getTemporaryLabels());
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.getPermanentLabels()[dijkstraContainer.getEndVertex()] == -1) {
                 try {
                     graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
                 } catch (ArrayIndexOutOfBoundsException ignored) {

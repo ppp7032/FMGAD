@@ -245,27 +245,27 @@ public class Graph {
     }
 
     public void dijkstraStep(final DijkstraContainer dijkstraContainer) {
-        for (int a = 0; a < getNumberOfEdgesConnectedToVertex(dijkstraContainer.currentVertex); a++) {
-            final int edgeTo = getVertex(dijkstraContainer.currentVertex, a);
-            final int edgeWeight = getEdgeWeight(dijkstraContainer.currentVertex, a);
-            if (dijkstraContainer.temporaryLabels.get(edgeTo).size() == 0 || dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight < dijkstraContainer.temporaryLabels.get(edgeTo).get(dijkstraContainer.temporaryLabels.get(edgeTo).size() - 1)) {
-                dijkstraContainer.temporaryLabels.get(edgeTo).add(dijkstraContainer.permanentLabels[dijkstraContainer.currentVertex] + edgeWeight);
-                dijkstraContainer.pathsToEachVertex.get(edgeTo).clear();
-                for (int b = 0; b < dijkstraContainer.pathsToEachVertex.get(dijkstraContainer.currentVertex).size(); b++) {
-                    dijkstraContainer.pathsToEachVertex.get(edgeTo).add(dijkstraContainer.pathsToEachVertex.get(dijkstraContainer.currentVertex).get(b));
+        for (int a = 0; a < getNumberOfEdgesConnectedToVertex(dijkstraContainer.getCurrentVertex()); a++) {
+            final int edgeTo = getVertex(dijkstraContainer.getCurrentVertex(), a);
+            final int edgeWeight = getEdgeWeight(dijkstraContainer.getCurrentVertex(), a);
+            if (dijkstraContainer.getTemporaryLabels().get(edgeTo).size() == 0 || dijkstraContainer.getPermanentLabels()[dijkstraContainer.getCurrentVertex()] + edgeWeight < dijkstraContainer.getTemporaryLabels().get(edgeTo).get(dijkstraContainer.getTemporaryLabels().get(edgeTo).size() - 1)) {
+                dijkstraContainer.getTemporaryLabels().get(edgeTo).add(dijkstraContainer.getPermanentLabels()[dijkstraContainer.getCurrentVertex()] + edgeWeight);
+                dijkstraContainer.getPathToVertex(edgeTo).clear();
+                for (int b = 0; b < dijkstraContainer.getPathToVertex(dijkstraContainer.getCurrentVertex()).size(); b++) {
+                    dijkstraContainer.getPathToVertex(edgeTo).add(dijkstraContainer.getPathToVertex(dijkstraContainer.getCurrentVertex()).get(b));
                 }
-                dijkstraContainer.pathsToEachVertex.get(edgeTo).add(edgeTo);
+                dijkstraContainer.getPathToVertex(edgeTo).add(edgeTo);
             }
         }
-        final int smallest = findSmallestNonPermanentTemporaryLabel(dijkstraContainer.temporaryLabels, dijkstraContainer.orderLabels);
-        dijkstraContainer.permanentLabels[smallest] = dijkstraContainer.temporaryLabels.get(smallest).get(dijkstraContainer.temporaryLabels.get(smallest).size() - 1);
-        dijkstraContainer.orderLabels[smallest] = dijkstraContainer.orderLabels[dijkstraContainer.currentVertex] + 1;
-        dijkstraContainer.currentVertex = smallest;
+        final int smallest = findSmallestNonPermanentTemporaryLabel(dijkstraContainer.getTemporaryLabels(), dijkstraContainer.getOrderLabels());
+        dijkstraContainer.getPermanentLabels()[smallest] = dijkstraContainer.getTemporaryLabels().get(smallest).get(dijkstraContainer.getTemporaryLabels().get(smallest).size() - 1);
+        dijkstraContainer.getOrderLabels()[smallest] = dijkstraContainer.getOrderLabels()[dijkstraContainer.getCurrentVertex()] + 1;
+        dijkstraContainer.setCurrentVertex(smallest);
     }
 
     public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
         dijkstraStep(dijkstraContainer);
-        updateDijkstraLabels(dijkstraLabels, dijkstraContainer.orderLabels, dijkstraContainer.permanentLabels, dijkstraContainer.temporaryLabels);
+        updateDijkstraLabels(dijkstraLabels, dijkstraContainer.getOrderLabels(), dijkstraContainer.getPermanentLabels(), dijkstraContainer.getTemporaryLabels());
     }
 
     public DijkstraContainer setupDijkstraContainer(final int startVertex, final int endVertex) {
@@ -424,11 +424,11 @@ public class Graph {
                 allPaths.add(new ArrayList<ArrayList<Integer>>());
                 for (int b = 0; b < allPairs.get(a).size(); b++) {
                     DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
-                    while (container.permanentLabels[container.endVertex] == -1) {
+                    while (container.getPermanentLabels()[container.getEndVertex()] == -1) {
                         dijkstraStep(container);
                     }
-                    allPaths.get(a).add(container.pathsToEachVertex.get(container.endVertex));
-                    totalWeights[a][0] += container.permanentLabels[container.endVertex];
+                    allPaths.get(a).add(container.getPathToVertex(container.getEndVertex()));
+                    totalWeights[a][0] += container.getPermanentLabels()[container.getEndVertex()];
                 }
             }
             java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
