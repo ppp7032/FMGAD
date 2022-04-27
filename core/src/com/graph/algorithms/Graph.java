@@ -360,26 +360,9 @@ public class Graph {
         return toReturn;
     }
 
-    private ArrayList<ArrayList<int[]>> getAllPairsOfList4(int[] list) {
-        ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
-        ArrayList<int[]> one = new ArrayList<>();
-        one.add(new int[]{list[0], list[1]});
-        one.add(new int[]{list[2], list[3]});
-        ArrayList<int[]> two = new ArrayList<>();
-        two.add(new int[]{list[0], list[2]});
-        two.add(new int[]{list[1], list[3]});
-        ArrayList<int[]> three = new ArrayList<>();
-        three.add(new int[]{list[0], list[3]});
-        three.add(new int[]{list[1], list[2]});
-        toReturn.add(one);
-        toReturn.add(two);
-        toReturn.add(three);
-        return toReturn;
-    }
-
     private ArrayList<ArrayList<int[]>> getAllPairsOfList(int[] list) {
         ArrayList<ArrayList<int[]>> allPairs = new ArrayList<>();
-        if (list.length >= 6) {
+        if (list.length >= 4) {
             for (int a = 1; a < list.length; a++) {
                 int[] reducedList = new int[list.length - 2];
                 int counter = 0;
@@ -395,11 +378,9 @@ public class Graph {
                     allPairs.add(reducedPair);
                 }
             }
-        } else if (list.length == 4) {
-            return getAllPairsOfList4(list);
         } else if (list.length == 2) {
-            final ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
-            final ArrayList<int[]> one = new ArrayList<>();
+            ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
+            ArrayList<int[]> one = new ArrayList<>();
             one.add(new int[]{list[0], list[1]});
             toReturn.add(one);
             return toReturn;
@@ -411,38 +392,38 @@ public class Graph {
         final int[] oddVertices = getOddVertices();
         if (oddVertices.length == 0) {
             return null;
-        } else {
-            final ArrayList<ArrayList<int[]>> allPairs = getAllPairsOfList(oddVertices);
-            final ArrayList<ArrayList<ArrayList<Integer>>> allPaths = new ArrayList<>();
-            final int[][] totalWeights = new int[allPairs.size()][2];
-            for (int a = 0; a < allPairs.size(); a++) {
-                totalWeights[a][0] = 0;
-                totalWeights[a][1] = a;
-                allPaths.add(new ArrayList<ArrayList<Integer>>());
-                for (int b = 0; b < allPairs.get(a).size(); b++) {
-                    DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
-                    while (container.getPermanentLabels()[container.getEndVertex()] == -1) {
-                        dijkstraStep(container);
-                    }
-                    allPaths.get(a).add(container.getPathToVertex(container.getEndVertex()));
-                    totalWeights[a][0] += container.getPermanentLabels()[container.getEndVertex()];
-                }
-            }
-            java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
-                public int compare(int[] a, int[] b) {
-                    return Integer.compare(a[0], b[0]);
-                }
-            });
-            final ArrayList<ArrayList<Integer>> shortestPaths = allPaths.get(totalWeights[0][1]);
-            final ArrayList<ArrayList<Integer>> repeatedEdges = new ArrayList<>();
-            for (final ArrayList<Integer> shortestPath : shortestPaths) {
-                for (int b = 0; b < shortestPath.size() - 1; b++) {
-                    repeatedEdges.add(new ArrayList<>(Arrays.asList(shortestPath.get(b), shortestPath.get(b + 1))));
-                }
-            }
-            repeatedEdges.add(new ArrayList<>(Collections.singletonList(totalWeights[0][0] + getSumOfEdgeWeights())));
-            return repeatedEdges;
         }
+        final ArrayList<ArrayList<int[]>> allPairs = getAllPairsOfList(oddVertices);
+        final ArrayList<ArrayList<ArrayList<Integer>>> allPaths = new ArrayList<>();
+        final int[][] totalWeights = new int[allPairs.size()][2];
+        for (int a = 0; a < allPairs.size(); a++) {
+            totalWeights[a][0] = 0;
+            totalWeights[a][1] = a;
+            allPaths.add(new ArrayList<ArrayList<Integer>>());
+            for (int b = 0; b < allPairs.get(a).size(); b++) {
+                DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
+                while (container.getPermanentLabels()[container.getEndVertex()] == -1) {
+                    dijkstraStep(container);
+                }
+                allPaths.get(a).add(container.getPathToVertex(container.getEndVertex()));
+                totalWeights[a][0] += container.getPermanentLabels()[container.getEndVertex()];
+            }
+        }
+        java.util.Arrays.sort(totalWeights, new java.util.Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                return Integer.compare(a[0], b[0]);
+            }
+        });
+        final ArrayList<ArrayList<Integer>> shortestPaths = allPaths.get(totalWeights[0][1]);
+        final ArrayList<ArrayList<Integer>> repeatedEdges = new ArrayList<>();
+        for (final ArrayList<Integer> shortestPath : shortestPaths) {
+            for (int b = 0; b < shortestPath.size() - 1; b++) {
+                repeatedEdges.add(new ArrayList<>(Arrays.asList(shortestPath.get(b), shortestPath.get(b + 1))));
+            }
+        }
+        repeatedEdges.add(new ArrayList<>(Collections.singletonList(totalWeights[0][0] + getSumOfEdgeWeights())));
+        return repeatedEdges;
+
     }
 
     public int getSumOfEdgeWeights() {
