@@ -293,9 +293,13 @@ public class NewGraph implements Screen {
     }
 
     private void clickNewEdge() {
-        edgeWeight.setText("0");
         if (!newVertexClicked) {
-            newEdgeClicked = true;
+            newEdgeClicked = !newEdgeClicked;
+            if (newEdgeClicked) {
+                edgeWeight.setText("0");
+            } else {
+                firstVertex = -1;
+            }
         }
     }
 
