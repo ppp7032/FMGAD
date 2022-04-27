@@ -225,12 +225,9 @@ public class Graph {
         for (int a = 0; a < getNumberOfVertices(); a++) {
             if (orderLabels[a] != -1) {
                 dijkstraLabels[a][1].updateText(Integer.toString(orderLabels[a]));
-            } else {
-                dijkstraLabels[a][1].updateText("");
-            }
-            if (permanentLabels[a] != -1) {
                 dijkstraLabels[a][2].updateText(Integer.toString(permanentLabels[a]));
             } else {
+                dijkstraLabels[a][1].updateText("");
                 dijkstraLabels[a][2].updateText("");
             }
             StringBuilder temp = new StringBuilder();
