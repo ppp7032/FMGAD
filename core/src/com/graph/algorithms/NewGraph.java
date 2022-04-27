@@ -78,7 +78,6 @@ public class NewGraph implements Screen {
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton finish = new TextButton("Finish", skin, "default");
         final TextButton[] sidePanelButtons = new TextButton[]{newVertex, newEdge, save, help, mainMenu, finish};
-        temporaryVertexLabel.setVisible(false);
 
 
         alertMessage.setVisible(false);
@@ -126,7 +125,6 @@ public class NewGraph implements Screen {
                         graph.addVertex(x / scaleFactor, y / scaleFactor);
                         newVertexClicked = false;
                         vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), x, y, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
-                        temporaryVertexLabel.setVisible(false);
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
                         if (clickedVertex != -1) {
@@ -286,18 +284,20 @@ public class NewGraph implements Screen {
 
     private void clickNewVertex() {
         if (!newEdgeClicked) {
-            newVertexClicked = true;
-            temporaryVertexLabel.setVisible(true);
-            temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
+            newVertexClicked = !newVertexClicked;
+            if (newVertexClicked) {
+                temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
+            }
         }
     }
 
     private void clickNewEdge() {
         if (!newVertexClicked) {
-            newEdgeClicked = !newEdgeClicked;
-            if (newEdgeClicked) {
+            if (!newEdgeClicked) {
+                newEdgeClicked = true;
                 edgeWeight.setText("0");
-            } else {
+            } else if (secondVertex == -1) {
+                newEdgeClicked = false;
                 firstVertex = -1;
             }
         }
