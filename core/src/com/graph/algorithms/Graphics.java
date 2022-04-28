@@ -29,14 +29,6 @@ public abstract class Graphics {
         renderer.setColor(previousColor);
     }
 
-    public static float[] setupDijkstraBoxes(final float scaleFactor, final Graph graph, final int vertex) {
-        final float width = 93f * scaleFactor;
-        final float height = 64f * scaleFactor;
-        final float x = graph.getXCoordinateOfVertex(vertex) * scaleFactor - width / 2f;
-        final float y = graph.getYCoordinateOfVertex(vertex) * scaleFactor - height / 2f;
-        return new float[]{x, y, width, height};
-    }
-
     public static void drawSelectionMenu(final SpriteBatch spriteBatch, final Texture background, final ShapeRenderer shapeRenderer, final Stage stage, final float scaleFactor, final int numberOfAttributes) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -92,10 +84,6 @@ public abstract class Graphics {
         if (vertexBeingMoved != -1) {
             renderVertex(shapeRenderer, batch, graph, vertexBeingMoved, vertexLabels.get(vertexBeingMoved), scaleFactor);
         }
-    }
-
-    public static void renderGraphVertices(final ShapeRenderer shapeRenderer, final Graph graph, final float scaleFactor, final ArrayList<Text> vertexLabels, Batch batch) {
-        renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, batch, -1);
     }
 
     public static Skin generateSkin(final BitmapFont font) {
@@ -179,10 +167,6 @@ public abstract class Graphics {
         apply.setHeight(back.getHeight());
         apply.setY(back.getY());
         apply.setX(back.getX() + 325 * scaleFactor);
-    }
-
-    public static boolean mouseInBoundsForVertex(final float scaleFactor) {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
     }
 
     public static boolean mouseInBounds(final float scaleFactor) {

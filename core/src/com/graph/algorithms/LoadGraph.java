@@ -98,7 +98,7 @@ public class LoadGraph implements Screen {
         lowerBoundTSPItems.add(new ArrayList<String>());
         final ScrollPane scrollBar = new ScrollPane(list, skin, "default");
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
+            final float[] dimensions = setupDijkstraBoxes(a);
             dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + 5f * scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * scaleFactor)};
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
@@ -559,6 +559,14 @@ public class LoadGraph implements Screen {
         }
     }
 
+    private float[] setupDijkstraBoxes(final int vertex) {
+        final float width = 93f * scaleFactor;
+        final float height = 64f * scaleFactor;
+        final float x = graph.getXCoordinateOfVertex(vertex) * scaleFactor - width / 2f;
+        final float y = graph.getYCoordinateOfVertex(vertex) * scaleFactor - height / 2f;
+        return new float[]{x, y, width, height};
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -599,7 +607,7 @@ public class LoadGraph implements Screen {
         shapeRenderer.setColor(0, 1, 0, 1);
         drawMST(jarnikApplied);
         drawMST(kruskalApplied);
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch());
+        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), -1);
         shapeRenderer.end();
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
@@ -612,7 +620,7 @@ public class LoadGraph implements Screen {
             Graphics.drawMenu(2, scaleFactor, shapeRenderer);
         } else if (dijkstraApplied) {
             for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                final float[] dimensions = Graphics.setupDijkstraBoxes(scaleFactor, graph, a);
+                final float[] dimensions = setupDijkstraBoxes(a);
                 shapeRenderer.setColor(1, 1, 1, 1);
                 shapeRenderer.rect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
                 shapeRenderer.setColor(0, 0, 0, 1);
