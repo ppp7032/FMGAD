@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class NewGraph implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final ArrayList<Text> vertexLabels = new ArrayList<>();
@@ -37,9 +36,9 @@ public class NewGraph implements Screen {
 
     public NewGraph(final Graph graph) {
         this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
+        graph.addToEdgeWeights(edgeWeights, twenty);
         FileHandle file = Gdx.files.local("graphs/New Graph.graph");
         int counter = 1;
         while (file.exists()) {
@@ -53,7 +52,7 @@ public class NewGraph implements Screen {
 
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         this.vertexLabels.addAll(vertexLabels);
@@ -62,12 +61,12 @@ public class NewGraph implements Screen {
     }
 
     private void GeneralConstructor(final BitmapFont twenty, final String graphName) {
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
         edgeWeight = new TextField("0", skin);
         final TextField name = new TextField(graphName, skin);
-        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text[] attributes = new Text[]{new Text("", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Press 'E' to add a new edge", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Right click a vertex to delete it", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f * 3) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Drag a vertex to move it", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f * 2) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Only integer weights are supported", 16 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f * 4) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
+        final Text[] attributes = new Text[]{new Text("", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Press 'E' to add a new edge", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Right click a vertex to delete it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 3) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Drag a vertex to move it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 2) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Only integer weights are supported", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 4) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
@@ -83,38 +82,31 @@ public class NewGraph implements Screen {
         alertMessage.setVisible(false);
 
         name.setAlignment(1);
-        name.setWidth(124 * scaleFactor);
-        name.setHeight(46 * scaleFactor);
-        name.setPosition(80f * scaleFactor - name.getWidth() / 2f, 652f * scaleFactor);
+        name.setWidth(124 * Graphics.scaleFactor);
+        name.setHeight(46 * Graphics.scaleFactor);
+        name.setPosition(80f * Graphics.scaleFactor - name.getWidth() / 2f, 652f * Graphics.scaleFactor);
 
-        edgeWeight.setAlignment(1);
-        edgeWeight.setVisible(false);
-        edgeWeight.setX(327 * scaleFactor + attributes[0].getX());
-        edgeWeight.setY(479 * scaleFactor);
-        edgeWeight.setWidth(88 * scaleFactor);
-        edgeWeight.setHeight(24 * scaleFactor);
-
-        menuTitle.setVisible(false);
+        Graphics.setUpStartVertexInput(edgeWeight, attributes[0].getX());
 
         for (final Text attribute : attributes) {
             attribute.setVisible(false);
         }
 
-        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, false);
+        Graphics.setupBackAndApplyButtons(back, apply, false);
 
-        newVertex.setWidth(127 * scaleFactor);
-        newVertex.setHeight(46 * scaleFactor);
-        newVertex.setPosition(80f * scaleFactor - newVertex.getWidth() / 2f, name.getY() - 71 * scaleFactor);
+        newVertex.setWidth(127 * Graphics.scaleFactor);
+        newVertex.setHeight(46 * Graphics.scaleFactor);
+        newVertex.setPosition(80f * Graphics.scaleFactor - newVertex.getWidth() / 2f, name.getY() - 71 * Graphics.scaleFactor);
 
-        Graphics.setupButtonBelow(newVertex, newEdge, scaleFactor);
+        Graphics.setupButtonBelow(newVertex, newEdge);
 
-        Graphics.setupButtonBelow(newEdge, save, scaleFactor);
+        Graphics.setupButtonBelow(newEdge, save);
 
-        Graphics.setupBottomButton(finish, scaleFactor);
+        Graphics.setupBottomButton(finish);
 
-        Graphics.setupButtonAbove(finish, mainMenu, scaleFactor);
+        Graphics.setupButtonAbove(finish, mainMenu);
 
-        Graphics.setupButtonAbove(mainMenu, help, scaleFactor);
+        Graphics.setupButtonAbove(mainMenu, help);
 
 
         stage.addListener(new ClickListener() {
@@ -122,7 +114,7 @@ public class NewGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (mouseInBoundsForVertex()) {
                     if (newVertexClicked) {
-                        graph.addVertex(x / scaleFactor, y / scaleFactor);
+                        graph.addVertex(x / Graphics.scaleFactor, y / Graphics.scaleFactor);
                         newVertexClicked = false;
                         vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), x, y, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
                     } else if (newEdgeClicked) {
@@ -150,12 +142,12 @@ public class NewGraph implements Screen {
                             newEdgeClicked = false;
                         }
                     }
-                } else if (y / scaleFactor < 350f && secondVertex == -1) {
+                } else if (y / Graphics.scaleFactor < 350f && secondVertex == -1) {
                     newVertexClicked = false;
                     newEdgeClicked = false;
                     firstVertex = -1;
                 }
-                if (alertMessage.isVisible() && Graphics.mouseInBounds(scaleFactor)) {
+                if (alertMessage.isVisible() && Graphics.mouseInBounds()) {
                     alertMessage.setVisible(false);
                 }
             }
@@ -186,7 +178,7 @@ public class NewGraph implements Screen {
                     } else {
                         graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                     }
-                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0, scaleFactor));
+                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0));
                     closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, sidePanelButtons, name);
                 }
             }
@@ -304,13 +296,13 @@ public class NewGraph implements Screen {
     }
 
     private boolean mouseInBoundsForVertex() {
-        return Gdx.input.getX() / scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * scaleFactor > 0 && Gdx.input.getY() + 15 * scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * scaleFactor < Gdx.graphics.getWidth();
+        return Gdx.input.getX() / Graphics.scaleFactor - 15 > 160f && Gdx.input.getY() - 15 * Graphics.scaleFactor > 0 && Gdx.input.getY() + 15 * Graphics.scaleFactor < Gdx.graphics.getHeight() && Gdx.input.getX() + 15 * Graphics.scaleFactor < Gdx.graphics.getWidth();
     }
 
     private int findVertexBeingClicked() {
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            final float mouseX = Gdx.input.getX() / scaleFactor;
-            final float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor;
+            final float mouseX = Gdx.input.getX() / Graphics.scaleFactor;
+            final float mouseY = (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor;
             if (Math.pow(mouseX - graph.getXCoordinateOfVertex(a), 2) + Math.pow(mouseY - graph.getYCoordinateOfVertex(a), 2) <= 15 * 15) {
                 return a;
             }
@@ -366,50 +358,50 @@ public class NewGraph implements Screen {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (Gdx.input.isButtonPressed(Input.Keys.LEFT)) {
-            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && Graphics.mouseInBounds(scaleFactor)) {
+            if (vertexBeingMoved == -1 && !newEdgeClicked && !newVertexClicked && Graphics.mouseInBounds()) {
                 vertexBeingMoved = findVertexBeingClicked();
             }
         } else {
             vertexBeingMoved = -1;
         }
         if (vertexBeingMoved != -1 && mouseInBoundsForVertex()) {
-            graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor});
+            graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor});
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
             clickNewVertex();
         } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             clickNewEdge();
-        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds(scaleFactor) && !newVertexClicked && !newEdgeClicked && !alertMessage.isVisible()) {
+        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds() && !newVertexClicked && !newEdgeClicked && !alertMessage.isVisible()) {
             final int vertexBeingClicked = findVertexBeingClicked();
             if (vertexBeingClicked != -1) {
                 deleteVertex(vertexBeingClicked);
             }
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
+        Graphics.renderGraphEdges(shapeRenderer, graph);
         if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, shapeRenderer, graph.isDigraph(), scaleFactor);
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor, shapeRenderer, graph.isDigraph());
 
         } else if (secondVertex != -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph(), scaleFactor);
+            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph());
         }
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), vertexBeingMoved);
+        Graphics.renderGraphVertices(shapeRenderer, graph, vertexLabels, stage.getBatch(), vertexBeingMoved);
         shapeRenderer.end();
         if (newVertexClicked && mouseInBoundsForVertex()) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            Graphics.renderVertex(shapeRenderer, stage.getBatch(), Gdx.input.getX() / scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / scaleFactor, temporaryVertexLabel, scaleFactor);
+            Graphics.renderVertex(shapeRenderer, stage.getBatch(), Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor, temporaryVertexLabel);
             shapeRenderer.end();
         }
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
-            edgeWeight.update(scaleFactor);
+            edgeWeight.update();
             edgeWeight.draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        Graphics.drawRectangleWithBorder(shapeRenderer, Graphics.scaleFactor, 0, 160f * Graphics.scaleFactor, Gdx.graphics.getHeight() - Graphics.scaleFactor, 2f * Graphics.scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         if (secondVertex != -1) {
-            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
+            Graphics.drawMenu(1, shapeRenderer);
         }
         if (alertMessage.isVisible()) {
             newVertexClicked = false;
@@ -417,14 +409,14 @@ public class NewGraph implements Screen {
             firstVertex = -1;
             secondVertex = -1;
             vertexBeingMoved = -1;
-            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
+            Graphics.renderAlert(shapeRenderer, alertMessage);
         } else if (viewingHelp) {
             newVertexClicked = false;
             newEdgeClicked = false;
             firstVertex = -1;
             secondVertex = -1;
             vertexBeingMoved = -1;
-            Graphics.drawMenu(5, scaleFactor, shapeRenderer);
+            Graphics.drawMenu(5, shapeRenderer);
         }
         shapeRenderer.end();
         stage.act();

@@ -21,12 +21,11 @@ import java.util.ArrayList;
 public class SelectGraph implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private final float scaleFactor = Graphics.findScaleFactor();
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
 
     public SelectGraph() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         final Skin skin = Graphics.generateSkin(twenty);
         final List<String> graphSelector = new List<>(skin);
         final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
@@ -44,12 +43,12 @@ public class SelectGraph implements Screen {
         }
         graphSelector.setItems(graphNames);
 
-        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
-        scrollBar.setY(224f * scaleFactor);
-        scrollBar.setHeight(290f * scaleFactor);
-        scrollBar.setWidth(452f * scaleFactor);
+        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
+        scrollBar.setY(224f * Graphics.scaleFactor);
+        scrollBar.setHeight(290f * Graphics.scaleFactor);
+        scrollBar.setWidth(452f * Graphics.scaleFactor);
 
-        Graphics.setupBackAndApplyButtons(back, load, scaleFactor, true);
+        Graphics.setupBackAndApplyButtons(back, load, true);
 
         delete.setX((back.getX() + load.getX()) / 2f);
         delete.setY(back.getY());
@@ -86,7 +85,7 @@ public class SelectGraph implements Screen {
         stage.addActor(back);
         stage.addActor(load);
         stage.addActor(delete);
-        Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class SelectGraph implements Screen {
 
     @Override
     public void render(float delta) {
-        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 0);
+        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, 0);
     }
 
     @Override

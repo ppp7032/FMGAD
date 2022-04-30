@@ -20,7 +20,6 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Settings implements Screen {
-    private final float scaleFactor = Graphics.findScaleFactor();
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
@@ -28,8 +27,8 @@ public class Settings implements Screen {
     private final Text alertMessage;
 
     public Settings() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
-        final Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0));
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
+        final Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * Graphics.scaleFactor, 0));
         final SelectBox<String> resolutionBox = new SelectBox<>(labelSkin);
         final SelectBox<String> fullscreenBox = new SelectBox<>(labelSkin);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
@@ -39,21 +38,21 @@ public class Settings implements Screen {
         alertMessage = new Text("Please restart the application\nto apply any changes made!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
 
 
-        resolutionBox.setX(376 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
-        resolutionBox.setY(479 * scaleFactor);
-        resolutionBox.setWidth(55 * scaleFactor);
-        resolutionBox.setHeight(24 * scaleFactor);
+        resolutionBox.setX(376 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
+        resolutionBox.setY(479 * Graphics.scaleFactor);
+        resolutionBox.setWidth(55 * Graphics.scaleFactor);
+        resolutionBox.setHeight(24 * Graphics.scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
         resolutionBox.setSelected(config[0]);
 
-        fullscreenBox.setX(resolutionBox.getX() - 33f * scaleFactor);
-        fullscreenBox.setY(418 * scaleFactor);
-        fullscreenBox.setWidth(88 * scaleFactor);
-        fullscreenBox.setHeight(24 * scaleFactor);
+        fullscreenBox.setX(resolutionBox.getX() - 33f * Graphics.scaleFactor);
+        fullscreenBox.setY(418 * Graphics.scaleFactor);
+        fullscreenBox.setWidth(88 * Graphics.scaleFactor);
+        fullscreenBox.setHeight(24 * Graphics.scaleFactor);
         fullscreenBox.setItems("Fullscreen", "Windowed");
         fullscreenBox.setSelected(config[1]);
 
-        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, true);
+        Graphics.setupBackAndApplyButtons(back, apply, true);
 
         alertMessage.setVisible(false);
 
@@ -85,7 +84,7 @@ public class Settings implements Screen {
         stage.addActor(fullscreenBox);
         stage.addActor(back);
         stage.addActor(apply);
-        Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
     }
 
     public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode
@@ -122,10 +121,10 @@ public class Settings implements Screen {
 
     @Override
     public void render(final float delta) {
-        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 2);
+        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, 2);
         if (alertMessage.isVisible()) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
+            Graphics.renderAlert(shapeRenderer, alertMessage);
             shapeRenderer.end();
             stage.getBatch().begin();
             alertMessage.draw(stage.getBatch(), 0);

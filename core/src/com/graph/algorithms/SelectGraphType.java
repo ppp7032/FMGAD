@@ -19,23 +19,22 @@ public class SelectGraphType implements Screen {
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final Stage stage = new Stage();
-    private final float scaleFactor = Graphics.findScaleFactor();
 
     public SelectGraphType() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         final Skin buttonSkin = Graphics.generateSkin(twenty);
-        final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)));
+        final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * Graphics.scaleFactor, 0)));
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
 
 
-        graphType.setX(343 * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
-        graphType.setY(479 * scaleFactor);
-        graphType.setWidth(88 * scaleFactor);
-        graphType.setHeight(24 * scaleFactor);
+        graphType.setX(343 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
+        graphType.setY(479 * Graphics.scaleFactor);
+        graphType.setWidth(88 * Graphics.scaleFactor);
+        graphType.setHeight(24 * Graphics.scaleFactor);
         graphType.setItems("Undirected", "Directed");
 
-        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, true);
+        Graphics.setupBackAndApplyButtons(back, apply, true);
 
 
         back.addListener(new ClickListener() {
@@ -63,7 +62,7 @@ public class SelectGraphType implements Screen {
         stage.addActor(graphType);
         stage.addActor(back);
         stage.addActor(apply);
-        Graphics.addTextToMenu(stage, "New Graph Options", new String[]{"Graph Type"}, scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "New Graph Options", new String[]{"Graph Type"}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
     }
 
     @Override
@@ -73,7 +72,7 @@ public class SelectGraphType implements Screen {
 
     @Override
     public void render(final float delta) {
-        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, scaleFactor, 1);
+        Graphics.drawSelectionMenu(spriteBatch, background, shapeRenderer, stage, 1);
     }
 
     @Override

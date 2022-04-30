@@ -18,7 +18,6 @@ import java.util.ArrayList;
 public class LoadGraph implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private final float scaleFactor = Graphics.findScaleFactor();
     private final Graph graph;
     private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
     private final Text[][] dijkstraLabels;
@@ -46,27 +45,27 @@ public class LoadGraph implements Screen {
 
     public LoadGraph(final Graph graph) {
         this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        graph.addToEdgeWeights(edgeWeights, scaleFactor, twenty);
+        graph.addToEdgeWeights(edgeWeights, twenty);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
         startVertexInput = new TextField("0", skin);
         endVertexInput = new TextField("0", skin);
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * scaleFactor, graph.getYCoordinateOfVertex(a) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
+            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * Graphics.scaleFactor, graph.getYCoordinateOfVertex(a) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
         }
         GeneralConstructor(twenty, skin);
     }
 
     public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0);
+        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights.addAll(edgeWeights);
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
         this.vertexLabels.addAll(vertexLabels);
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0));
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
         startVertexInput = new TextField("0", skin);
         endVertexInput = new TextField("0", skin);
         GeneralConstructor(twenty, skin);
@@ -78,19 +77,19 @@ public class LoadGraph implements Screen {
         final TextButton kruskalButton = new TextButton("Kruskal's", skin, "default");
         final TextButton routeInspectionButton = new TextButton("C. Postman", skin, "default");
         final TextButton travellingSalesmanButton = new TextButton("T. Salesman", skin, "default");
-        final SelectBox<String> selectTSPAlgorithm = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0)), "default");
+        final SelectBox<String> selectTSPAlgorithm = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * Graphics.scaleFactor, 0)), "default");
         final TextButton help = new TextButton("Help", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
         final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton, help};
-        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text[] attributes = new Text[]{new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), y1 * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("", 16f * scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)), (y1 - 61f) * scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
+        final Text[] attributes = new Text[]{new Text("", 16f * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("", 16f * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        final BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0);
-        final BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0);
+        final BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * Graphics.scaleFactor, 0);
+        final BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0);
         final List<String> list = new List<>(skin);
         final ArrayList<ArrayList<String>> routeInspectionItems = new ArrayList<>();
         routeInspectionItems.add(new ArrayList<String>());
@@ -99,37 +98,37 @@ public class LoadGraph implements Screen {
         final ScrollPane scrollBar = new ScrollPane(list, skin, "default");
         for (int a = 0; a < graph.getNumberOfVertices(); a++) {
             final float[] dimensions = setupDijkstraBoxes(a);
-            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * scaleFactor), new Text("", dimensions[0] + 5f * scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * scaleFactor)};
+            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + 5f * Graphics.scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * Graphics.scaleFactor)};
             for (int b = 0; b < 4; b++) {
                 dijkstraLabels[a][b].setVisible(false);
             }
         }
 
 
-        dijkstraButton.setWidth(127 * scaleFactor);
-        dijkstraButton.setHeight(46 * scaleFactor);
-        dijkstraButton.setPosition(80f * scaleFactor - dijkstraButton.getWidth() / 2f, 652f * scaleFactor);
+        dijkstraButton.setWidth(127 * Graphics.scaleFactor);
+        dijkstraButton.setHeight(46 * Graphics.scaleFactor);
+        dijkstraButton.setPosition(80f * Graphics.scaleFactor - dijkstraButton.getWidth() / 2f, 652f * Graphics.scaleFactor);
 
-        Graphics.setupButtonBelow(dijkstraButton, jarnikButton, scaleFactor);
+        Graphics.setupButtonBelow(dijkstraButton, jarnikButton);
 
-        Graphics.setupButtonBelow(jarnikButton, kruskalButton, scaleFactor);
+        Graphics.setupButtonBelow(jarnikButton, kruskalButton);
 
-        Graphics.setupButtonBelow(kruskalButton, routeInspectionButton, scaleFactor);
+        Graphics.setupButtonBelow(kruskalButton, routeInspectionButton);
 
-        Graphics.setupButtonBelow(routeInspectionButton, travellingSalesmanButton, scaleFactor);
+        Graphics.setupButtonBelow(routeInspectionButton, travellingSalesmanButton);
 
-        selectTSPAlgorithm.setX(277 * scaleFactor + attributes[0].getX());
-        selectTSPAlgorithm.setY(479 * scaleFactor);
-        selectTSPAlgorithm.setWidth(138 * scaleFactor);
-        selectTSPAlgorithm.setHeight(24 * scaleFactor);
+        selectTSPAlgorithm.setX(277 * Graphics.scaleFactor + attributes[0].getX());
+        selectTSPAlgorithm.setY(479 * Graphics.scaleFactor);
+        selectTSPAlgorithm.setWidth(138 * Graphics.scaleFactor);
+        selectTSPAlgorithm.setHeight(24 * Graphics.scaleFactor);
         selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bounds");
         selectTSPAlgorithm.setVisible(false);
 
-        Graphics.setupBottomButton(edit, scaleFactor);
+        Graphics.setupBottomButton(edit);
 
-        Graphics.setupButtonAbove(edit, mainMenu, scaleFactor);
+        Graphics.setupButtonAbove(edit, mainMenu);
 
-        Graphics.setupButtonAbove(mainMenu, help, scaleFactor);
+        Graphics.setupButtonAbove(mainMenu, help);
 
         menuTitle.setVisible(false);
 
@@ -137,27 +136,22 @@ public class LoadGraph implements Screen {
             attribute.setVisible(false);
         }
 
-        startVertexInput.setVisible(false);
-        startVertexInput.setAlignment(1);
-        startVertexInput.setX(327 * scaleFactor + attributes[0].getX());
-        startVertexInput.setY(479 * scaleFactor);
-        startVertexInput.setWidth(88 * scaleFactor);
-        startVertexInput.setHeight(24 * scaleFactor);
+        Graphics.setUpStartVertexInput(startVertexInput, attributes[0].getX());
 
         endVertexInput.setVisible(false);
         endVertexInput.setAlignment(1);
-        endVertexInput.setX(327 * scaleFactor + attributes[1].getX());
-        endVertexInput.setY(startVertexInput.getY() - 61 * scaleFactor);
-        endVertexInput.setWidth(88 * scaleFactor);
-        endVertexInput.setHeight(24 * scaleFactor);
+        endVertexInput.setX(327 * Graphics.scaleFactor + attributes[1].getX());
+        endVertexInput.setY(startVertexInput.getY() - 61 * Graphics.scaleFactor);
+        endVertexInput.setWidth(88 * Graphics.scaleFactor);
+        endVertexInput.setHeight(24 * Graphics.scaleFactor);
 
-        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * scaleFactor)));
-        scrollBar.setY(224f * scaleFactor);
-        scrollBar.setHeight(290f * scaleFactor);
-        scrollBar.setWidth(452f * scaleFactor);
+        scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
+        scrollBar.setY(224f * Graphics.scaleFactor);
+        scrollBar.setHeight(290f * Graphics.scaleFactor);
+        scrollBar.setWidth(452f * Graphics.scaleFactor);
         scrollBar.setVisible(false);
 
-        Graphics.setupBackAndApplyButtons(back, apply, scaleFactor, false);
+        Graphics.setupBackAndApplyButtons(back, apply, false);
 
         alertMessage.setVisible(false);
 
@@ -165,7 +159,7 @@ public class LoadGraph implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (alertMessage.isVisible() && Graphics.mouseInBounds(scaleFactor)) {
+                if (alertMessage.isVisible() && Graphics.mouseInBounds()) {
                     if (travellingSalesmanPressed) {
                         if (Graphics.applyNotPressed(apply, x, y)) {
                             alertMessage.setVisible(false);
@@ -551,7 +545,7 @@ public class LoadGraph implements Screen {
     private void drawMST(boolean condition) {
         if (condition) {
             for (int a = 0; a < counter; a++) {
-                Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false, scaleFactor);
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[0]), graph.getXCoordinateOfVertex(minimumEdges.get(a)[1]), graph.getYCoordinateOfVertex(minimumEdges.get(a)[1]), shapeRenderer, false);
             }
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && counter < graph.getNumberOfVertices() - 1) {
                 counter++;
@@ -560,10 +554,10 @@ public class LoadGraph implements Screen {
     }
 
     private float[] setupDijkstraBoxes(final int vertex) {
-        final float width = 93f * scaleFactor;
-        final float height = 64f * scaleFactor;
-        final float x = graph.getXCoordinateOfVertex(vertex) * scaleFactor - width / 2f;
-        final float y = graph.getYCoordinateOfVertex(vertex) * scaleFactor - height / 2f;
+        final float width = 93f * Graphics.scaleFactor;
+        final float height = 64f * Graphics.scaleFactor;
+        final float x = graph.getXCoordinateOfVertex(vertex) * Graphics.scaleFactor - width / 2f;
+        final float y = graph.getYCoordinateOfVertex(vertex) * Graphics.scaleFactor - height / 2f;
         return new float[]{x, y, width, height};
     }
 
@@ -577,14 +571,14 @@ public class LoadGraph implements Screen {
         Gdx.gl.glClearColor(247f / 255f, 247f / 255f, 247f / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        Graphics.renderGraphEdges(shapeRenderer, graph, scaleFactor);
+        Graphics.renderGraphEdges(shapeRenderer, graph);
         if (dijkstraApplied && dijkstraContainer.getSetup()) {
             ArrayList<Integer> path = dijkstraContainer.getPathToVertex(dijkstraContainer.getLargestOrderLabel());
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 1; a < path.size(); a++) {
                 final int vertex1 = path.get(a - 1);
                 final int vertex2 = path.get(a);
-                Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph());
             }
         } else if (nearestNeighbourApplied) {
             if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
@@ -600,34 +594,34 @@ public class LoadGraph implements Screen {
                 if (vertex2 == -1) {
                     counter = 0;
                 } else {
-                    Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph(), scaleFactor);
+                    Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph());
                 }
             }
         }
         shapeRenderer.setColor(0, 1, 0, 1);
         drawMST(jarnikApplied);
         drawMST(kruskalApplied);
-        Graphics.renderGraphVertices(shapeRenderer, graph, scaleFactor, vertexLabels, stage.getBatch(), -1);
+        Graphics.renderGraphVertices(shapeRenderer, graph, vertexLabels, stage.getBatch(), -1);
         shapeRenderer.end();
         stage.getBatch().begin();
         for (EdgeWeight edgeWeight : edgeWeights) {
-            edgeWeight.update(scaleFactor);
+            edgeWeight.update();
             edgeWeight.draw(stage.getBatch(), 0);
         }
         stage.getBatch().end();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         if (dijkstraPressed) {
-            Graphics.drawMenu(2, scaleFactor, shapeRenderer);
+            Graphics.drawMenu(2, shapeRenderer);
         } else if (dijkstraApplied) {
             for (int a = 0; a < graph.getNumberOfVertices(); a++) {
                 final float[] dimensions = setupDijkstraBoxes(a);
                 shapeRenderer.setColor(1, 1, 1, 1);
                 shapeRenderer.rect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
                 shapeRenderer.setColor(0, 0, 0, 1);
-                Graphics.drawRectangleWithBorder(shapeRenderer, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 2 * scaleFactor, new float[]{1, 1, 1, 1});
-                shapeRenderer.rectLine(dimensions[0], dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2], dimensions[1] + dimensions[3] / 2f, 2 * scaleFactor);
-                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3], dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3] / 2f, 2f * scaleFactor);
-                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3], 2 * scaleFactor);
+                Graphics.drawRectangleWithBorder(shapeRenderer, dimensions[0], dimensions[1], dimensions[2], dimensions[3], 2 * Graphics.scaleFactor, new float[]{1, 1, 1, 1});
+                shapeRenderer.rectLine(dimensions[0], dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2], dimensions[1] + dimensions[3] / 2f, 2 * Graphics.scaleFactor);
+                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3], dimensions[0] + dimensions[2] / 3f, dimensions[1] + dimensions[3] / 2f, 2f * Graphics.scaleFactor);
+                shapeRenderer.rectLine(dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3] / 2f, dimensions[0] + dimensions[2] / 3f * 2f, dimensions[1] + dimensions[3], 2 * Graphics.scaleFactor);
             }
             if (!dijkstraContainer.getSetup()) {
                 dijkstraContainer = graph.setupDijkstraContainer(graph.getVertexFromInput(startVertexInput.getText()), graph.getVertexFromInput(endVertexInput.getText()));
@@ -636,14 +630,14 @@ public class LoadGraph implements Screen {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
         } else if (chinesePostmanPressed || displayingLowerBounds) {
-            Graphics.drawMenu(0, scaleFactor, shapeRenderer);
+            Graphics.drawMenu(0, shapeRenderer);
         } else if (travellingSalesmanPressed || nearestNeighbourPressed || jarnikPressed || viewingHelp) {
-            Graphics.drawMenu(1, scaleFactor, shapeRenderer);
+            Graphics.drawMenu(1, shapeRenderer);
         }
         if (alertMessage.isVisible()) {
-            Graphics.renderAlert(shapeRenderer, alertMessage, scaleFactor);
+            Graphics.renderAlert(shapeRenderer, alertMessage);
         }
-        Graphics.drawRectangleWithBorder(shapeRenderer, scaleFactor, 0, 160f * scaleFactor, Gdx.graphics.getHeight() - scaleFactor, 2f * scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
+        Graphics.drawRectangleWithBorder(shapeRenderer, Graphics.scaleFactor, 0, 160f * Graphics.scaleFactor, Gdx.graphics.getHeight() - Graphics.scaleFactor, 2f * Graphics.scaleFactor, new float[]{207f / 255f, 226f / 255f, 243f / 255f, 1});
         shapeRenderer.end();
         stage.act();
         stage.draw();

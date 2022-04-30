@@ -16,8 +16,7 @@ public class MainMenu implements Screen {
     private final Stage stage = new Stage();
 
     public MainMenu() {
-        float scaleFactor = Graphics.findScaleFactor();
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0));
+        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * Graphics.scaleFactor, 0));
         final Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
         final TextButton newGraph = new TextButton("New Graph", skin, "default");
         final TextButton loadGraph = new TextButton("Load Graph", skin, "default");
@@ -28,21 +27,21 @@ public class MainMenu implements Screen {
         background.setHeight(Gdx.graphics.getHeight());
         background.setWidth(Gdx.graphics.getWidth());
 
-        newGraph.setWidth(382 * scaleFactor);
-        newGraph.setHeight(65 * scaleFactor);
-        newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f * scaleFactor);
+        newGraph.setWidth(382 * Graphics.scaleFactor);
+        newGraph.setHeight(65 * Graphics.scaleFactor);
+        newGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - newGraph.getWidth()), 516f * Graphics.scaleFactor);
 
-        loadGraph.setWidth(382 * scaleFactor);
-        loadGraph.setHeight(65 * scaleFactor);
-        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), newGraph.getY() - 126 * scaleFactor);
+        loadGraph.setWidth(382 * Graphics.scaleFactor);
+        loadGraph.setHeight(65 * Graphics.scaleFactor);
+        loadGraph.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), newGraph.getY() - 126 * Graphics.scaleFactor);
 
-        settings.setWidth(382 * scaleFactor);
-        settings.setHeight(65 * scaleFactor);
-        settings.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), loadGraph.getY() - 126 * scaleFactor);
+        settings.setWidth(382 * Graphics.scaleFactor);
+        settings.setHeight(65 * Graphics.scaleFactor);
+        settings.setPosition(0.5f * (Gdx.graphics.getWidth() - loadGraph.getWidth()), loadGraph.getY() - 126 * Graphics.scaleFactor);
 
-        exit.setWidth(382 * scaleFactor);
-        exit.setHeight(65 * scaleFactor);
-        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - exit.getWidth()), settings.getY() - 126 * scaleFactor);
+        exit.setWidth(382 * Graphics.scaleFactor);
+        exit.setHeight(65 * Graphics.scaleFactor);
+        exit.setPosition(0.5f * (Gdx.graphics.getWidth() - exit.getWidth()), settings.getY() - 126 * Graphics.scaleFactor);
 
 
         newGraph.addListener(new ClickListener() {
@@ -76,7 +75,7 @@ public class MainMenu implements Screen {
         stage.addActor(loadGraph);
         stage.addActor(settings);
         stage.addActor(exit);
-        stage.addActor(new Text("FM Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) scaleFactor), new float[]{1, 1, 1, 1}, 0, 0, -1));
+        stage.addActor(new Text("FM Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * Graphics.scaleFactor, (int) Graphics.scaleFactor), new float[]{1, 1, 1, 1}, 0, 0, -1));
     }
 
     @Override
