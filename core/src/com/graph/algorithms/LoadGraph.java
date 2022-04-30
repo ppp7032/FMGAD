@@ -122,7 +122,7 @@ public class LoadGraph implements Screen {
         selectTSPAlgorithm.setY(479 * scaleFactor);
         selectTSPAlgorithm.setWidth(138 * scaleFactor);
         selectTSPAlgorithm.setHeight(24 * scaleFactor);
-        selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bound");
+        selectTSPAlgorithm.setItems("Nearest Neighbour", "Lower Bounds");
         selectTSPAlgorithm.setVisible(false);
 
         Graphics.setupBottomButton(edit, scaleFactor);
