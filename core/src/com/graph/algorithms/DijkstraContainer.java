@@ -61,4 +61,16 @@ public class DijkstraContainer {
     public boolean getSetup() {
         return setup;
     }
+
+    public int getLargestOrderLabel() {
+        int biggestValue = -1;
+        int biggestIndex = -1;
+        for (int a = 0; a < orderLabels.length; a++) {
+            if (orderLabels[a] > biggestValue) {
+                biggestValue = orderLabels[a];
+                biggestIndex = a;
+            }
+        }
+        return biggestIndex;
+    }
 }

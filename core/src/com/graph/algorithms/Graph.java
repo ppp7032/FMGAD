@@ -241,7 +241,7 @@ public class Graph {
         }
     }
 
-    public void dijkstraStep(final DijkstraContainer dijkstraContainer) {
+    private void dijkstraStep(final DijkstraContainer dijkstraContainer) {
         for (int a = 0; a < getNumberOfEdgesConnectedToVertex(dijkstraContainer.getCurrentVertex()); a++) {
             final int edgeTo = getVertex(dijkstraContainer.getCurrentVertex(), a);
             final int edgeWeight = getEdgeWeight(dijkstraContainer.getCurrentVertex(), a);
@@ -255,9 +255,11 @@ public class Graph {
             }
         }
         final int smallest = findSmallestNonPermanentTemporaryLabel(dijkstraContainer.getTemporaryLabels(), dijkstraContainer.getOrderLabels());
-        dijkstraContainer.getPermanentLabels()[smallest] = dijkstraContainer.getTemporaryLabels().get(smallest).get(dijkstraContainer.getTemporaryLabels().get(smallest).size() - 1);
-        dijkstraContainer.getOrderLabels()[smallest] = dijkstraContainer.getOrderLabels()[dijkstraContainer.getCurrentVertex()] + 1;
-        dijkstraContainer.setCurrentVertex(smallest);
+        if (smallest != -1) {
+            dijkstraContainer.getPermanentLabels()[smallest] = dijkstraContainer.getTemporaryLabels().get(smallest).get(dijkstraContainer.getTemporaryLabels().get(smallest).size() - 1);
+            dijkstraContainer.getOrderLabels()[smallest] = dijkstraContainer.getOrderLabels()[dijkstraContainer.getCurrentVertex()] + 1;
+            dijkstraContainer.setCurrentVertex(smallest);
+        }
     }
 
     public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
