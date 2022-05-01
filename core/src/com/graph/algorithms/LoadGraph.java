@@ -265,6 +265,7 @@ public class LoadGraph implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                stage.setKeyboardFocus(null);
                 if (dijkstraPressed) {
                     dijkstraPressed = false;
                     toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
@@ -301,6 +302,7 @@ public class LoadGraph implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                stage.setKeyboardFocus(null);
                 if (nearestNeighbourPressed) {
                     final int vertex = graph.getVertexFromInput(startVertexInput.getText());
                     if (vertex != -1) {
