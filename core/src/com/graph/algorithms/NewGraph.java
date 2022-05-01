@@ -142,6 +142,7 @@ public class NewGraph implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (newEdgeClicked) {
                     closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, sidePanelButtons, name);
+                    stage.setKeyboardFocus(null);
                 } else if (viewingHelp) {
                     toggleHelpMenu(false, sidePanelButtons, back, menuTitle, attributes);
                 }
@@ -150,6 +151,7 @@ public class NewGraph implements Screen {
         apply.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                stage.setKeyboardFocus(null);
                 int weight = 0;
                 boolean isInteger = true;
                 try {
