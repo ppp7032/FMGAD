@@ -20,6 +20,21 @@ import java.util.ArrayList;
 public abstract class Graphics {
 
     public static final float scaleFactor = Gdx.graphics.getHeight() / 720f;
+    public static final BitmapFont[] fonts = new BitmapFont[]{
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * scaleFactor, 0),
+            Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * scaleFactor, (int) Graphics.scaleFactor)
+    };
+    public static final Skin[] skins = new Skin[]{
+            generateSkin(fonts[1]),
+            generateSkin(fonts[2]),
+            generateSkin(fonts[3]),
+            generateSkin(fonts[5])
+    };
 
     public static void setUpStartVertexInput(final TextField startVertexInput, final float x) {
         startVertexInput.setVisible(false);
@@ -108,15 +123,25 @@ public abstract class Graphics {
     }
 
     private static float[] rotatePointAboutPoint(final float[] point, final float[] centre, final float angle) {
-        return new float[]{(float) (Math.cos(angle) * (point[0] - centre[0]) - Math.sin(angle) * (point[1] - centre[1]) + centre[0]), (float) (Math.sin(angle) * (point[0] - centre[0]) + Math.cos(angle) * (point[1] - centre[1]) + centre[1])};
+        return new float[]{
+                (float) (Math.cos(angle) * (point[0] - centre[0]) - Math.sin(angle) * (point[1] - centre[1]) + centre[0]),
+                (float) (Math.sin(angle) * (point[0] - centre[0]) + Math.cos(angle) * (point[1] - centre[1]) + centre[1])
+        };
     }
 
     private static float[][] arrowHeadGenerator(final float[] point1, final float[] point2) {
-        final float[] centreOfMass = new float[]{(point1[0] + point2[0]) * Graphics.scaleFactor / 2, (point1[1] + point2[1]) * Graphics.scaleFactor / 2};
+        final float[] centreOfMass = new float[]{
+                (point1[0] + point2[0]) * Graphics.scaleFactor / 2,
+                (point1[1] + point2[1]) * Graphics.scaleFactor / 2
+        };
         final float sideLength = 23.551f * Graphics.scaleFactor;
         float angle = (float) (Math.acos((point2[1] - point1[1]) / Math.sqrt(Math.pow(point2[0] - point1[0], 2) + Math.pow(point2[1] - point1[1], 2))));
         final float y2 = (float) (centreOfMass[1] - sideLength * Math.sin(Math.toRadians(60)) / 3f);
-        final float[][] points = new float[][]{{centreOfMass[0], (float) (centreOfMass[1] + 2f * sideLength * Math.sin(Math.toRadians(60)) / 3f)}, {centreOfMass[0] - sideLength / 2, y2}, {centreOfMass[0] + sideLength / 2, y2}};
+        final float[][] points = new float[][]{
+                {centreOfMass[0], (float) (centreOfMass[1] + 2f * sideLength * Math.sin(Math.toRadians(60)) / 3f)},
+                {centreOfMass[0] - sideLength / 2, y2},
+                {centreOfMass[0] + sideLength / 2, y2}
+        };
         if (point2[0] - point1[0] > 0) {
             angle *= -1;
         }

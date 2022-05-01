@@ -4,12 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -35,26 +33,29 @@ public class NewGraph implements Screen {
 
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1);
         this.edgeWeights = edgeWeights;
         this.vertexLabels = vertexLabels;
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
-        edgeWeight = new TextField("0", skin);
-        name = new TextField(graph.getName(), skin);
-        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
+        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1);
+        edgeWeight = new TextField("0", Graphics.skins[1]);
+        name = new TextField(graph.getName(), Graphics.skins[1]);
+        final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Graphics.fonts[4], new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
-        final Text[] attributes = new Text[]{new Text("", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Press 'E' to add a new edge", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Right click a vertex to delete it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 3) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Drag a vertex to move it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 2) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Only integer weights are supported", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 4) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
-        final Skin buttonSkin = Graphics.generateSkin(twenty);
-        final TextButton back = new TextButton("Back", buttonSkin, "default");
-        final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        final TextButton newVertex = new TextButton("New Vertex", skin, "default");
-        final TextButton newEdge = new TextButton("New Edge", skin, "default");
-        final TextButton save = new TextButton("Save", skin, "default");
-        final TextButton help = new TextButton("Help", skin, "default");
-        final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
-        final TextButton finish = new TextButton("Finish", skin, "default");
+        final Text[] attributes = new Text[]{
+                new Text("", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, -1, 0, -1),
+                new Text("Press 'E' to add a new edge", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, -1, 0, -1),
+                new Text("Right click a vertex to delete it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 3) * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, -1, 0, -1),
+                new Text("Drag a vertex to move it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 2) * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, -1, 0, -1),
+                new Text("Only integer weights are supported", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 4) * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, -1, 0, -1)
+        };
+        final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
+        final TextButton apply = new TextButton("Apply", Graphics.skins[2], "default");
+        final TextButton newVertex = new TextButton("New Vertex", Graphics.skins[1], "default");
+        final TextButton newEdge = new TextButton("New Edge", Graphics.skins[1], "default");
+        final TextButton save = new TextButton("Save", Graphics.skins[1], "default");
+        final TextButton help = new TextButton("Help", Graphics.skins[1], "default");
+        final TextButton mainMenu = new TextButton("Main Menu", Graphics.skins[1], "default");
+        final TextButton finish = new TextButton("Finish", Graphics.skins[1], "default");
         final TextButton[] sidePanelButtons = new TextButton[]{newVertex, newEdge, save, help, mainMenu, finish};
 
 
@@ -95,7 +96,7 @@ public class NewGraph implements Screen {
                     if (newVertexClicked) {
                         graph.addVertex(x / Graphics.scaleFactor, y / Graphics.scaleFactor);
                         newVertexClicked = false;
-                        vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), x, y, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
+                        vertexLabels.add(new Text(Character.toString((char) (graph.getNumberOfVertices() + 64)), x, y, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1));
                     } else if (newEdgeClicked) {
                         int clickedVertex = findVertexBeingClicked();
                         if (clickedVertex != -1) {
@@ -157,7 +158,7 @@ public class NewGraph implements Screen {
                     } else {
                         graph.addUndirectedEdge(firstVertex, secondVertex, weight);
                     }
-                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), twenty, new float[]{0, 0, 1, 1}, 0, 0));
+                    edgeWeights.add(new EdgeWeight(graph, firstVertex, secondVertex, Integer.toString(weight), Graphics.fonts[3], new float[]{0, 0, 1, 1}, 0, 0));
                     closeEnterEdgeWeightMenu(edgeWeight, menuTitle, attributes[0], back, apply, sidePanelButtons, name);
                 }
             }

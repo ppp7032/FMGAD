@@ -3,13 +3,11 @@ package com.graph.algorithms;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -20,11 +18,9 @@ public class SelectGraphType implements Screen {
     private final Stage stage = new Stage();
 
     public SelectGraphType() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        final Skin buttonSkin = Graphics.generateSkin(twenty);
-        final SelectBox<String> graphType = new SelectBox<>(Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * Graphics.scaleFactor, 0)));
-        final TextButton back = new TextButton("Back", buttonSkin, "default");
-        final TextButton apply = new TextButton("Apply", buttonSkin, "default");
+        final SelectBox<String> graphType = new SelectBox<>(Graphics.skins[0]);
+        final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
+        final TextButton apply = new TextButton("Apply", Graphics.skins[2], "default");
 
 
         graphType.setX(343 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
@@ -62,7 +58,7 @@ public class SelectGraphType implements Screen {
         stage.addActor(graphType);
         stage.addActor(back);
         stage.addActor(apply);
-        Graphics.addTextToMenu(stage, "New Graph Options", new String[]{"Graph Type"}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "New Graph Options", new String[]{"Graph Type"}, Graphics.fonts[4], Graphics.fonts[3]);
     }
 
     @Override

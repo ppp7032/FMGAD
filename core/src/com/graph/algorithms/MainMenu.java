@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -15,12 +14,11 @@ public class MainMenu implements Screen {
     private final Stage stage = new Stage();
 
     public MainMenu() {
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 26f * Graphics.scaleFactor, 0));
         final Image background = new Image(new Texture(Gdx.files.internal("backgrounds/4k.jpeg")));
-        final TextButton newGraph = new TextButton("New Graph", skin, "default");
-        final TextButton loadGraph = new TextButton("Load Graph", skin, "default");
-        final TextButton settings = new TextButton("Settings", skin, "default");
-        final TextButton exit = new TextButton("Quit", skin, "default");
+        final TextButton newGraph = new TextButton("New Graph", Graphics.skins[3], "default");
+        final TextButton loadGraph = new TextButton("Load Graph", Graphics.skins[3], "default");
+        final TextButton settings = new TextButton("Settings", Graphics.skins[3], "default");
+        final TextButton exit = new TextButton("Quit", Graphics.skins[3], "default");
 
 
         background.setHeight(Gdx.graphics.getHeight());
@@ -74,7 +72,7 @@ public class MainMenu implements Screen {
         stage.addActor(loadGraph);
         stage.addActor(settings);
         stage.addActor(exit);
-        stage.addActor(new Text("FM Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 40f * Graphics.scaleFactor, (int) Graphics.scaleFactor), new float[]{1, 1, 1, 1}, 0, 0, -1));
+        stage.addActor(new Text("FM Graph Algorithm Demonstrator", Gdx.graphics.getWidth() / 2f, 665 * Graphics.scaleFactor, Graphics.fonts[6], new float[]{1, 1, 1, 1}, 0, 0, -1));
     }
 
     @Override

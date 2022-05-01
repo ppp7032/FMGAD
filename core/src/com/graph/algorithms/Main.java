@@ -1,7 +1,6 @@
 package com.graph.algorithms;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import java.util.ArrayList;
 
@@ -34,17 +33,17 @@ public class Main extends Game {
         newGraph.clear(newStatus);
     }
 
-    public void loadGraph(final Graph loadedGraph, final BitmapFont twenty) {
+    public void loadGraph(final Graph loadedGraph) {
         clearNewGraph(loadedGraph.isDigraph());
         for (int a = 0; a < loadedGraph.getNumberOfVertices(); a++) {
             graph.addVertex(loadedGraph.getXCoordinateOfVertex(a), loadedGraph.getYCoordinateOfVertex(a));
-            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * Graphics.scaleFactor, graph.getYCoordinateOfVertex(a) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
+            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * Graphics.scaleFactor, graph.getYCoordinateOfVertex(a) * Graphics.scaleFactor, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1));
             for (int b = 0; b < loadedGraph.getNumberOfEdgesConnectedToVertex(a); b++) {
                 graph.addDirectedEdge(a, loadedGraph.getVertex(a, b), loadedGraph.getEdgeWeight(a, b));
             }
         }
         graph.changeName(loadedGraph.getName());
-        graph.addToEdgeWeights(edgeWeights, twenty);
+        EdgeWeight.addToEdgeWeights(graph, edgeWeights);
     }
 
     public void setScreen(ScreenKey screenKey) {

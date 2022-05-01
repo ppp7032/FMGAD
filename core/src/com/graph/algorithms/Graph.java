@@ -2,7 +2,6 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import java.util.*;
 
@@ -44,9 +43,15 @@ public class Graph {
                 }
             }
             adjacencyList.add(new ArrayList<int[]>());
-            coordinates.add(new float[]{Float.parseFloat(currentLine.substring(occurrences.get(3).get(0) + 1, occurrences.get(1).get(0))), Float.parseFloat(currentLine.substring(occurrences.get(1).get(0) + 1, occurrences.get(4).get(0)))});
+            coordinates.add(new float[]{
+                    Float.parseFloat(currentLine.substring(occurrences.get(3).get(0) + 1, occurrences.get(1).get(0))),
+                    Float.parseFloat(currentLine.substring(occurrences.get(1).get(0) + 1, occurrences.get(4).get(0)))
+            });
             for (int a = 0; a < occurrences.get(0).size(); a++) {
-                adjacencyList.get(getNumberOfVertices() - 1).add(new int[]{Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a + 1))), Integer.parseInt(currentLine.substring(occurrences.get(1).get(a + 1) + 1, occurrences.get(2).get(a)))});
+                adjacencyList.get(getNumberOfVertices() - 1).add(new int[]{
+                        Integer.parseInt(currentLine.substring(occurrences.get(0).get(a) + 1, occurrences.get(1).get(a + 1))),
+                        Integer.parseInt(currentLine.substring(occurrences.get(1).get(a + 1) + 1, occurrences.get(2).get(a)))
+                });
             }
         }
         scanner.close();
@@ -222,14 +227,6 @@ public class Graph {
         return -1;
     }
 
-    public void addToEdgeWeights(ArrayList<EdgeWeight> edgeWeights, final BitmapFont font) {
-        for (int a = 0; a < getNumberOfVertices(); a++) {
-            for (int b = 0; b < getNumberOfEdgesConnectedToVertex(a); b++) {
-                edgeWeights.add(new EdgeWeight(this, a, getVertex(a, b), Integer.toString(getEdgeWeight(a, b)), font, new float[]{0, 0, 1, 1}, 0, 0));
-            }
-        }
-    }
-
     public void setCoordinates(final int index, final float[] element) {
         coordinates.set(index, element);
     }
@@ -278,25 +275,6 @@ public class Graph {
     public void dijkstraStep(final DijkstraContainer dijkstraContainer, final Text[][] dijkstraLabels) {
         dijkstraStep(dijkstraContainer);
         updateDijkstraLabels(dijkstraLabels, dijkstraContainer.getOrderLabels(), dijkstraContainer.getPermanentLabels(), dijkstraContainer.getTemporaryLabels());
-    }
-
-    public DijkstraContainer setupDijkstraContainer(final int startVertex, final int endVertex) {
-        final ArrayList<ArrayList<Integer>> pathsToEachVertex = new ArrayList<>();
-        for (int a = 0; a < getNumberOfVertices(); a++) {
-            pathsToEachVertex.add(new ArrayList<Integer>());
-        }
-        pathsToEachVertex.set(startVertex, new ArrayList<>(Collections.singletonList(startVertex)));
-        final int[] orderLabels = new int[getNumberOfVertices()];
-        final int[] permanentLabels = new int[getNumberOfVertices()];
-        final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
-        for (int a = 0; a < getNumberOfVertices(); a++) {
-            permanentLabels[a] = -1;
-            orderLabels[a] = -1;
-            temporaryLabels.add(new ArrayList<Integer>());
-        }
-        orderLabels[startVertex] = 1;
-        permanentLabels[startVertex] = 0;
-        return new DijkstraContainer(startVertex, endVertex, pathsToEachVertex, orderLabels, permanentLabels, temporaryLabels);
     }
 
     public void jarnik(final ArrayList<int[]> minimumEdges, final int startVertex) {
@@ -416,7 +394,7 @@ public class Graph {
             totalWeights[a][1] = a;
             allPaths.add(new ArrayList<ArrayList<Integer>>());
             for (int b = 0; b < allPairs.get(a).size(); b++) {
-                DijkstraContainer container = setupDijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1]);
+                DijkstraContainer container = new DijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1], getNumberOfVertices());
                 while (container.getPermanentLabels()[container.getEndVertex()] == -1) {
                     dijkstraStep(container);
                 }

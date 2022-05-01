@@ -4,13 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -26,15 +24,12 @@ public class Settings implements Screen {
     private final Text alertMessage;
 
     public Settings() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        final Skin labelSkin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 12f * Graphics.scaleFactor, 0));
-        final SelectBox<String> resolutionBox = new SelectBox<>(labelSkin);
-        final SelectBox<String> fullscreenBox = new SelectBox<>(labelSkin);
-        final Skin buttonSkin = Graphics.generateSkin(twenty);
-        final TextButton back = new TextButton("Back", buttonSkin, "default");
-        final TextButton apply = new TextButton("Apply", buttonSkin, "default");
+        final SelectBox<String> resolutionBox = new SelectBox<>(Graphics.skins[0]);
+        final SelectBox<String> fullscreenBox = new SelectBox<>(Graphics.skins[0]);
+        final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
+        final TextButton apply = new TextButton("Apply", Graphics.skins[2], "default");
         final String[] config = Settings.readFromConfigFile();
-        alertMessage = new Text("Please restart the application\nto apply any changes made!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
+        alertMessage = new Text("Please restart the application\nto apply any changes made!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1);
 
 
         resolutionBox.setX(376 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
@@ -83,7 +78,7 @@ public class Settings implements Screen {
         stage.addActor(fullscreenBox);
         stage.addActor(back);
         stage.addActor(apply);
-        Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "Settings", new String[]{"Windowed Resolution", "Display Mode"}, Graphics.fonts[4], Graphics.fonts[3]);
     }
 
     public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode

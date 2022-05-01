@@ -4,14 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -25,13 +23,11 @@ public class SelectGraph implements Screen {
     private final SpriteBatch spriteBatch = new SpriteBatch();
 
     public SelectGraph() {
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        final Skin skin = Graphics.generateSkin(twenty);
-        graphSelector = new List<>(skin);
-        final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
-        final TextButton back = new TextButton("Back", skin, "default");
-        final TextButton load = new TextButton("Load", skin, "default");
-        final TextButton delete = new TextButton("Delete", skin, "default");
+        graphSelector = new List<>(Graphics.skins[2]);
+        final ScrollPane scrollBar = new ScrollPane(graphSelector, Graphics.skins[2], "default");
+        final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
+        final TextButton load = new TextButton("Load", Graphics.skins[2], "default");
+        final TextButton delete = new TextButton("Delete", Graphics.skins[2], "default");
 
 
         setListOfGraphs();
@@ -59,7 +55,7 @@ public class SelectGraph implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (graphSelector.getSelected() != null) {
-                    ((Main) Gdx.app.getApplicationListener()).loadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph")), twenty);
+                    ((Main) Gdx.app.getApplicationListener()).loadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph")));
                     ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.LoadGraph);
                 }
             }
@@ -80,7 +76,7 @@ public class SelectGraph implements Screen {
         stage.addActor(back);
         stage.addActor(load);
         stage.addActor(delete);
-        Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
+        Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, Graphics.fonts[4], Graphics.fonts[3]);
     }
 
     public void setListOfGraphs() {

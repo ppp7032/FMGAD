@@ -2,6 +2,8 @@ package com.graph.algorithms;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+import java.util.ArrayList;
+
 public class EdgeWeight extends Text {
     private final Graph graph;
     private int vertex1;
@@ -13,6 +15,14 @@ public class EdgeWeight extends Text {
         this.vertex2 = vertex2;
         this.graph = graph;
         update();
+    }
+
+    public static void addToEdgeWeights(final Graph graph, final ArrayList<EdgeWeight> edgeWeights) {
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+            for (int b = 0; b < graph.getNumberOfEdgesConnectedToVertex(a); b++) {
+                edgeWeights.add(new EdgeWeight(graph, a, graph.getVertex(a, b), Integer.toString(graph.getEdgeWeight(a, b)), Graphics.fonts[3], new float[]{0, 0, 1, 1}, 0, 0));
+            }
+        }
     }
 
     public void update() {

@@ -1,6 +1,7 @@
 package com.graph.algorithms;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class DijkstraContainer {
     private int currentVertex;
@@ -11,9 +12,23 @@ public class DijkstraContainer {
     private ArrayList<ArrayList<Integer>> temporaryLabels;
     private boolean setup;
 
-    public DijkstraContainer(final int currentVertex, final int endVertex, final ArrayList<ArrayList<Integer>> pathsToEachVertex, final int[] orderLabels,
-                             final int[] permanentLabels, final ArrayList<ArrayList<Integer>> temporaryLabels) {
-        this.currentVertex = currentVertex;
+    public DijkstraContainer(final int startVertex, final int endVertex, final int numberOfVertices) {
+        final ArrayList<ArrayList<Integer>> pathsToEachVertex = new ArrayList<>();
+        for (int a = 0; a < numberOfVertices; a++) {
+            pathsToEachVertex.add(new ArrayList<Integer>());
+        }
+        pathsToEachVertex.set(startVertex, new ArrayList<>(Collections.singletonList(startVertex)));
+        final int[] orderLabels = new int[numberOfVertices];
+        final int[] permanentLabels = new int[numberOfVertices];
+        final ArrayList<ArrayList<Integer>> temporaryLabels = new ArrayList<>();
+        for (int a = 0; a < numberOfVertices; a++) {
+            permanentLabels[a] = -1;
+            orderLabels[a] = -1;
+            temporaryLabels.add(new ArrayList<Integer>());
+        }
+        orderLabels[startVertex] = 1;
+        permanentLabels[startVertex] = 0;
+        this.currentVertex = startVertex;
         this.endVertex = endVertex;
         this.pathsToEachVertex = pathsToEachVertex;
         this.orderLabels = orderLabels;
