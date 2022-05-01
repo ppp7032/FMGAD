@@ -24,7 +24,7 @@ public class DesktopLauncher {
         }
         config.resizable = false;
         config.title = "FMGAD";
-        config.addIcon("icon/OCR_32x32.png", Files.FileType.Internal);
+        config.addIcon("icon/Icon 32x32.png", Files.FileType.Internal);
         new LwjglApplication(new Main(), config);
     }
 }
