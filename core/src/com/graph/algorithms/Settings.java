@@ -22,13 +22,13 @@ public class Settings implements Screen {
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final Text alertMessage;
+    private final SelectBox<String> resolutionBox = new SelectBox<>(Graphics.skins[0]);
+    private final SelectBox<String> fullscreenBox = new SelectBox<>(Graphics.skins[0]);
 
     public Settings() {
-        final SelectBox<String> resolutionBox = new SelectBox<>(Graphics.skins[0]);
-        final SelectBox<String> fullscreenBox = new SelectBox<>(Graphics.skins[0]);
+
         final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
         final TextButton apply = new TextButton("Apply", Graphics.skins[2], "default");
-        final String[] config = Settings.readFromConfigFile();
         alertMessage = new Text("Please restart the application\nto apply any changes made!", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, Graphics.fonts[3], new float[]{0, 0, 0, 1}, 0, 0, -1);
 
 
@@ -37,14 +37,14 @@ public class Settings implements Screen {
         resolutionBox.setWidth(55 * Graphics.scaleFactor);
         resolutionBox.setHeight(24 * Graphics.scaleFactor);
         resolutionBox.setItems("2160p", "1440p", "1080p", "900p", "720p");
-        resolutionBox.setSelected(config[0]);
 
         fullscreenBox.setX(resolutionBox.getX() - 33f * Graphics.scaleFactor);
         fullscreenBox.setY(418 * Graphics.scaleFactor);
         fullscreenBox.setWidth(88 * Graphics.scaleFactor);
         fullscreenBox.setHeight(24 * Graphics.scaleFactor);
         fullscreenBox.setItems("Fullscreen", "Windowed");
-        fullscreenBox.setSelected(config[1]);
+
+        setUpBoxes();
 
         Graphics.setupBackAndApplyButtons(back, apply, true);
 
@@ -108,9 +108,16 @@ public class Settings implements Screen {
         file.writeString("resolution: " + config[0] + "\ndisplay mode: " + config[1], false);
     }
 
+    private void setUpBoxes() {
+        final String[] config = Settings.readFromConfigFile();
+        resolutionBox.setSelected(config[0]);
+        fullscreenBox.setSelected(config[1]);
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        setUpBoxes();
     }
 
     @Override
