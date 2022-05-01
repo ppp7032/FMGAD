@@ -271,9 +271,16 @@ public class NewGraph implements Screen {
 
     private void clickNewVertex() {
         if (!newEdgeClicked) {
-            newVertexClicked = !newVertexClicked;
-            if (newVertexClicked) {
-                temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
+            if (!newVertexClicked) {
+                if (graph.getNumberOfVertices() < 26) {
+                    temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
+                    newVertexClicked = true;
+                } else {
+                    alertMessage.setVisible(true);
+                    alertMessage.updateText("The maximum number of\nvertices has been reached!");
+                }
+            } else {
+                newVertexClicked = false;
             }
         }
     }
