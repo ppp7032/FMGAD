@@ -127,8 +127,13 @@ public class NewGraph implements Screen {
                     newEdgeClicked = false;
                     firstVertex = -1;
                 }
-                if (alertMessage.isVisible() && Graphics.mouseInBounds()) {
-                    alertMessage.setVisible(false);
+                if (Graphics.mouseInBounds()) {
+                    if (stage.getKeyboardFocus() == name) {
+                        stage.setKeyboardFocus(null);
+                    }
+                    if (alertMessage.isVisible()) {
+                        alertMessage.setVisible(false);
+                    }
                 }
             }
         });
@@ -356,14 +361,16 @@ public class NewGraph implements Screen {
         if (vertexBeingMoved != -1 && mouseInBoundsForVertex()) {
             graph.setCoordinates(vertexBeingMoved, new float[]{Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor});
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
-            clickNewVertex();
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            clickNewEdge();
-        } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds() && !newVertexClicked && !newEdgeClicked && !alertMessage.isVisible()) {
-            final int vertexBeingClicked = findVertexBeingClicked();
-            if (vertexBeingClicked != -1) {
-                deleteVertex(vertexBeingClicked);
+        if (stage.getKeyboardFocus() != name) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.V)) {
+                clickNewVertex();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+                clickNewEdge();
+            } else if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT) && Graphics.mouseInBounds() && !newVertexClicked && !newEdgeClicked && !alertMessage.isVisible()) {
+                final int vertexBeingClicked = findVertexBeingClicked();
+                if (vertexBeingClicked != -1) {
+                    deleteVertex(vertexBeingClicked);
+                }
             }
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
