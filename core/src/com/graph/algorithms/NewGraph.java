@@ -270,7 +270,7 @@ public class NewGraph implements Screen {
     }
 
     private void clickNewVertex() {
-        if (!newEdgeClicked) {
+        if (!newEdgeClicked && !alertMessage.isVisible()) {
             if (!newVertexClicked) {
                 if (graph.getNumberOfVertices() < 26) {
                     temporaryVertexLabel.updateText(Character.toString((char) (graph.getNumberOfVertices() + 65)));
@@ -286,7 +286,7 @@ public class NewGraph implements Screen {
     }
 
     private void clickNewEdge() {
-        if (!newVertexClicked) {
+        if (!newVertexClicked && !alertMessage.isVisible()) {
             if (!newEdgeClicked) {
                 newEdgeClicked = true;
                 edgeWeight.setText("0");
