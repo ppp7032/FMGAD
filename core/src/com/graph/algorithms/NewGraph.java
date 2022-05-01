@@ -384,11 +384,14 @@ public class NewGraph implements Screen {
         }
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         Graphics.renderGraphEdges(shapeRenderer, graph);
-        if (newEdgeClicked && firstVertex != -1 && secondVertex == -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor, shapeRenderer, graph.isDigraph());
-
-        } else if (secondVertex != -1) {
-            Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph());
+        if (newEdgeClicked && firstVertex != -1) {
+            if (secondVertex == -1) {
+                if (Graphics.mouseInBounds()) {
+                    Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), Gdx.input.getX() / Graphics.scaleFactor, (Gdx.graphics.getHeight() - Gdx.input.getY()) / Graphics.scaleFactor, shapeRenderer, graph.isDigraph());
+                }
+            } else {
+                Graphics.renderEdge(graph.getXCoordinateOfVertex(firstVertex), graph.getYCoordinateOfVertex(firstVertex), graph.getXCoordinateOfVertex(secondVertex), graph.getYCoordinateOfVertex(secondVertex), shapeRenderer, graph.isDigraph());
+            }
         }
         Graphics.renderGraphVertices(shapeRenderer, graph, vertexLabels, stage.getBatch(), vertexBeingMoved);
         shapeRenderer.end();
