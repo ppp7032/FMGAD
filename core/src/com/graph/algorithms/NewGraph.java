@@ -1,10 +1,8 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -19,51 +17,32 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.util.ArrayList;
 
 public class NewGraph implements Screen {
+    private final TextField name;
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Graph graph;
-    private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
-    private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final Text temporaryVertexLabel;
     private final Text alertMessage;
+    private final TextField edgeWeight;
+    private final ArrayList<EdgeWeight> edgeWeights;
+    private final ArrayList<Text> vertexLabels;
     private boolean newVertexClicked = false;
     private boolean newEdgeClicked = false;
     private int firstVertex = -1;
     private int secondVertex = -1;
     private int vertexBeingMoved = -1;
-    private TextField edgeWeight;
     private boolean viewingHelp = false;
-
-    public NewGraph(final Graph graph) {
-        this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        graph.addToEdgeWeights(edgeWeights, twenty);
-        FileHandle file = Gdx.files.local("graphs/New Graph.graph");
-        int counter = 1;
-        while (file.exists()) {
-            file = Gdx.files.local("graphs/New Graph (" + counter + ").graph");
-            counter++;
-        }
-        graph.changeName(file.name().substring(0, file.name().lastIndexOf(".")));
-        temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        GeneralConstructor(twenty, graph.getName());
-    }
 
     public NewGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        this.edgeWeights.addAll(edgeWeights);
-        this.vertexLabels.addAll(vertexLabels);
+        this.edgeWeights = edgeWeights;
+        this.vertexLabels = vertexLabels;
         temporaryVertexLabel = new Text(Character.toString((char) (graph.getNumberOfVertices() + 65)), 0, 0, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        GeneralConstructor(twenty, graph.getName());
-    }
-
-    private void GeneralConstructor(final BitmapFont twenty, final String graphName) {
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
         edgeWeight = new TextField("0", skin);
-        final TextField name = new TextField(graphName, skin);
+        name = new TextField(graph.getName(), skin);
         final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
         final Text[] attributes = new Text[]{new Text("", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Press 'E' to add a new edge", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Right click a vertex to delete it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 3) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Drag a vertex to move it", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 2) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("Only integer weights are supported", 16 * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f * 4) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
@@ -212,14 +191,14 @@ public class NewGraph implements Screen {
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.MainMenu);
             }
         });
         finish.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (finaliseGraph()) {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(graph, edgeWeights, vertexLabels));
+                    ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.LoadGraph);
                 }
             }
         });
@@ -237,6 +216,14 @@ public class NewGraph implements Screen {
         for (final TextButton sidePanelButton : sidePanelButtons) {
             stage.addActor(sidePanelButton);
         }
+    }
+
+    public void clear(final boolean newStatus) {
+        graph.clear(newStatus);
+        vertexLabels.clear();
+        edgeWeights.clear();
+        temporaryVertexLabel.updateText(Character.toString((char) 65));
+        name.setText(graph.getName());
     }
 
     private void toggleHelpMenu(final boolean newStatus, final TextButton[] sidePanelButtons, final TextButton back, final Text menuTitle, final Text[] attributes) {
@@ -351,6 +338,7 @@ public class NewGraph implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        name.setText(graph.getName());
     }
 
     @Override
@@ -440,7 +428,6 @@ public class NewGraph implements Screen {
 
     @Override
     public void hide() {
-        dispose();
     }
 
     @Override

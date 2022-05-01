@@ -9,7 +9,7 @@ import java.util.*;
 public class Graph {
     private final ArrayList<ArrayList<int[]>> adjacencyList = new ArrayList<>();
     private final ArrayList<float[]> coordinates = new ArrayList<>();
-    private final boolean digraph;
+    private boolean digraph;
     private String name;
 
     public Graph(final boolean digraph) {
@@ -198,6 +198,19 @@ public class Graph {
 
     public int getEdgeWeight(final int a, final int b) {
         return adjacencyList.get(a).get(b)[1];
+    }
+
+    public void clear(final boolean newStatus) {
+        adjacencyList.clear();
+        coordinates.clear();
+        digraph = newStatus;
+        FileHandle file = Gdx.files.local("graphs/New Graph.graph");
+        int counter = 1;
+        while (file.exists()) {
+            file = Gdx.files.local("graphs/New Graph (" + counter + ").graph");
+            counter++;
+        }
+        changeName(file.name().substring(0, file.name().lastIndexOf(".")));
     }
 
     public int getRelativeVertexNumber(final int vertex1, final int vertex2) {

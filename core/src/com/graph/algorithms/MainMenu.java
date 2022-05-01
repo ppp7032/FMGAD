@@ -1,6 +1,5 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,19 +46,19 @@ public class MainMenu implements Screen {
         newGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SelectGraphType());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.SelectGraphType);
             }
         });
         loadGraph.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SelectGraph());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.SelectGraph);
             }
         });
         settings.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new Settings());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.Settings);
             }
         });
         exit.addListener(new ClickListener() {
@@ -108,7 +107,6 @@ public class MainMenu implements Screen {
 
     @Override
     public void hide() {
-        dispose();
     }
 
     @Override

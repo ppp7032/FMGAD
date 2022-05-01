@@ -1,6 +1,5 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.util.ArrayList;
 
 public class SelectGraph implements Screen {
+    private final List<String> graphSelector;
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
@@ -27,21 +27,14 @@ public class SelectGraph implements Screen {
     public SelectGraph() {
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         final Skin skin = Graphics.generateSkin(twenty);
-        final List<String> graphSelector = new List<>(skin);
+        graphSelector = new List<>(skin);
         final ScrollPane scrollBar = new ScrollPane(graphSelector, skin, "default");
         final TextButton back = new TextButton("Back", skin, "default");
         final TextButton load = new TextButton("Load", skin, "default");
         final TextButton delete = new TextButton("Delete", skin, "default");
-        final FileHandle graphsDirectory = Gdx.files.internal("graphs");
 
 
-        final FileHandle[] graphs = graphsDirectory.list("graph");
-        final String[] graphNames = new String[graphs.length];
-        for (int a = 0; a < graphs.length; a++) {
-            graphNames[a] = graphs[a].file().getName();
-            graphNames[a] = graphNames[a].substring(0, graphNames[a].lastIndexOf("."));
-        }
-        graphSelector.setItems(graphNames);
+        setListOfGraphs();
 
         scrollBar.setX((0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)));
         scrollBar.setY(224f * Graphics.scaleFactor);
@@ -59,14 +52,16 @@ public class SelectGraph implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.MainMenu);
             }
         });
         load.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (graphSelector.getSelected() != null)
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new LoadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph"))));
+                if (graphSelector.getSelected() != null) {
+                    ((Main) Gdx.app.getApplicationListener()).loadGraph(new Graph(Gdx.files.internal("graphs/" + graphSelector.getSelected() + ".graph")), twenty);
+                    ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.LoadGraph);
+                }
             }
         });
         delete.addListener(new ClickListener() {
@@ -88,9 +83,21 @@ public class SelectGraph implements Screen {
         Graphics.addTextToMenu(stage, "Graph Selection", new String[]{}, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), twenty);
     }
 
+    public void setListOfGraphs() {
+        final FileHandle graphsDirectory = Gdx.files.internal("graphs");
+        final FileHandle[] graphs = graphsDirectory.list("graph");
+        final String[] graphNames = new String[graphs.length];
+        for (int a = 0; a < graphs.length; a++) {
+            graphNames[a] = graphs[a].file().getName();
+            graphNames[a] = graphNames[a].substring(0, graphNames[a].lastIndexOf("."));
+        }
+        graphSelector.setItems(graphNames);
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        setListOfGraphs();
     }
 
     @Override
@@ -115,7 +122,7 @@ public class SelectGraph implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+
     }
 
     @Override

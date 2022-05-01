@@ -1,6 +1,5 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -19,14 +18,17 @@ public class LoadGraph implements Screen {
     private final Stage stage = new Stage();
     private final ShapeRenderer shapeRenderer = new ShapeRenderer();
     private final Graph graph;
-    private final ArrayList<EdgeWeight> edgeWeights = new ArrayList<>();
-    private final Text[][] dijkstraLabels;
-    private final ArrayList<Text> vertexLabels = new ArrayList<>();
     private final TextField startVertexInput;
     private final TextField endVertexInput;
     private final ArrayList<int[]> minimumEdges = new ArrayList<>();
     private final ArrayList<Integer> nearestNeighbourPath = new ArrayList<>();
     private final Text alertMessage;
+    private final ArrayList<EdgeWeight> edgeWeights;
+    private final ArrayList<Text> vertexLabels;
+    private final BitmapFont medium;
+    private final BitmapFont small;
+    private final TextButton[] sidePanelButtons;
+    private Text[][] dijkstraLabels;
     private boolean dijkstraPressed = false;
     private boolean dijkstraApplied = false;
     private DijkstraContainer dijkstraContainer = new DijkstraContainer();
@@ -43,35 +45,16 @@ public class LoadGraph implements Screen {
     private boolean nearestNeighbourApplied = false;
     private boolean viewingHelp = false;
 
-    public LoadGraph(final Graph graph) {
-        this.graph = graph;
-        final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
-        alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        graph.addToEdgeWeights(edgeWeights, twenty);
-        dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
-        final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
-        startVertexInput = new TextField("0", skin);
-        endVertexInput = new TextField("0", skin);
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            vertexLabels.add(new Text(Character.toString((char) (a + 65)), graph.getXCoordinateOfVertex(a) * Graphics.scaleFactor, graph.getYCoordinateOfVertex(a) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1));
-        }
-        GeneralConstructor(twenty, skin);
-    }
-
     public LoadGraph(final Graph graph, final ArrayList<EdgeWeight> edgeWeights, final ArrayList<Text> vertexLabels) {
         this.graph = graph;
         final BitmapFont twenty = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 20f * Graphics.scaleFactor, 0);
         alertMessage = new Text("", Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f, twenty, new float[]{0, 0, 0, 1}, 0, 0, -1);
-        this.edgeWeights.addAll(edgeWeights);
+        this.edgeWeights = edgeWeights;
         dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
-        this.vertexLabels.addAll(vertexLabels);
+        this.vertexLabels = vertexLabels;
         final Skin skin = Graphics.generateSkin(Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0));
         startVertexInput = new TextField("0", skin);
         endVertexInput = new TextField("0", skin);
-        GeneralConstructor(twenty, skin);
-    }
-
-    private void GeneralConstructor(final BitmapFont twenty, Skin skin) {
         final TextButton dijkstraButton = new TextButton("Dijsktra's", skin, "default");
         final TextButton jarnikButton = new TextButton("Jarník's", skin, "default");
         final TextButton kruskalButton = new TextButton("Kruskal's", skin, "default");
@@ -81,28 +64,22 @@ public class LoadGraph implements Screen {
         final TextButton help = new TextButton("Help", skin, "default");
         final TextButton mainMenu = new TextButton("Main Menu", skin, "default");
         final TextButton edit = new TextButton("Edit", skin, "default");
-        final TextButton[] sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton, help};
+        sidePanelButtons = new TextButton[]{mainMenu, edit, dijkstraButton, jarnikButton, kruskalButton, routeInspectionButton, travellingSalesmanButton, help};
         final Text menuTitle = new Text("", Gdx.graphics.getWidth() / 2f, 545 * Graphics.scaleFactor, Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 25f * Graphics.scaleFactor, 0), new float[]{0, 0, 0, 1}, 0, 0, -1);
         final float y1 = 491.5f;
         final Text[] attributes = new Text[]{new Text("", 16f * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), y1 * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1), new Text("", 16f * Graphics.scaleFactor + (0.5f * (Gdx.graphics.getWidth() - 452 * Graphics.scaleFactor)), (y1 - 61f) * Graphics.scaleFactor, twenty, new float[]{0, 0, 0, 1}, -1, 0, -1)};
         final Skin buttonSkin = Graphics.generateSkin(twenty);
         final TextButton back = new TextButton("Back", buttonSkin, "default");
         final TextButton apply = new TextButton("Apply", buttonSkin, "default");
-        final BitmapFont small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * Graphics.scaleFactor, 0);
-        final BitmapFont medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0);
+        small = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 10f * Graphics.scaleFactor, 0);
+        medium = Text.generateFont("fonts/DmMono/DmMonoMedium.ttf", 15f * Graphics.scaleFactor, 0);
         final List<String> list = new List<>(skin);
         final ArrayList<ArrayList<String>> routeInspectionItems = new ArrayList<>();
         routeInspectionItems.add(new ArrayList<String>());
         final ArrayList<ArrayList<String>> lowerBoundTSPItems = new ArrayList<>();
         lowerBoundTSPItems.add(new ArrayList<String>());
         final ScrollPane scrollBar = new ScrollPane(list, skin, "default");
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            final float[] dimensions = setupDijkstraBoxes(a);
-            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + 5f * Graphics.scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * Graphics.scaleFactor)};
-            for (int b = 0; b < 4; b++) {
-                dijkstraLabels[a][b].setVisible(false);
-            }
-        }
+        setUpDijkstraBoxes();
 
 
         dijkstraButton.setWidth(127 * Graphics.scaleFactor);
@@ -176,11 +153,6 @@ public class LoadGraph implements Screen {
                 if (dijkstraApplied) {
                     dijkstraApplied = false;
                     dijkstraContainer.markAsNotSetup();
-                    for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                        for (int b = 0; b < 4; b++) {
-                            dijkstraLabels[a][b].setVisible(false);
-                        }
-                    }
                     toggleButtonTouchableStatus(sidePanelButtons, Touchable.enabled);
                     dijkstraButton.setText("Dijkstra's");
                 } else if (!dijkstraPressed) {
@@ -218,8 +190,6 @@ public class LoadGraph implements Screen {
                         counter = 1;
                         graph.kruskal(minimumEdges);
                         toggleButtonTouchableStatus(sidePanelButtons, Touchable.disabled);
-                        mainMenu.setTouchable(Touchable.enabled);
-                        edit.setTouchable(Touchable.enabled);
                         kruskalButton.setTouchable(Touchable.enabled);
                         kruskalButton.setText("Back");
                     } else {
@@ -288,13 +258,13 @@ public class LoadGraph implements Screen {
         mainMenu.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.MainMenu);
             }
         });
         edit.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(graph, edgeWeights, vertexLabels));
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.NewGraph);
             }
         });
         back.addListener(new ClickListener() {
@@ -341,8 +311,6 @@ public class LoadGraph implements Screen {
                     if (vertex != -1) {
                         toggleNearestNeighbourPressed(menuTitle, attributes[0], back, apply);
                         travellingSalesmanButton.setTouchable(Touchable.enabled);
-                        mainMenu.setTouchable(Touchable.enabled);
-                        edit.setTouchable(Touchable.enabled);
                         travellingSalesmanButton.setText("Back");
                         nearestNeighbourPressed = false;
                         nearestNeighbourApplied = true;
@@ -389,15 +357,8 @@ public class LoadGraph implements Screen {
                     if (vertex1 != -1 && vertex2 != -1) {
                         dijkstraPressed = false;
                         dijkstraApplied = true;
-                        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                            for (int b = 0; b < 4; b++) {
-                                dijkstraLabels[a][b].setVisible(true);
-                            }
-                        }
                         toggleDijkstraPressed(menuTitle, attributes[0], attributes[1], back, apply);
                         dijkstraButton.setTouchable(Touchable.enabled);
-                        mainMenu.setTouchable(Touchable.enabled);
-                        edit.setTouchable(Touchable.enabled);
                         dijkstraButton.setText("Back");
                     }
                 } else if (jarnikPressed) {
@@ -410,8 +371,6 @@ public class LoadGraph implements Screen {
                         graph.jarnik(minimumEdges, vertex);
                         toggleJarnikPressed(menuTitle, attributes[0], back, apply);
                         jarnikButton.setTouchable(Touchable.enabled);
-                        mainMenu.setTouchable(Touchable.enabled);
-                        edit.setTouchable(Touchable.enabled);
                         jarnikButton.setText("Back");
                     }
                 }
@@ -432,12 +391,15 @@ public class LoadGraph implements Screen {
         stage.addActor(back);
         stage.addActor(apply);
         stage.addActor(scrollBar);
-        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-            for (int b = 0; b < 4; b++) {
-                stage.addActor(dijkstraLabels[a][b]);
-            }
-        }
         stage.addActor(alertMessage);
+    }
+
+    private void setUpDijkstraBoxes() {
+        dijkstraLabels = new Text[graph.getNumberOfVertices()][4];
+        for (int a = 0; a < graph.getNumberOfVertices(); a++) {
+            final float[] dimensions = setupDijkstraBox(a);
+            dijkstraLabels[a] = new Text[]{new Text(Character.toString((char) (a + 65)), dimensions[0] + dimensions[2] / 6f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 2f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + dimensions[2] / 6f * 5f, dimensions[1] + dimensions[3] / 4f * 3f, medium, new float[]{0, 0, 0, 1}, 0, 0, 31 * Graphics.scaleFactor), new Text("", dimensions[0] + 5f * Graphics.scaleFactor, dimensions[1] + dimensions[3] / 4f, small, new float[]{0, 0, 0, 1}, -1, 0, dimensions[2] - 10f * Graphics.scaleFactor)};
+        }
     }
 
     private void toggleHelpMenu(final Text menuTitle, final Text attribute, final TextButton back) {
@@ -553,7 +515,7 @@ public class LoadGraph implements Screen {
         }
     }
 
-    private float[] setupDijkstraBoxes(final int vertex) {
+    private float[] setupDijkstraBox(final int vertex) {
         final float width = 93f * Graphics.scaleFactor;
         final float height = 64f * Graphics.scaleFactor;
         final float x = graph.getXCoordinateOfVertex(vertex) * Graphics.scaleFactor - width / 2f;
@@ -564,6 +526,7 @@ public class LoadGraph implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        setUpDijkstraBoxes();
     }
 
     @Override
@@ -614,7 +577,7 @@ public class LoadGraph implements Screen {
             Graphics.drawMenu(2, shapeRenderer);
         } else if (dijkstraApplied) {
             for (int a = 0; a < graph.getNumberOfVertices(); a++) {
-                final float[] dimensions = setupDijkstraBoxes(a);
+                final float[] dimensions = setupDijkstraBox(a);
                 shapeRenderer.setColor(1, 1, 1, 1);
                 shapeRenderer.rect(dimensions[0], dimensions[1], dimensions[2], dimensions[3]);
                 shapeRenderer.setColor(0, 0, 0, 1);
@@ -641,6 +604,15 @@ public class LoadGraph implements Screen {
         shapeRenderer.end();
         stage.act();
         stage.draw();
+        if (dijkstraApplied) {
+            stage.getBatch().begin();
+            for (Text[] dijkstraBox : dijkstraLabels) {
+                for (Text label : dijkstraBox) {
+                    label.draw(stage.getBatch(), 0);
+                }
+            }
+            stage.getBatch().end();
+        }
     }
 
     @Override
@@ -660,7 +632,6 @@ public class LoadGraph implements Screen {
 
     @Override
     public void hide() {
-
     }
 
     @Override

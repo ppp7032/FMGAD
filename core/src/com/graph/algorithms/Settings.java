@@ -1,6 +1,5 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
@@ -68,7 +67,7 @@ public class Settings implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.MainMenu);
             }
         });
         apply.addListener(new ClickListener() {
@@ -149,7 +148,7 @@ public class Settings implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+
     }
 
     @Override

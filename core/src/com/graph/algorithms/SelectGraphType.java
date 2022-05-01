@@ -1,6 +1,5 @@
 package com.graph.algorithms;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,7 +39,7 @@ public class SelectGraphType implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.MainMenu);
             }
         });
 
@@ -49,12 +48,13 @@ public class SelectGraphType implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 switch (graphType.getSelectedIndex()) {
                     case 0:
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(new Graph(false)));
+                        ((Main) Gdx.app.getApplicationListener()).clearNewGraph(false);
                         break;
                     case 1:
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new NewGraph(new Graph(true)));
+                        ((Main) Gdx.app.getApplicationListener()).clearNewGraph(true);
                         break;
                 }
+                ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.NewGraph);
             }
         });
 
@@ -92,7 +92,7 @@ public class SelectGraphType implements Screen {
 
     @Override
     public void hide() {
-        dispose();
+
     }
 
     @Override
