@@ -16,9 +16,10 @@ public class SelectGraphType implements Screen {
     private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
     private final SpriteBatch spriteBatch = new SpriteBatch();
     private final Stage stage = new Stage();
+    private final SelectBox<String> graphType;
 
     public SelectGraphType() {
-        final SelectBox<String> graphType = new SelectBox<>(Graphics.skins[0]);
+        graphType = new SelectBox<>(Graphics.skins[0]);
         final TextButton back = new TextButton("Back", Graphics.skins[2], "default");
         final TextButton apply = new TextButton("Apply", Graphics.skins[2], "default");
 
@@ -64,6 +65,7 @@ public class SelectGraphType implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        graphType.setSelectedIndex(0);
     }
 
     @Override
