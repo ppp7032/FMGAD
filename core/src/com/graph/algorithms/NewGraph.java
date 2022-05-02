@@ -354,6 +354,7 @@ public class NewGraph implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         name.setText(graph.getName());
+        alertMessage.setVisible(false);
     }
 
     @Override

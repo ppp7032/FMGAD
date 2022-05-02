@@ -531,6 +531,7 @@ public class LoadGraph implements Screen {
         setUpDijkstraBoxes();
         everRanLowerBounds = false;
         everRanRouteInspection = false;
+        alertMessage.setVisible(false);
     }
 
     @Override
