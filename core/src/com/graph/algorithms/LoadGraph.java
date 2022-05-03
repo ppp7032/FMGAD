@@ -322,11 +322,11 @@ public class LoadGraph implements Screen {
                             toggleTravellingSalesman(menuTitle, attributes[0], selectTSPAlgorithm, back, apply);
                             toggleLowerBounds(menuTitle, scrollBar, back);
                             if (!everRanLowerBounds) {
-                                final int[] lowestBounds = graph.lowestBoundTSP();
+                                final Integer[] lowestBounds = graph.lowestBoundTSP();
                                 final String[] items = new String[lowestBounds.length];
                                 for (int a = 0; a < lowestBounds.length; a++) {
                                     final String value;
-                                    if (lowestBounds[a] == -1) {
+                                    if (lowestBounds[a] == null) {
                                         value = "Algorithm Stalled";
                                     } else {
                                         value = String.valueOf(lowestBounds[a]);
@@ -549,7 +549,7 @@ public class LoadGraph implements Screen {
                 Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph());
             }
         } else if (nearestNeighbourApplied) {
-            if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == -1) {
+            if (counter == nearestNeighbourPath.size() - 2 && nearestNeighbourPath.get(nearestNeighbourPath.size() - 1) == null) {
                 alertMessage.updateText("Nearest Neighbour\nhas stalled!");
                 alertMessage.setVisible(true);
             } else if (counter < nearestNeighbourPath.size() - 2 && Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -557,11 +557,11 @@ public class LoadGraph implements Screen {
             }
             shapeRenderer.setColor(0, 1, 0, 1);
             for (int a = 1; a <= counter; a++) {
-                final int vertex1 = nearestNeighbourPath.get(a - 1);
-                final int vertex2 = nearestNeighbourPath.get(a);
-                if (vertex2 == -1) {
+                if (nearestNeighbourPath.get(a) == null) {
                     counter = 0;
                 } else {
+                    final int vertex1 = nearestNeighbourPath.get(a - 1);
+                    final int vertex2 = nearestNeighbourPath.get(a);
                     Graphics.renderEdge(graph.getXCoordinateOfVertex(vertex1), graph.getYCoordinateOfVertex(vertex1), graph.getXCoordinateOfVertex(vertex2), graph.getYCoordinateOfVertex(vertex2), shapeRenderer, graph.isDigraph());
                 }
             }
@@ -594,7 +594,7 @@ public class LoadGraph implements Screen {
             if (!dijkstraContainer.getSetup()) {
                 dijkstraContainer = new DijkstraContainer(graph.getVertexFromInput(startVertexInput.getText()), graph.getVertexFromInput(endVertexInput.getText()), graph.getNumberOfVertices());
                 graph.updateDijkstraLabels(dijkstraLabels, dijkstraContainer.getOrderLabels(), dijkstraContainer.getPermanentLabels(), dijkstraContainer.getTemporaryLabels());
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.getPermanentLabels()[dijkstraContainer.getEndVertex()] == -1) {
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && dijkstraContainer.getOrderLabels()[dijkstraContainer.getEndVertex()] == -1) {
                 graph.dijkstraStep(dijkstraContainer, dijkstraLabels);
             }
         } else if (chinesePostmanPressed || displayingLowerBounds) {

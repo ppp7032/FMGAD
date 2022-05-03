@@ -95,14 +95,14 @@ public class Graph {
 
     public void nearestNeighbour(final int startVertex, final ArrayList<Integer> includedVertices) {
         int currentVertex = startVertex;
-        int totalWeight = 0;
+        Integer totalWeight = 0;
         includedVertices.clear();
         includedVertices.add(startVertex);
         while (true) {
             int smallestEdge = -1;
             int smallestVertex = -1;
             for (int a = 0; a < getNumberOfEdgesConnectedToVertex(currentVertex); a++) {
-                if ((smallestEdge == -1 || getEdgeWeight(currentVertex, a) < smallestEdge) && !includedVertices.contains(getVertex(currentVertex, a))) {
+                if ((smallestVertex == -1 || getEdgeWeight(currentVertex, a) < smallestEdge) && !includedVertices.contains(getVertex(currentVertex, a))) {
                     smallestEdge = getEdgeWeight(currentVertex, a);
                     smallestVertex = getVertex(currentVertex, a);
                 }
@@ -117,11 +117,11 @@ public class Graph {
                     includedVertices.add(startVertex);
                     totalWeight += smallestEdge;
                 } else {
-                    totalWeight = -1;
+                    totalWeight = null;
                 }
                 break;
             } else {
-                totalWeight = -1;
+                totalWeight = null;
                 break;
             }
             currentVertex = smallestVertex;
@@ -395,7 +395,7 @@ public class Graph {
             allPaths.add(new ArrayList<ArrayList<Integer>>());
             for (int b = 0; b < allPairs.get(a).size(); b++) {
                 DijkstraContainer container = new DijkstraContainer(allPairs.get(a).get(b)[0], allPairs.get(a).get(b)[1], getNumberOfVertices());
-                while (container.getPermanentLabels()[container.getEndVertex()] == -1) {
+                while (container.getOrderLabels()[container.getEndVertex()] == -1) {
                     dijkstraStep(container);
                 }
                 allPaths.get(a).add(container.getPathToVertex(container.getEndVertex()));
@@ -480,10 +480,11 @@ public class Graph {
         }
     }
 
-    public int[] lowestBoundTSP() {
+    public Integer[] lowestBoundTSP() {
         final Graph[] graphs = new Graph[getNumberOfVertices()];
-        final int[] lowerBounds = new int[graphs.length];
+        final Integer[] lowerBounds = new Integer[graphs.length];
         for (int a = 0; a < graphs.length; a++) {
+            lowerBounds[a] = 0;
             graphs[a] = new Graph(false);
             for (int b = 0; b < getNumberOfVertices(); b++) {
                 graphs[a].addVertex(getXCoordinateOfVertex(b), getYCoordinateOfVertex(b));
@@ -497,13 +498,15 @@ public class Graph {
         }
         for (int a = 0; a < graphs.length; a++) {
             if (graphs[a].getNumberOfEdgesConnectedToVertex(a) >= 2) {
-                int smallestEdge = -1;
-                int secondSmallestEdge = -1;
+                Integer smallestEdge = null;
+                Integer secondSmallestEdge = null;
                 for (int b = 0; b < graphs[a].getNumberOfEdgesConnectedToVertex(a); b++) {
-                    if (smallestEdge == -1 || graphs[a].getEdgeWeight(a, b) < smallestEdge) {
-                        secondSmallestEdge = smallestEdge;
+                    if (smallestEdge == null || graphs[a].getEdgeWeight(a, b) < smallestEdge) {
+                        if (smallestEdge != null) {
+                            secondSmallestEdge = smallestEdge;
+                        }
                         smallestEdge = graphs[a].getEdgeWeight(a, b);
-                    } else if (secondSmallestEdge == -1 || graphs[a].getEdgeWeight(a, b) < secondSmallestEdge) {
+                    } else if (secondSmallestEdge == null || graphs[a].getEdgeWeight(a, b) < secondSmallestEdge) {
                         secondSmallestEdge = graphs[a].getEdgeWeight(a, b);
                     }
                 }
@@ -514,10 +517,10 @@ public class Graph {
                     graphs[a].kruskal(minimumEdges);
                     lowerBounds[a] += getMinimumSpanningTreeSize(minimumEdges);
                 } else {
-                    lowerBounds[a] = -1;
+                    lowerBounds[a] = null;
                 }
             } else {
-                lowerBounds[a] = -1;
+                lowerBounds[a] = null;
             }
         }
         return lowerBounds;
