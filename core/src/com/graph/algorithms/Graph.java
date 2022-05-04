@@ -414,7 +414,6 @@ public class Graph {
         }
         repeatedEdges.add(new ArrayList<>(Collections.singletonList(totalWeights[0][0] + getSumOfEdgeWeights())));
         return repeatedEdges;
-
     }
 
     public int getSumOfEdgeWeights() {
