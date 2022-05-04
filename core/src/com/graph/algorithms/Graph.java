@@ -323,9 +323,7 @@ public class Graph {
             });
         }
         final int[] parents = new int[getNumberOfVertices()];
-        for (int a = 0; a < getNumberOfVertices(); a++) {
-            parents[a] = -1;
-        }
+        Arrays.fill(parents, -1);
         for (int[] edge : includedEdges) {
             final int root0 = find(parents, edge[0]);
             final int root1 = find(parents, edge[1]);
@@ -374,7 +372,7 @@ public class Graph {
         } else if (list.length == 2) {
             ArrayList<ArrayList<int[]>> toReturn = new ArrayList<>();
             ArrayList<int[]> one = new ArrayList<>();
-            one.add(new int[]{list[0], list[1]});
+            one.add(list);
             toReturn.add(one);
             return toReturn;
         }
