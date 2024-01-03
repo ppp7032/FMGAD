@@ -17,6 +17,7 @@ import java.util.Scanner;
 
 public class Settings implements Screen {
 
+  private static final String[] defaultConfig = new String[]{"720p", "Windowed"};
   private final Stage stage = new Stage();
   private final ShapeRenderer shapeRenderer = new ShapeRenderer();
   private final Texture background = new Texture(Gdx.files.internal("backgrounds/4k.jpeg"));
@@ -84,10 +85,11 @@ public class Settings implements Screen {
   }
 
   public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode
-    Scanner scanner = new Scanner(System.in);
+    final Scanner scanner;
     try {
-      scanner = new Scanner(new File("config.txt"));
-    } catch (FileNotFoundException ignored) { //This should never happen
+      scanner = new Scanner(new File(getConfigPath()));
+    } catch (FileNotFoundException ignored) {
+      return defaultConfig;
     }
     final String[] config = new String[2];
     while (scanner.hasNext()) {
@@ -105,8 +107,54 @@ public class Settings implements Screen {
     return config;
   }
 
+  private static String getConfigPath() {
+    String os = System.getProperty("os.name").toLowerCase();
+    String configDir;
+
+    if (os.contains("win")) {
+      // Windows
+      configDir = System.getenv("APPDATA");
+      if (configDir == null || configDir.isEmpty()) {
+        configDir = System.getProperty("user.home") + "/AppData/Roaming";
+      }
+    } else if (os.contains("mac")) {
+      // macOS
+      configDir = System.getProperty("user.home") + "/Library/Application Support";
+    } else {
+      // Linux and other Unix-like systems
+      configDir = System.getenv("XDG_CONFIG_HOME");
+      if (configDir == null || configDir.isEmpty()) {
+        configDir = System.getProperty("user.home") + "/.config";
+      }
+    }
+    return configDir + "/FMGAD/config.txt";
+  }
+
+  public static String getDataPath() {
+    String os = System.getProperty("os.name").toLowerCase();
+    String dataDir;
+
+    if (os.contains("win")) {
+      // Windows
+      dataDir = System.getenv("APPDATA");
+      if (dataDir == null || dataDir.isEmpty()) {
+        dataDir = System.getProperty("user.home") + "/AppData/Roaming";
+      }
+    } else if (os.contains("mac")) {
+      // macOS
+      dataDir = System.getProperty("user.home") + "/Library/Application Support";
+    } else {
+      // Linux and other Unix-like systems
+      dataDir = System.getenv("XDG_DATA_HOME");
+      if (dataDir == null || dataDir.isEmpty()) {
+        dataDir = System.getProperty("user.home") + "/.local/share";
+      }
+    }
+    return dataDir + "/FMGAD/graphs";
+  }
+
   private static void writeToConfigFile(final String[] config) {
-    final FileHandle file = Gdx.files.local("config.txt");
+    final FileHandle file = Gdx.files.absolute(getConfigPath());
     file.writeString("resolution: " + config[0] + "\ndisplay mode: " + config[1], false);
   }
 

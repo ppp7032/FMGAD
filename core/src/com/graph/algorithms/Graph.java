@@ -155,7 +155,7 @@ public class Graph {
   }
 
   public void saveGraph(final String fileName) {
-    final FileHandle file = Gdx.files.local("graphs/" + fileName + ".graph");
+    final FileHandle file = Gdx.files.absolute(Settings.getDataPath() + "/" + fileName + ".graph");
     if (file.exists()) {
       file.delete();
     }
@@ -223,10 +223,11 @@ public class Graph {
     adjacencyList.clear();
     coordinates.clear();
     digraph = newStatus;
-    FileHandle file = Gdx.files.local("graphs/New Graph.graph");
+    final String graphs = Settings.getDataPath();
+    FileHandle file = Gdx.files.absolute(graphs + "/New Graph.graph");
     int counter = 1;
     while (file.exists()) {
-      file = Gdx.files.local("graphs/New Graph (" + counter + ").graph");
+      file = Gdx.files.absolute(graphs + "/New Graph (" + counter + ").graph");
       counter++;
     }
     changeName(file.name().substring(0, file.name().lastIndexOf(".")));

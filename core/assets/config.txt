@@ -1,2 +1,0 @@
-resolution: 720p
-display mode: Windowed
