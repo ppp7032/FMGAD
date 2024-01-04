@@ -55,7 +55,8 @@ public class SelectGraph implements Screen {
         if (graphSelector.getSelected() != null) {
           ((Main) Gdx.app.getApplicationListener()).loadGraph(
               new Graph(Gdx.files.absolute(
-                  Settings.getDataPath() + "/" + graphSelector.getSelected() + ".graph")));
+                  Settings.getGraphsDirectoryPath() + "/" + graphSelector.getSelected()
+                      + ".graph")));
           ((Main) Gdx.app.getApplicationListener()).setScreen(Main.ScreenKey.LoadGraph);
         }
       }
@@ -63,7 +64,8 @@ public class SelectGraph implements Screen {
     delete.addListener(new ClickListener() {
       @Override
       public void clicked(InputEvent event, float x, float y) {
-        Gdx.files.absolute(Settings.getDataPath() + "/" + graphSelector.getSelected() + ".graph")
+        Gdx.files.absolute(
+                Settings.getGraphsDirectoryPath() + "/" + graphSelector.getSelected() + ".graph")
             .delete();
         final ArrayList<String> newItems = Graphics.getItems(graphSelector);
         newItems.remove(graphSelector.getSelected());
@@ -81,7 +83,7 @@ public class SelectGraph implements Screen {
   }
 
   public void setListOfGraphs() {
-    final FileHandle graphsDirectory = Gdx.files.absolute(Settings.getDataPath());
+    final FileHandle graphsDirectory = Gdx.files.absolute(Settings.getGraphsDirectoryPath());
     final FileHandle[] graphs = graphsDirectory.list("graph");
     final String[] graphNames = new String[graphs.length];
     for (int a = 0; a < graphs.length; a++) {

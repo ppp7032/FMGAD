@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import dev.dirs.BaseDirectories;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -87,7 +88,7 @@ public class Settings implements Screen {
   public static String[] readFromConfigFile() { //return value representing resolution, then value representing display mode
     final Scanner scanner;
     try {
-      scanner = new Scanner(new File(getConfigPath()));
+      scanner = new Scanner(new File(getConfigFilePath()));
     } catch (FileNotFoundException ignored) {
       return defaultConfig;
     }
@@ -107,54 +108,16 @@ public class Settings implements Screen {
     return config;
   }
 
-  private static String getConfigPath() {
-    String os = System.getProperty("os.name").toLowerCase();
-    String configDir;
-
-    if (os.contains("win")) {
-      // Windows
-      configDir = System.getenv("APPDATA");
-      if (configDir == null || configDir.isEmpty()) {
-        configDir = System.getProperty("user.home") + "/AppData/Roaming";
-      }
-    } else if (os.contains("mac")) {
-      // macOS
-      configDir = System.getProperty("user.home") + "/Library/Application Support";
-    } else {
-      // Linux and other Unix-like systems
-      configDir = System.getenv("XDG_CONFIG_HOME");
-      if (configDir == null || configDir.isEmpty()) {
-        configDir = System.getProperty("user.home") + "/.config";
-      }
-    }
-    return configDir + "/FMGAD/config.txt";
+  private static String getConfigFilePath() {
+    return BaseDirectories.get().configDir + "/FMGAD/config.txt";
   }
 
-  public static String getDataPath() {
-    String os = System.getProperty("os.name").toLowerCase();
-    String dataDir;
-
-    if (os.contains("win")) {
-      // Windows
-      dataDir = System.getenv("APPDATA");
-      if (dataDir == null || dataDir.isEmpty()) {
-        dataDir = System.getProperty("user.home") + "/AppData/Roaming";
-      }
-    } else if (os.contains("mac")) {
-      // macOS
-      dataDir = System.getProperty("user.home") + "/Library/Application Support";
-    } else {
-      // Linux and other Unix-like systems
-      dataDir = System.getenv("XDG_DATA_HOME");
-      if (dataDir == null || dataDir.isEmpty()) {
-        dataDir = System.getProperty("user.home") + "/.local/share";
-      }
-    }
-    return dataDir + "/FMGAD/graphs";
+  public static String getGraphsDirectoryPath() {
+    return BaseDirectories.get().dataDir + "/FMGAD/graphs";
   }
 
   private static void writeToConfigFile(final String[] config) {
-    final FileHandle file = Gdx.files.absolute(getConfigPath());
+    final FileHandle file = Gdx.files.absolute(getConfigFilePath());
     file.writeString("resolution: " + config[0] + "\ndisplay mode: " + config[1], false);
   }
 

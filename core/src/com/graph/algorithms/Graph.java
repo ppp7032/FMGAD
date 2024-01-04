@@ -155,7 +155,8 @@ public class Graph {
   }
 
   public void saveGraph(final String fileName) {
-    final FileHandle file = Gdx.files.absolute(Settings.getDataPath() + "/" + fileName + ".graph");
+    final FileHandle file = Gdx.files.absolute(
+        Settings.getGraphsDirectoryPath() + "/" + fileName + ".graph");
     if (file.exists()) {
       file.delete();
     }
@@ -223,7 +224,7 @@ public class Graph {
     adjacencyList.clear();
     coordinates.clear();
     digraph = newStatus;
-    final String graphs = Settings.getDataPath();
+    final String graphs = Settings.getGraphsDirectoryPath();
     FileHandle file = Gdx.files.absolute(graphs + "/New Graph.graph");
     int counter = 1;
     while (file.exists()) {
